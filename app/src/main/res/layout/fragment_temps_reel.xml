@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.main.TempsReelFrag">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardPollution"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+
+        app:layout_constraintBottom_toTopOf="@id/cardMeteo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/card"
+
+        >
+
+
+        <TextView
+            android:id="@+id/txtPollution"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            style="@style/cardTitle"
+            tools:ignore="MissingConstraints"
+
+            android:text="@string/card1" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lytPollutionLigne1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="15dp"
+
+            app:layout_constraintBottom_toTopOf="@id/lytPollutionLigne2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtPollution"
+
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemPm1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/item"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/itemPm2.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txtPm1Nom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="PM1"
+
+                    style="@style/txtNom"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/txtPm1Val"
+                    style="@style/txtVal"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+
+                    android:text="-"
+                    app:layout_constraintTop_toBottomOf="@id/txtPm1Nom" />
+
+                <TextView
+                    android:id="@+id/txtPm1Unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/µgmCube"
+
+                    style="@style/txtUnit"
+                    app:layout_constraintTop_toBottomOf="@id/txtPm1Val" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemPm2.5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/item"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/itemPm10"
+                app:layout_constraintStart_toEndOf="@id/itemPm1"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txtPm2.5Nom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="PM2.5"
+
+                    style="@style/txtNom"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/txtPm2.5Val"
+                    style="@style/txtVal"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+
+                    android:text="-"
+                    app:layout_constraintTop_toBottomOf="@id/txtPm2.5Nom" />
+
+                <TextView
+                    android:id="@+id/txtPm2.5Unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/µgmCube"
+
+                    style="@style/txtUnit"
+                    app:layout_constraintTop_toBottomOf="@id/txtPm2.5Val" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemPm10"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:background="@drawable/item"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/itemPm2.5"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txtPm10Nom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="PM10"
+
+                    style="@style/txtNom"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/txtPm10Val"
+                    style="@style/txtVal"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+
+                    android:text="-"
+                    app:layout_constraintTop_toBottomOf="@id/txtPm10Nom" />
+
+                <TextView
+                    android:id="@+id/txtPm10Unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/µgmCube"
+
+                    style="@style/txtUnit"
+                    app:layout_constraintTop_toBottomOf="@id/txtPm10Val" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lytPollutionLigne2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="25dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/lytPollutionLigne1"
+
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemCo2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/item"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/itemPROCHAIN1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txtCo2Nom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="CO2"
+
+                    style="@style/txtNom"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/txtCo2Val"
+                    style="@style/txtVal"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+
+                    android:text="-"
+                    app:layout_constraintTop_toBottomOf="@id/txtCo2Nom" />
+
+                <TextView
+                    android:id="@+id/txtCo2Unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="ppm"
+
+                    style="@style/txtUnit"
+                    app:layout_constraintTop_toBottomOf="@id/txtCo2Val" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemPROCHAIN1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/itemPROCHAIN2"
+                app:layout_constraintStart_toEndOf="@id/itemCo2"
+                app:layout_constraintTop_toTopOf="parent">
+                <!--android:background="@drawable/item"-->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemPROCHAIN2"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/itemPROCHAIN1"
+                app:layout_constraintTop_toTopOf="parent">
+                <!--android:background="@drawable/item"-->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/cardMeteo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cardPollution"
+        android:background="@drawable/card"
+
+        >
+
+
+        <TextView
+            android:id="@+id/txtMeteo"
+            style="@style/cardTitle"
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content"
+            android:text="@string/card2"
+
+
+            tools:ignore="MissingConstraints"
+            />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lytMeteoLigne1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginBottom="25dp"
+
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtMeteo"
+
+            >
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemTemperature"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/item"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/itemHumidite"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txtTemperatureNom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/temperature"
+
+                    style="@style/txtNom"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/txtTemperatureVal"
+                    style="@style/txtVal"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+
+                    android:text="-"
+                    app:layout_constraintTop_toBottomOf="@id/txtTemperatureNom" />
+
+                <TextView
+                    android:id="@+id/txtTemperatureUnit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="°C"
+
+                    style="@style/txtUnit"
+                    app:layout_constraintTop_toBottomOf="@id/txtTemperatureVal" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemHumidite"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+
+                android:layout_marginEnd="15dp"
+                android:layout_marginRight="15dp"
+                android:background="@drawable/item"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/itemMeteoPROCHAIN1"
+                app:layout_constraintStart_toEndOf="@id/itemTemperature"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/txtHumiditeNom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/humidite"
+
+                    style="@style/txtNom"
+                    tools:ignore="MissingConstraints" />
+
+                <TextView
+                    android:id="@+id/txtHumiditeVal"
+                    style="@style/txtVal"
+                    android:layout_width="match_parent"
+
+                    android:layout_height="wrap_content"
+
+                    android:text="-"
+                    app:layout_constraintTop_toBottomOf="@id/txtHumiditeNom" />
+
+                <TextView
+                    android:id="@+id/txtHumiditeUnit"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:text="%"
+
+                    style="@style/txtUnit"
+                    app:layout_constraintTop_toBottomOf="@id/txtHumiditeVal" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/itemMeteoPROCHAIN1"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/itemHumidite"
+                app:layout_constraintTop_toTopOf="parent"
+
+                >
+                <!-- android:background="@drawable/item"-->
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

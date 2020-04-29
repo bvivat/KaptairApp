@@ -1,0 +1,25 @@
+<resources>
+    <string name="app_name">Kaptair</string>
+    <string name="Accueil">Mesures</string>
+    <string name="tab_text_1">Temps réel</string>
+    <string name="tab_text_2">Historique</string>
+
+    <string name="card1">Pollution de l\'air</string>
+    <string name="card2">Données météorologiques</string>
+
+    <string name="temperature">Température</string>
+    <string name="humidite">Humidité</string>
+    <string name="µgmCube">µg/m<sup><small>3</small></sup></string>
+
+    <string name="btListeTitre">Choisissez votre appareil</string>
+    <string name="btNoBluetooth">Votre appareil ne supporte pas le bluetooth.</string>
+
+
+    <string name="heure">Heure</string>
+    <string name="jour">Jour</string>
+    <string name="annee">Année</string>
+
+    <string name="temperatureEtUnit">Température (°C)</string>
+    <string name="humiditeEtUnit">Humidité (%)</string>
+    <string name="pmEtUnit">PM µg/m<sup><small>3</small></sup></string>
+</resources>
