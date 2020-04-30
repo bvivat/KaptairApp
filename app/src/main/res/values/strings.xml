@@ -22,4 +22,7 @@
     <string name="temperatureEtUnit">Température (°C)</string>
     <string name="humiditeEtUnit">Humidité (%)</string>
     <string name="pmEtUnit">PM µg/m<sup><small>3</small></sup></string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

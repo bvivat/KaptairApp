@@ -40,13 +40,11 @@ dependencies {
     def room_version = "2.2.5"
 
     implementation "androidx.room:room-runtime:$room_version"
-    annotationProcessor "androidx.room:room-compiler:$room_version" // For Kotlin use kapt instead of annotationProcessor
-
+    annotationProcessor "androidx.room:room-compiler:$room_version"
+    // For Kotlin use kapt instead of annotationProcessor
 
 
     //MaterialDrawer
-    implementation "com.mikepenz:materialdrawer:8.0.1"
+    implementation "com.mikepenz:materialdrawer:6.1.2"
     implementation "androidx.annotation:annotation:1.1.0"
-    implementation "com.mikepenz:materialdrawer-nav:8.0.1"
-    implementation "com.mikepenz:materialdrawer-iconics:8.0.1"
 }
