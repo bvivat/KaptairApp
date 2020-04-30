@@ -14,10 +14,10 @@ import android.widget.TextView;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ParamFrag extends Fragment {
+public class CarteFrag extends Fragment {
 
 
-    public ParamFrag() {
+    public CarteFrag() {
         // Required empty public constructor
     }
 
@@ -27,9 +27,9 @@ public class ParamFrag extends Fragment {
                              Bundle savedInstanceState) {
 
         TextView txtTitre = getActivity().findViewById(R.id.txtTitre);
-        txtTitre.setText(R.string.param);
+        txtTitre.setText(R.string.carte);
 
-        return inflater.inflate(R.layout.fragment_param, container, false);
+        return inflater.inflate(R.layout.fragment_carte, container, false);
     }
 
 }

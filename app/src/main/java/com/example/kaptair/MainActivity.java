@@ -16,6 +16,7 @@ import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.kaptair.ui.main.SectionsPagerAdapter;
+import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -40,35 +41,51 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        final MesuresFrag fragMesures = new MesuresFrag();
+        final ParamFrag fragParam = new ParamFrag();
+        final CarteFrag fragCarte = new CarteFrag();
+
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.frag,new MesuresFrag());
+        transaction.add(R.id.frag,fragMesures);
         transaction.commit();
 
         Toolbar t = findViewById(R.id.toolbar);
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withIdentifier(1).withName("Mesures");
-        final PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(2).withName("Paramètres");
+        final PrimaryDrawerItem mesures = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.mesures).withIcon(GoogleMaterial.Icon.gmd_straighten);
+        final PrimaryDrawerItem carte = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.carte).withIcon(GoogleMaterial.Icon.gmd_map);
+        final PrimaryDrawerItem param = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.param).withIcon(GoogleMaterial.Icon.gmd_settings);
+
 
 
         Drawer result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(t)
                 .addDrawerItems(
-                        item1,
-                        item2
+                        mesures,
+                        carte,
+                        new DividerDrawerItem(),
+                        param
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         // do something with the clicked item :D
-                        if (drawerItem==item2){
+                        if (drawerItem==param){
 
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.frag,new ParamFrag());
+                            transaction.replace(R.id.frag,fragParam);
+                            transaction.commit();
+                        } else if(drawerItem==mesures){
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.frag,fragMesures);
+                            transaction.commit();
+                        }else if(drawerItem==carte){
+                            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                            transaction.replace(R.id.frag,fragCarte);
                             transaction.commit();
                         }
-                        return true;
+                        return false;
                     }
-                })
+                }).withHeader(R.layout.nav_header)
                 .build();
 
 
