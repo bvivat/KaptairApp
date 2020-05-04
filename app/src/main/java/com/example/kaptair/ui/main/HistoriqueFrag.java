@@ -49,6 +49,12 @@ public class HistoriqueFrag extends Fragment {
     LineChart graphPollution;
     LineChart graphMeteo;
 
+    public Calendar getC() {
+        return c;
+    }
+
+    final Calendar c = Calendar.getInstance();
+
 
     public HistoriqueFrag() {
         // Required empty public constructor
@@ -64,7 +70,7 @@ public class HistoriqueFrag extends Fragment {
 
         //Graphs
         final TextView txtTitreGraph = v.findViewById(R.id.txtGraphTitrePollution);
-        final Calendar c = Calendar.getInstance();
+
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
         int mDay = c.get(Calendar.DAY_OF_MONTH);
@@ -85,7 +91,7 @@ public class HistoriqueFrag extends Fragment {
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                c.set(Calendar.HOUR,hourOfDay);
+                                c.set(Calendar.HOUR_OF_DAY,hourOfDay);
                                 c.set(Calendar.MINUTE,mMinute);
                                 SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM YYYY HH:mm");
                                 txtTitreGraph.setText(sdfHours.format(c.getTime()));
@@ -245,7 +251,7 @@ public class HistoriqueFrag extends Fragment {
         return fragment;
     }
 
-    private void graphPollutionHour(){
+    public void graphPollutionHour(){
         /*
         PollutionMesure m = new MesurePollution(new Date(1586998800000L),50,1,5,400);
         PollutionMesure m1 = new MesurePollution(new Date(1586999703000L),10,1,100,600);
@@ -266,8 +272,10 @@ public class HistoriqueFrag extends Fragment {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Date d1 =new Date(120,3,28,11,0);
-                Date d2= new Date(120,3,28,12,0);
+                //Date d1 =new Date(120,3,28,11,0);
+                //Date d2= new Date(120,3,28,12,0);
+                Date d1 = c.getTime();
+                Date d2= new Date(d1.getTime()+3600000);
                 List<MesurePollution> mesures= db.mesurePollutionDao().getAllByDate(d1,d2);
                 final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.HOUR);
                 getActivity().runOnUiThread(new Runnable() {
@@ -280,7 +288,7 @@ public class HistoriqueFrag extends Fragment {
             }
         });
     }
-    private void graphPollutionDay(){
+    public void graphPollutionDay(){
         /*
         PollutionMesure md = new MoyenneDayMesuresPollution(new Date(1586988000000L),50,1,5,400);
         PollutionMesure md1 = new MoyenneDayMesuresPollution(new Date(1587025949000L),10,1,100,600);
@@ -315,7 +323,7 @@ public class HistoriqueFrag extends Fragment {
         });
 
     }
-    private void graphPollutionYear(){
+    public void graphPollutionYear(){
         /*
         PollutionMesure my = new MoyenneYearMesuresPollution(new Date(1577833200000L),50,1,5,400);
         PollutionMesure my1 = new MoyenneYearMesuresPollution(new Date(1581721200000L),10,1,100,600);
@@ -351,7 +359,7 @@ public class HistoriqueFrag extends Fragment {
         });
 
     }
-    private void graphMeteoHour(){
+    public void graphMeteoHour(){
         /*
         MeteoMesure m = new MesureMeteo(new Date(1586998800000L),20.2,35);
         MeteoMesure m1 = new MesureMeteo(new Date(1586999703000L),21.9,32.3);
@@ -386,7 +394,7 @@ public class HistoriqueFrag extends Fragment {
             }
         });
     }
-    private void graphMeteoDay(){
+    public void graphMeteoDay(){
         /*
         MeteoMesure md = new MoyenneDayMesuresMeteo(new Date(1586988000000L),20.2,35);
         MeteoMesure md1 = new MoyenneDayMesuresMeteo(new Date(1587025949000L),21.9,32.3);
@@ -420,7 +428,7 @@ public class HistoriqueFrag extends Fragment {
             }
         });
     }
-    private void graphMeteoYear(){
+    public void graphMeteoYear(){
         /*
         MeteoMesure my = new MoyenneYearMesuresMeteo(new Date(1577833200000L),20.2,35);
         MeteoMesure my1 = new MoyenneYearMesuresMeteo(new Date(1581721200000L),21.9,32.3);

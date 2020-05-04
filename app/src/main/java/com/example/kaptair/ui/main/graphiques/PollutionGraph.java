@@ -1,5 +1,6 @@
 package com.example.kaptair.ui.main.graphiques;
 
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -7,6 +8,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.kaptair.R;
+import com.example.kaptair.ui.main.HistoriqueFrag;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -17,10 +19,13 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.ValueFormatter;
 import com.github.mikephil.charting.listener.BarLineChartTouchListener;
 import com.github.mikephil.charting.listener.ChartTouchListener;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+
 
 public class PollutionGraph {
 
@@ -28,8 +33,9 @@ public class PollutionGraph {
     public static final int DAY=1;
     public static final int YEAR=2;
 
+    private final String TAG = "Pollution Graph";
 
-    WeakReference<Fragment> frag;
+    WeakReference<HistoriqueFrag> frag;
     LineChart chart;
     List<? extends PollutionMesure> mesures;
 
@@ -38,23 +44,30 @@ public class PollutionGraph {
     ValueFormatter formatter;
 
     int anneeBissextile = 0;
+    private int nextYear=0;
+    private int nextDay=0;
+    private int nextMonth=0;
+    private int nextHour=0;
 
-    public PollutionGraph(Fragment frag, List<? extends PollutionMesure> mesures,int plage) {
+    public PollutionGraph(HistoriqueFrag frag, List<? extends PollutionMesure> mesures, int plage) {
         this.frag=new WeakReference<>(frag);
         chart=this.frag.get().getView().findViewById(R.id.graphPollution);
         this.mesures=mesures;
         switch (plage){
             case HOUR:
+                nextHour=1;
                 plageMin=0;
                 plageMax=3600;
                 formatter = new DatetimeHourFormatter(chart);
                 break;
             case DAY:
+                nextDay=1;
                 plageMin=0;
                 plageMax=86400;
                 formatter = new DatetimeDayFormatter(chart);
                 break;
             case YEAR:
+                nextYear=1;
                 plageMin=0;
                 plageMax=8736+ anneeBissextile;
                 formatter = new DatetimeYearFormatter(chart, false);
@@ -63,7 +76,7 @@ public class PollutionGraph {
 
     }
 
-    public PollutionGraph(Fragment frag, List<? extends PollutionMesure> mesures,int plage, boolean isBissextile) {
+    public PollutionGraph(HistoriqueFrag frag, List<? extends PollutionMesure> mesures,int plage, boolean isBissextile) {
         this.frag=new WeakReference<>(frag);
         chart=this.frag.get().getView().findViewById(R.id.graphPollution);
         this.mesures=mesures;
@@ -205,6 +218,9 @@ public class PollutionGraph {
                         v.getParent().requestDisallowInterceptTouchEvent(false);
                         return super.onTouch(v,event);
                     case MotionEvent.ACTION_MOVE:
+                        if(chart.getHighestVisibleX()==chart.getXChartMax()){
+                            Log.d(TAG,"Next by touch");
+                        }
                         v.getParent().requestDisallowInterceptTouchEvent(true);
                         return super.onTouch(v,event);
                     default:
@@ -214,7 +230,74 @@ public class PollutionGraph {
         };
         chart.setOnTouchListener(chartListener);
 
+        OnChartGestureListener gestureListener = new OnChartGestureListener() {
+            @Override
+            public void onChartGestureStart(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+            }
+
+            @Override
+            public void onChartGestureEnd(MotionEvent me, ChartTouchListener.ChartGesture lastPerformedGesture) {
+
+            }
+
+            @Override
+            public void onChartLongPressed(MotionEvent me) {
+
+            }
+
+            @Override
+            public void onChartDoubleTapped(MotionEvent me) {
+
+            }
+
+            @Override
+            public void onChartSingleTapped(MotionEvent me) {
+
+            }
+
+            @Override
+            public void onChartFling(MotionEvent me1, MotionEvent me2, float velocityX, float velocityY) {
+                if (velocityX > 0) {
+                    // fling to left
+                    Log.d(TAG,"Prev");
+                    showPrevPage(); // Your own implementation method.
+                } else {
+                    // fling to right
+                    Log.d(TAG,"Next");
+                    showNextPage(); // Your own implementation method.
+                }
+
+            }
+
+            @Override
+            public void onChartScale(MotionEvent me, float scaleX, float scaleY) {
+
+            }
+
+            @Override
+            public void onChartTranslate(MotionEvent me, float dX, float dY) {
+
+            }
+        };
+
+        chart.setOnChartGestureListener(gestureListener);
+
     }
+
+    private void showPrevPage() {
+        chart.fitScreen();
+        chart.invalidate();
+    }
+
+    private void showNextPage() {
+        Calendar c = frag.get().getC();
+        c.set(c.get(Calendar.YEAR)+nextYear,c.get(Calendar.MONTH)+nextMonth,c.get(Calendar.DATE)+nextDay,c.get(Calendar.HOUR)+nextHour,0);
+        frag.get().graphPollutionHour();
+        chart.fitScreen();
+        chart.invalidate();
+    }
+
 
     public boolean isBissextile(){
         if (anneeBissextile >0){
