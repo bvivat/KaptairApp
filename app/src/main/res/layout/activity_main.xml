@@ -27,23 +27,24 @@
             app:contentInsetStart="0dp"
             >
 
-            <TextView
-                android:id="@+id/txtTitre"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="70dp"
 
 
-                android:gravity="center"
-                android:text="@string/Accueil"
-                android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-
-                app:layout_constraintTop_toTopOf="parent"
-
-                />
         </androidx.appcompat.widget.Toolbar>
+        <TextView
+            android:id="@+id/txtTitre"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+            android:text="@string/Accueil"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+
+            />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <FrameLayout

@@ -1,6 +1,8 @@
 package com.example.kaptair.ui.main;
 
 
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -11,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.TextView;
+import android.widget.TimePicker;
 
 import com.example.kaptair.R;
 import com.example.kaptair.database.AppDatabase;
@@ -21,12 +26,12 @@ import com.example.kaptair.database.MoyenneDayMesuresPollution;
 import com.example.kaptair.database.MoyenneYearMesuresMeteo;
 import com.example.kaptair.database.MoyenneYearMesuresPollution;
 import com.example.kaptair.ui.main.graphiques.MeteoGraph;
-import com.example.kaptair.ui.main.graphiques.MeteoMesure;
 import com.example.kaptair.ui.main.graphiques.PollutionGraph;
-import com.example.kaptair.ui.main.graphiques.PollutionMesure;
 import com.github.mikephil.charting.charts.LineChart;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executor;
@@ -57,6 +62,72 @@ public class HistoriqueFrag extends Fragment {
 
         db=AppDatabase.getInstance(getContext());
 
+        //Graphs
+        final TextView txtTitreGraph = v.findViewById(R.id.txtGraphTitrePollution);
+        final Calendar c = Calendar.getInstance();
+        int mYear = c.get(Calendar.YEAR);
+        int mMonth = c.get(Calendar.MONTH);
+        int mDay = c.get(Calendar.DAY_OF_MONTH);
+        final int mHour= c.get(Calendar.HOUR_OF_DAY);
+        final int mMinute=0;
+
+        DatePickerDialog.OnDateSetListener dateHeure = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                c.set(Calendar.YEAR, year);
+                c.set(Calendar.MONTH, monthOfYear);
+                c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(HistoriqueFrag.this.getContext(),R.style.MyDatePicker,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                c.set(Calendar.HOUR,hourOfDay);
+                                c.set(Calendar.MINUTE,mMinute);
+                                SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM YYYY HH:mm");
+                                txtTitreGraph.setText(sdfHours.format(c.getTime()));
+
+                            }
+                        }, mHour, mMinute, true);
+                timePickerDialog.show();
+            }
+
+        };
+
+        DatePickerDialog.OnDateSetListener dateJour = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                c.set(Calendar.YEAR, year);
+                c.set(Calendar.MONTH, monthOfYear);
+                c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM YYYY");
+                txtTitreGraph.setText(sdfHours.format(c.getTime()));
+            }
+        };
+
+        final DatePickerDialog.OnDateSetListener dateAnnee = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                c.set(Calendar.YEAR, year);
+                SimpleDateFormat sdfHours = new SimpleDateFormat("YYYY");
+                txtTitreGraph.setText(sdfHours.format(c.getTime()));
+            }
+        };
+
+        final DatePickerDialog pickerHeure = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateHeure,mYear,mMonth,mDay);
+        final DatePickerDialog pickerJour = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateJour,mYear,mMonth,mDay);
+        final DatePickerDialog pickerAnnee = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateAnnee,mYear,mMonth,mDay);
+
+
         //Graphs Pollution
         graphPollution= v.findViewById(R.id.graphPollution);
         
@@ -70,6 +141,7 @@ public class HistoriqueFrag extends Fragment {
         btnsChoixGraphPollution.add(btnHourPollution);
         btnsChoixGraphPollution.add(btnDayPollution);
         btnsChoixGraphPollution.add(btnYearPollution);
+
 
         View.OnClickListener listenerChoixGraphPollution = new View.OnClickListener() {
             @Override
@@ -85,12 +157,18 @@ public class HistoriqueFrag extends Fragment {
                 }
                 switch (v.getId()){ //TODO Remplacer exemples par mesures de la BD (dans des fonctions séparées)
                     case R.id.btnHourPollution:
+                        pickerHeure.show();
                         graphPollutionHour();
                         break;
                     case R.id.btnDayPollution:
+                        pickerJour.show();
                         graphPollutionDay();
                         break;
                     case R.id.btnYearPollution:
+                        YearPickerDialog y = new YearPickerDialog();
+                        y.show(getFragmentManager(),"picker");
+                        y.setListener(dateAnnee);
+                        //pickerAnnee.show();
                         graphPollutionYear();
                         break;
                     default:
@@ -377,5 +455,4 @@ public class HistoriqueFrag extends Fragment {
             }
         });
     }
-
 }

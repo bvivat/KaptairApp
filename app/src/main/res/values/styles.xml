@@ -7,12 +7,22 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorBackground</item>
-
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="MyDatePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="MyYearDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/colorPrimary</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">#FFFFFF</item>
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -74,6 +84,13 @@
         <item name="android:textSize">10dp</item>
         <item name="android:textStyle">normal</item>
         <item name="android:fontFamily">sans-serif-regular</item>
+    </style>
+
+    <style name="txtTitreGraph" parent="TextAppearance.AppCompat" >
+        <item name="android:textColor">@color/colorUnit</item>
+        <item name="android:textSize">11dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
     </style>
 
     <style name="txtButtonChoixGraph" parent="@style/Widget.AppCompat.Button.Borderless" >
