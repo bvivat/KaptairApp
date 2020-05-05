@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
+    <androidx.preference.PreferenceCategory android:title="Export">
+        <androidx.preference.Preference android:persistent="false" android:title="Exporter les données" android:key="export" android:summary="Exporter les données sous forme de fichier CSV" />
+    </androidx.preference.PreferenceCategory>
+</androidx.preference.PreferenceScreen>
