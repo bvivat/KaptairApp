@@ -49,6 +49,9 @@ public class HistoriqueFrag extends Fragment {
     LineChart graphPollution;
     LineChart graphMeteo;
 
+    TextView txtTitreGraphPollution;
+    TextView txtTitreGraphMeteo;
+
     public Calendar getC() {
         return c;
     }
@@ -69,13 +72,15 @@ public class HistoriqueFrag extends Fragment {
         db=AppDatabase.getInstance(getContext());
 
         //Graphs
-        final TextView txtTitreGraph = v.findViewById(R.id.txtGraphTitrePollution);
+        txtTitreGraphPollution = v.findViewById(R.id.txtGraphTitrePollution);
 
         int mYear = c.get(Calendar.YEAR);
         int mMonth = c.get(Calendar.MONTH);
         int mDay = c.get(Calendar.DAY_OF_MONTH);
         final int mHour= c.get(Calendar.HOUR_OF_DAY);
-        final int mMinute=0;
+        c.set(Calendar.MINUTE,0);
+        c.set(Calendar.SECOND,0);
+        c.set(Calendar.MILLISECOND,0);
 
         DatePickerDialog.OnDateSetListener dateHeure = new DatePickerDialog.OnDateSetListener() {
 
@@ -92,12 +97,11 @@ public class HistoriqueFrag extends Fragment {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 c.set(Calendar.HOUR_OF_DAY,hourOfDay);
-                                c.set(Calendar.MINUTE,mMinute);
-                                SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM YYYY HH:mm");
-                                txtTitreGraph.setText(sdfHours.format(c.getTime()));
+                                setTitreGraphPollutionHour();
+                                graphPollutionHour();
 
                             }
-                        }, mHour, mMinute, true);
+                        }, mHour, 0, true);
                 timePickerDialog.show();
             }
 
@@ -112,8 +116,11 @@ public class HistoriqueFrag extends Fragment {
                 c.set(Calendar.YEAR, year);
                 c.set(Calendar.MONTH, monthOfYear);
                 c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM YYYY");
-                txtTitreGraph.setText(sdfHours.format(c.getTime()));
+                c.set(Calendar.HOUR_OF_DAY,0);
+
+                setTitreGraphPollutionDay();
+
+                graphPollutionDay();
             }
         };
 
@@ -124,8 +131,13 @@ public class HistoriqueFrag extends Fragment {
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
                 c.set(Calendar.YEAR, year);
-                SimpleDateFormat sdfHours = new SimpleDateFormat("YYYY");
-                txtTitreGraph.setText(sdfHours.format(c.getTime()));
+                c.set(Calendar.MONTH, 0);
+                c.set(Calendar.DAY_OF_MONTH, 1);
+                c.set(Calendar.HOUR_OF_DAY,0);
+
+                setTitreGraphPollutionYear();
+
+                graphPollutionYear();
             }
         };
 
@@ -164,18 +176,15 @@ public class HistoriqueFrag extends Fragment {
                 switch (v.getId()){ //TODO Remplacer exemples par mesures de la BD (dans des fonctions séparées)
                     case R.id.btnHourPollution:
                         pickerHeure.show();
-                        graphPollutionHour();
                         break;
                     case R.id.btnDayPollution:
                         pickerJour.show();
-                        graphPollutionDay();
                         break;
                     case R.id.btnYearPollution:
                         YearPickerDialog y = new YearPickerDialog();
                         y.show(getFragmentManager(),"picker");
                         y.setListener(dateAnnee);
                         //pickerAnnee.show();
-                        graphPollutionYear();
                         break;
                     default:
                         break;
@@ -275,7 +284,7 @@ public class HistoriqueFrag extends Fragment {
                 //Date d1 =new Date(120,3,28,11,0);
                 //Date d2= new Date(120,3,28,12,0);
                 Date d1 = c.getTime();
-                Date d2= new Date(d1.getTime()+3600000);
+                Date d2= new Date(d1.getTime()+PollutionGraph.ONE_HOUR);
                 List<MesurePollution> mesures= db.mesurePollutionDao().getAllByDate(d1,d2);
                 final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.HOUR);
                 getActivity().runOnUiThread(new Runnable() {
@@ -308,8 +317,10 @@ public class HistoriqueFrag extends Fragment {
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Date d1 =new Date(120,3,28,0,0);
-                Date d2= new Date(120,3,29,0,0);
+                //Date d1 =new Date(120,3,28,0,0);
+                //Date d2= new Date(120,3,29,0,0);
+                Date d1 = c.getTime();
+                Date d2= new Date(d1.getTime()+PollutionGraph.ONE_DAY);
                 List<MoyenneDayMesuresPollution> mesures= db.moyenneDayMesuresPollutionDao().getAllByDate(d1,d2);
                 final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.DAY);
                 getActivity().runOnUiThread(new Runnable() {
@@ -341,13 +352,21 @@ public class HistoriqueFrag extends Fragment {
         pyg.draw();
 
          */
+        final boolean bissextile;
+        if (c.getActualMaximum(Calendar.DAY_OF_YEAR)>365){
+            bissextile=true;
+        }else {
+            bissextile=false;
+        }
         executor.execute(new Runnable() {
             @Override
             public void run() {
-                Date d1 =new Date(120,0,1,0,0);
-                Date d2= new Date(121,0,1,0,0);
+                //Date d1 =new Date(120,0,1,0,0);
+                //Date d2= new Date(121,0,1,0,0);
+                Date d1 = c.getTime();
+                Date d2= new Date(d1.getTime()+PollutionGraph.ONE_YEAR+ (bissextile ? PollutionGraph.ONE_DAY : 0));
                 List<MoyenneYearMesuresPollution> mesures= db.moyenneYearMesuresPollutionDao().getAllByDate(d1,d2);
-                final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.YEAR,true);
+                final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.YEAR,bissextile);
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -462,5 +481,20 @@ public class HistoriqueFrag extends Fragment {
 
             }
         });
+    }
+
+    public void setTitreGraphPollutionHour(){
+        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm");
+        txtTitreGraphPollution.setText(sdfHours.format(c.getTime()));
+    }
+
+    public void setTitreGraphPollutionDay(){
+        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy");
+        txtTitreGraphPollution.setText(sdfHours.format(c.getTime()));
+    }
+
+    public void setTitreGraphPollutionYear(){
+        SimpleDateFormat sdfHours = new SimpleDateFormat("yyyy");
+        txtTitreGraphPollution.setText(sdfHours.format(c.getTime()));
     }
 }

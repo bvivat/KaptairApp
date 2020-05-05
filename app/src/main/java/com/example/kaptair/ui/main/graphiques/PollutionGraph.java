@@ -3,6 +3,7 @@ package com.example.kaptair.ui.main.graphiques;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -33,6 +34,14 @@ public class PollutionGraph {
     public static final int DAY=1;
     public static final int YEAR=2;
 
+    public static final int INTERVALLE_HOUR=3600;
+    public static final int INTERVALLE_DAY=86400;
+    public static final int INTERVALLE_YEAR=8736;
+
+    public static final long ONE_HOUR=3600000L;
+    public static final long ONE_DAY=86400000L;
+    public static final long ONE_YEAR=31536000000L;
+
     private final String TAG = "Pollution Graph";
 
     WeakReference<HistoriqueFrag> frag;
@@ -41,35 +50,42 @@ public class PollutionGraph {
 
     int plageMin=0;
     int plageMax=0;
+    int plage=0;
     ValueFormatter formatter;
 
     int anneeBissextile = 0;
-    private int nextYear=0;
-    private int nextDay=0;
-    private int nextMonth=0;
-    private int nextHour=0;
+
+    private long prevYear=0;
+    private long nextYear=0;
+    private long nextDay=0;
+    private long nextHour=0;
 
     public PollutionGraph(HistoriqueFrag frag, List<? extends PollutionMesure> mesures, int plage) {
         this.frag=new WeakReference<>(frag);
         chart=this.frag.get().getView().findViewById(R.id.graphPollution);
         this.mesures=mesures;
+        this.plage=plage;
+
         switch (plage){
             case HOUR:
-                nextHour=1;
+                nextHour=ONE_HOUR;
                 plageMin=0;
-                plageMax=3600;
+                plageMax=INTERVALLE_HOUR;
                 formatter = new DatetimeHourFormatter(chart);
                 break;
             case DAY:
-                nextDay=1;
+                nextDay=ONE_DAY;
                 plageMin=0;
-                plageMax=86400;
+                plageMax=INTERVALLE_DAY;
                 formatter = new DatetimeDayFormatter(chart);
                 break;
             case YEAR:
-                nextYear=1;
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(frag.getC().getTimeInMillis()-ONE_YEAR); //L'annee precedente
+                prevYear = (c.getActualMaximum(Calendar.DAY_OF_YEAR)>365 ? ONE_YEAR+ONE_DAY : ONE_YEAR); // Si bissextile, vaut 366 jours
+                nextYear=ONE_YEAR;
                 plageMin=0;
-                plageMax=8736+ anneeBissextile;
+                plageMax=INTERVALLE_YEAR+ anneeBissextile;
                 formatter = new DatetimeYearFormatter(chart, false);
                 break;
         }
@@ -80,6 +96,8 @@ public class PollutionGraph {
         this.frag=new WeakReference<>(frag);
         chart=this.frag.get().getView().findViewById(R.id.graphPollution);
         this.mesures=mesures;
+        this.plage=plage;
+
         if (isBissextile){
             anneeBissextile=24;
         }else {
@@ -87,18 +105,24 @@ public class PollutionGraph {
         }
         switch (plage){
             case HOUR:
+                nextHour=ONE_HOUR;
                 plageMin=0;
-                plageMax=3600;
+                plageMax=INTERVALLE_HOUR;
                 formatter = new DatetimeHourFormatter(chart);
                 break;
             case DAY:
+                nextDay=ONE_DAY;
                 plageMin=0;
-                plageMax=86400;
+                plageMax=INTERVALLE_DAY;
                 formatter = new DatetimeDayFormatter(chart);
                 break;
             case YEAR:
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(frag.getC().getTimeInMillis()-ONE_YEAR); //L'annee precedente
+                prevYear = (c.getActualMaximum(Calendar.DAY_OF_YEAR)>365 ? ONE_YEAR+ONE_DAY : ONE_YEAR); // Si bissextile, vaut 366 jours
+                nextYear=ONE_YEAR+(long)anneeBissextile*ONE_HOUR;
                 plageMin=0;
-                plageMax=8736+ anneeBissextile;
+                plageMax=INTERVALLE_YEAR+ anneeBissextile;
                 formatter = new DatetimeYearFormatter(chart, isBissextile());
                 break;
         }
@@ -286,14 +310,47 @@ public class PollutionGraph {
     }
 
     private void showPrevPage() {
+        Calendar c = frag.get().getC();
+        c.setTimeInMillis(c.getTimeInMillis()-nextHour-nextDay-prevYear);
+
+        switch (plage){
+            case HOUR:
+                frag.get().graphPollutionHour();
+                frag.get().setTitreGraphPollutionHour();
+                break;
+            case DAY:
+                frag.get().graphPollutionDay();
+                frag.get().setTitreGraphPollutionDay();
+                break;
+            case YEAR:
+                frag.get().graphPollutionYear();
+                frag.get().setTitreGraphPollutionYear();
+                break;
+        }
+
         chart.fitScreen();
         chart.invalidate();
     }
 
     private void showNextPage() {
         Calendar c = frag.get().getC();
-        c.set(c.get(Calendar.YEAR)+nextYear,c.get(Calendar.MONTH)+nextMonth,c.get(Calendar.DATE)+nextDay,c.get(Calendar.HOUR)+nextHour,0);
-        frag.get().graphPollutionHour();
+        c.setTimeInMillis(c.getTimeInMillis()+nextHour+nextDay+nextYear);
+
+        switch (plage){
+            case HOUR:
+                frag.get().graphPollutionHour();
+                frag.get().setTitreGraphPollutionHour();
+                break;
+            case DAY:
+                frag.get().graphPollutionDay();
+                frag.get().setTitreGraphPollutionDay();
+                break;
+            case YEAR:
+                frag.get().graphPollutionYear();
+                frag.get().setTitreGraphPollutionYear();
+                break;
+        }
+
         chart.fitScreen();
         chart.invalidate();
     }
