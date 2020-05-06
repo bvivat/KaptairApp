@@ -1,5 +1,6 @@
 package com.example.kaptair.ui.main.graphiques;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -10,6 +11,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.kaptair.R;
 import com.example.kaptair.ui.main.HistoriqueFrag;
+import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -225,7 +227,6 @@ public class PollutionGraph {
         x.setValueFormatter(formatter);
 
         chart.getDescription().setEnabled(false);
-
 
         chart.fitScreen();
         chart.notifyDataSetChanged();

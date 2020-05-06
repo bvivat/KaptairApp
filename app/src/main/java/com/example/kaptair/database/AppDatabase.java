@@ -12,6 +12,7 @@ import androidx.room.TypeConverters;
 public abstract class AppDatabase extends RoomDatabase {
 
     private static volatile AppDatabase INSTANCE;
+    public static final String DB_NAME = "MesuresDB.db";
 
     public abstract MesurePollutionDao mesurePollutionDao();
     public abstract MoyenneDayMesuresPollutionDao moyenneDayMesuresPollutionDao();
@@ -26,7 +27,7 @@ public abstract class AppDatabase extends RoomDatabase {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
-                            AppDatabase.class, "MesuresDB.db")
+                            AppDatabase.class, DB_NAME)
                             .build();
                 }
             }

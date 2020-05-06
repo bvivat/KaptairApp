@@ -21,7 +21,7 @@
 
     <string name="temperatureEtUnit">Température (°C)</string>
     <string name="humiditeEtUnit">Humidité (%)</string>
-    <string name="pmEtUnit">PM µg/m<sup><small>3</small></sup></string>
+    <string name="pmEtUnit">PM (µg/m<sup><small>3</small></sup>)</string>
 
     <string name="mesures">Mesures</string>
     <string name="param">Paramètres</string>
@@ -29,6 +29,20 @@
 
     <string name="dateOk">Confirmer</string>
     <string name="dateAnnuler">Annuler</string>
+
+
+    <string name="preferencesCatDonnees">Données</string>
+
+    <string name="preferencesExportTitle">Exporter les données</string>
+    <string name="preferencesExportSum">Exporter les données sous forme de fichier CSV</string>
+
+    <string name="preferencesDeleteTitle">Supprimer les données</string>
+    <string name="preferencesDeleteSum">Supprimer toutes les mesures enregistrées</string>
+
+    <string name="preferencesDeleteDialogTitle">Tout supprimer ?</string>
+    <string name="preferencesDeleteDialogBody">Cette opération va supprimer toutes les mesures enregistrées de manière définitive</string>
+
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

@@ -143,8 +143,6 @@ public class HistoriqueFrag extends Fragment {
 
         final DatePickerDialog pickerHeure = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateHeure,mYear,mMonth,mDay);
         final DatePickerDialog pickerJour = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateJour,mYear,mMonth,mDay);
-        final DatePickerDialog pickerAnnee = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateAnnee,mYear,mMonth,mDay);
-
 
         //Graphs Pollution
         graphPollution= v.findViewById(R.id.graphPollution);
@@ -154,6 +152,8 @@ public class HistoriqueFrag extends Fragment {
         Button btnYearPollution = v.findViewById(R.id.btnYearPollution);
 
         btnHourPollution.setSelected(true);
+        setTitreGraphPollutionHour();
+        graphPollutionHour();
 
         final ArrayList<Button> btnsChoixGraphPollution = new ArrayList<Button>();
         btnsChoixGraphPollution.add(btnHourPollution);
@@ -182,9 +182,8 @@ public class HistoriqueFrag extends Fragment {
                         break;
                     case R.id.btnYearPollution:
                         YearPickerDialog y = new YearPickerDialog();
-                        y.show(getFragmentManager(),"picker");
                         y.setListener(dateAnnee);
-                        //pickerAnnee.show();
+                        y.show(getFragmentManager(),"picker");
                         break;
                     default:
                         break;

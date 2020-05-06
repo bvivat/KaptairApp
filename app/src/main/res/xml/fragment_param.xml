@@ -1,8 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen  xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="match_parent"
-    android:layout_width="match_parent">
-    <androidx.preference.PreferenceCategory android:title="Export">
-        <androidx.preference.Preference android:persistent="false" android:title="Exporter les données" android:key="export" android:summary="Exporter les données sous forme de fichier CSV" />
-    </androidx.preference.PreferenceCategory>
+    android:layout_width="match_parent"
+    >
+    <com.example.kaptair.layoutWidgets.MyPreferenceCategory
+        android:title="@string/preferencesCatDonnees"
+        >
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_export"
+            android:key="export"
+            android:persistent="false"
+            android:summary="@string/preferencesExportSum"
+            android:title="@string/preferencesExportTitle"
+
+            />
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_delete"
+            android:key="delete"
+            android:persistent="false"
+            android:summary="@string/preferencesDeleteSum"
+            android:title="@string/preferencesDeleteTitle"
+
+            />
+    </com.example.kaptair.layoutWidgets.MyPreferenceCategory>
 </androidx.preference.PreferenceScreen>

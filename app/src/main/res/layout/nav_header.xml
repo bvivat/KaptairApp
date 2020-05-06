@@ -25,9 +25,11 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/nav"
+                android:src="@drawable/logo_kaptair"
                 android:adjustViewBounds="true"
                 android:scaleType="centerCrop"
+                android:background="@color/colorCard"
+                android:tint="@color/colorPrimary"
                 />
     </androidx.cardview.widget.CardView>
 
