@@ -24,4 +24,16 @@
 
             />
     </com.example.kaptair.layoutWidgets.MyPreferenceCategory>
+    <com.example.kaptair.layoutWidgets.MyPreferenceCategory
+        android:title="@string/preferencesCatAbout"
+        >
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_info"
+            android:key="version"
+            android:persistent="false"
+            android:summary="@string/preferencesVersionSum"
+            android:title="@string/preferencesVersionTitle"
+
+            />
+    </com.example.kaptair.layoutWidgets.MyPreferenceCategory>
 </androidx.preference.PreferenceScreen>

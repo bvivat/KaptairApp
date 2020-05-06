@@ -135,7 +135,6 @@
                 app:layout_constraintEnd_toStartOf="@id/txtGraphUnitRightPollution"
                 app:layout_constraintTop_toTopOf="parent" />
 
-
             <TextView
                 android:id="@+id/txtGraphUnitRightPollution"
                 style="@style/txtGraphUnit"
@@ -155,9 +154,72 @@
                 android:id="@+id/graphPollution"
 
                 app:layout_constraintTop_toBottomOf="@+id/txtGraphUnitLeftPollution"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/chkPM1"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                />
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/chkPM1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintTop_toBottomOf="@+id/graphPollution"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginLeft="60dp"
+
+
+                android:text="PM1"
+                app:buttonTint="@color/colorGraphPm1"
+                style="@style/txtLegend"
+
+                />
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/chkPM25"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintTop_toBottomOf="@+id/graphPollution"
+                app:layout_constraintStart_toEndOf="@+id/chkPM1"
+                app:layout_constraintEnd_toStartOf="@+id/chkPM10"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                style="@style/txtLegend"
+                android:text="PM2.5"
+                app:buttonTint="@color/colorGraphPm25"
+
+                />
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/chkPM10"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintTop_toBottomOf="@+id/graphPollution"
+                app:layout_constraintStart_toEndOf="@+id/chkPM25"
+                app:layout_constraintEnd_toStartOf="@id/chkCO2"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                style="@style/txtLegend"
+                android:text="PM10"
+                app:buttonTint="@color/colorGraphPm10"
+
+                />
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/chkCO2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintTop_toBottomOf="@+id/graphPollution"
+                app:layout_constraintStart_toEndOf="@+id/chkPM10"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                style="@style/txtLegend"
+                android:layout_marginRight="60dp"
+
+                android:text="CO2"
+                app:buttonTint="@color/colorGraphCo2"
+
                 />
         </androidx.constraintlayout.widget.ConstraintLayout>
 

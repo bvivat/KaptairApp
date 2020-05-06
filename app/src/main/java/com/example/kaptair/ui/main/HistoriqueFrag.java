@@ -7,12 +7,14 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -143,6 +145,8 @@ public class HistoriqueFrag extends Fragment {
 
         final DatePickerDialog pickerHeure = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateHeure,mYear,mMonth,mDay);
         final DatePickerDialog pickerJour = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateJour,mYear,mMonth,mDay);
+
+
 
         //Graphs Pollution
         graphPollution= v.findViewById(R.id.graphPollution);

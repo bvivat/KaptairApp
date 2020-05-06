@@ -4,8 +4,10 @@ import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
@@ -16,6 +18,7 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.DataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -27,7 +30,9 @@ import com.github.mikephil.charting.listener.OnChartGestureListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class PollutionGraph {
@@ -132,12 +137,13 @@ public class PollutionGraph {
     }
 
     public void draw(){
+
         List<Entry> entriesPM1 = new ArrayList<Entry>();
         for (PollutionMesure i : mesures) {
             entriesPM1.add(new Entry(i.getFloatDate(),(float)i.getPm1()));
         }
 
-        LineDataSet dataSetPM1 = new LineDataSet(entriesPM1, "PM1"); // add entries to dataset
+        final LineDataSet dataSetPM1 = new LineDataSet(entriesPM1, "PM1"); // add entries to dataset
         dataSetPM1.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphPm1));
         dataSetPM1.setDrawValues(false);
         dataSetPM1.setDrawHighlightIndicators(false);
@@ -206,6 +212,7 @@ public class PollutionGraph {
 
         chart.setKeepPositionOnRotation(true);
 
+        /*
         Legend legend = chart.getLegend();
         legend.setTextColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphLegend));
         legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
@@ -213,7 +220,48 @@ public class PollutionGraph {
         legend.setXEntrySpace(15f);
         //chart.setExtraBottomOffset(10f);
 
-        chart.setViewPortOffsets(75,10,75,110); //TODO PROBLEMES AFFICHAGE ?
+         */
+        //Graphs Legend
+
+        final HashMap<AppCompatCheckBox, DataSet> chkBoxs = new HashMap<>();
+
+        AppCompatCheckBox chkPm1 = frag.get().getView().findViewById(R.id.chkPM1);
+        AppCompatCheckBox chkPm25 = frag.get().getView().findViewById(R.id.chkPM25);
+        AppCompatCheckBox chkPm10 = frag.get().getView().findViewById(R.id.chkPM10);
+        AppCompatCheckBox chkCo2 = frag.get().getView().findViewById(R.id.chkCO2);
+
+        chkBoxs.put(chkPm1,dataSetPM1);
+        chkBoxs.put(chkPm25,dataSetPM25);
+        chkBoxs.put(chkPm10,dataSetPM10);
+        chkBoxs.put(chkCo2,dataSetCO2);
+
+        CompoundButton.OnCheckedChangeListener chkListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked){
+                    chkBoxs.get(buttonView).setVisible(true);
+                    chart.invalidate();
+                }else{
+                    chkBoxs.get(buttonView).setVisible(false);
+                    chart.invalidate();
+                }
+            }
+        };
+        chkPm1.setOnCheckedChangeListener(chkListener);
+        chkPm25.setOnCheckedChangeListener(chkListener);
+        chkPm10.setOnCheckedChangeListener(chkListener);
+        chkCo2.setOnCheckedChangeListener(chkListener);
+
+        for (Map.Entry<AppCompatCheckBox, DataSet> entry : chkBoxs.entrySet()) {
+            if (!entry.getKey().isChecked()){
+                entry.getValue().setVisible(false);
+            }
+        }
+
+        chart.getLegend().setEnabled(false);
+
+
+        chart.setViewPortOffsets(75,10,75,45); //TODO PROBLEMES AFFICHAGE ?
 
         XAxis x = chart.getXAxis();
 
@@ -227,6 +275,7 @@ public class PollutionGraph {
         x.setValueFormatter(formatter);
 
         chart.getDescription().setEnabled(false);
+
 
         chart.fitScreen();
         chart.notifyDataSetChanged();
@@ -307,6 +356,7 @@ public class PollutionGraph {
         };
 
         chart.setOnChartGestureListener(gestureListener);
+
 
     }
 

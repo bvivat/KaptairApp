@@ -116,5 +116,16 @@
         <item name="android:background">@drawable/choix_graph_background</item>
     </style>
 
+    <style name="txtLegend" parent="TextAppearance.AppCompat" >
+        <item name="android:textColor">@color/colorGraphLegend</item>
+        <item name="android:scaleX">0.7</item>
+        <item name="android:scaleY">0.7</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+        <item name="android:checked">true</item>
+    </style>
+
+
+
 
 </resources>
