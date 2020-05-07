@@ -1,7 +1,6 @@
-package com.example.kaptair.layoutWidgets;
+package com.example.kaptair.customWidgets;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.util.AttributeSet;
 import android.widget.TextView;
 

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     >
-    <com.example.kaptair.layoutWidgets.MyPreferenceCategory
+    <com.example.kaptair.customWidgets.MyPreferenceCategory
         android:title="@string/preferencesCatDonnees"
         >
         <androidx.preference.Preference
@@ -23,8 +23,8 @@
             android:title="@string/preferencesDeleteTitle"
 
             />
-    </com.example.kaptair.layoutWidgets.MyPreferenceCategory>
-    <com.example.kaptair.layoutWidgets.MyPreferenceCategory
+    </com.example.kaptair.customWidgets.MyPreferenceCategory>
+    <com.example.kaptair.customWidgets.MyPreferenceCategory
         android:title="@string/preferencesCatAbout"
         >
         <androidx.preference.Preference
@@ -35,5 +35,5 @@
             android:title="@string/preferencesVersionTitle"
 
             />
-    </com.example.kaptair.layoutWidgets.MyPreferenceCategory>
+    </com.example.kaptair.customWidgets.MyPreferenceCategory>
 </androidx.preference.PreferenceScreen>

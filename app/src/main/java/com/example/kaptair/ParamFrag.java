@@ -48,6 +48,9 @@ public class ParamFrag extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.fragment_param, rootKey);
 
+        TextView txtTitre = getActivity().findViewById(R.id.txtTitre);
+        txtTitre.setText(R.string.param);
+
         db=AppDatabase.getInstance(getContext());
 
         Preference export = findPreference("export");
