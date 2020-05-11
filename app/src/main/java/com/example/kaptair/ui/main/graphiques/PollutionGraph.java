@@ -1,21 +1,16 @@
 package com.example.kaptair.ui.main.graphiques;
 
-import android.graphics.Color;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 
 import com.example.kaptair.R;
 import com.example.kaptair.ui.main.HistoriqueFrag;
-import com.github.mikephil.charting.charts.Chart;
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.DataSet;
@@ -69,7 +64,11 @@ public class PollutionGraph {
 
     public PollutionGraph(HistoriqueFrag frag, List<? extends PollutionMesure> mesures, int plage) {
         this.frag=new WeakReference<>(frag);
-        chart=this.frag.get().getView().findViewById(R.id.graphPollution);
+            View v = this.frag.get().getView();
+            View v2 = frag.getView();
+            chart=v.findViewById(R.id.graphPollution);
+
+        //chart=this.frag.get().getView().findViewById(R.id.graphPollution);
         this.mesures=mesures;
         this.plage=plage;
 
@@ -88,7 +87,7 @@ public class PollutionGraph {
                 break;
             case YEAR:
                 Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(frag.getC().getTimeInMillis()-ONE_YEAR); //L'annee precedente
+                c.setTimeInMillis(frag.getCalendarPoll().getTimeInMillis()-ONE_YEAR); //L'annee precedente
                 prevYear = (c.getActualMaximum(Calendar.DAY_OF_YEAR)>365 ? ONE_YEAR+ONE_DAY : ONE_YEAR); // Si bissextile, vaut 366 jours
                 nextYear=ONE_YEAR;
                 plageMin=0;
@@ -125,7 +124,7 @@ public class PollutionGraph {
                 break;
             case YEAR:
                 Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(frag.getC().getTimeInMillis()-ONE_YEAR); //L'annee precedente
+                c.setTimeInMillis(frag.getCalendarPoll().getTimeInMillis()-ONE_YEAR); //L'annee precedente
                 prevYear = (c.getActualMaximum(Calendar.DAY_OF_YEAR)>365 ? ONE_YEAR+ONE_DAY : ONE_YEAR); // Si bissextile, vaut 366 jours
                 nextYear=ONE_YEAR+(long)anneeBissextile*ONE_HOUR;
                 plageMin=0;
@@ -361,7 +360,7 @@ public class PollutionGraph {
     }
 
     private void showPrevPage() {
-        Calendar c = frag.get().getC();
+        Calendar c = frag.get().getCalendarPoll();
         c.setTimeInMillis(c.getTimeInMillis()-nextHour-nextDay-prevYear);
 
         switch (plage){
@@ -384,7 +383,7 @@ public class PollutionGraph {
     }
 
     private void showNextPage() {
-        Calendar c = frag.get().getC();
+        Calendar c = frag.get().getCalendarPoll();
         c.setTimeInMillis(c.getTimeInMillis()+nextHour+nextDay+nextYear);
 
         switch (plage){

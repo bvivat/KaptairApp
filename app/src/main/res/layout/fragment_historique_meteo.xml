@@ -120,6 +120,19 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
+            android:id="@+id/txtGraphTitreMeteo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="5dp"
+
+            android:text=""
+            style="@style/txtTitreGraph"
+            app:layout_constraintStart_toEndOf="@id/txtGraphUnitLeftMeteo"
+            app:layout_constraintEnd_toStartOf="@id/txtGraphUnitRightMeteo"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
             android:id="@+id/txtGraphUnitRightMeteo"
             style="@style/txtGraphUnit"
             android:layout_width="wrap_content"

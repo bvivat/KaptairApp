@@ -7,14 +7,12 @@ import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -44,6 +42,7 @@ import java.util.concurrent.Executors;
  * A simple {@link Fragment} subclass.
  */
 public class HistoriqueFrag extends Fragment {
+    //TODO REFAIRE CLASSE (et creer nouvelles) POUR SUPPRIMER REDONDANCES
 
     private AppDatabase db;
     private Executor executor = Executors.newSingleThreadExecutor();
@@ -54,11 +53,19 @@ public class HistoriqueFrag extends Fragment {
     TextView txtTitreGraphPollution;
     TextView txtTitreGraphMeteo;
 
-    public Calendar getC() {
-        return c;
-    }
+    Button btnHourPollution;
+    Button btnDayPollution;
+    Button btnYearPollution;
 
-    final Calendar c = Calendar.getInstance();
+    Button btnHourMeteo;
+    Button btnDayMeteo;
+    Button btnYearMeteo;
+
+    ArrayList<Button> btnsChoixGraphPollution = new ArrayList<Button>();
+    ArrayList<Button> btnsChoixGraphMeteo = new ArrayList<Button>();
+
+    Calendar calendarPoll = Calendar.getInstance();
+    Calendar calendarMeteo = Calendar.getInstance();
 
 
     public HistoriqueFrag() {
@@ -73,16 +80,12 @@ public class HistoriqueFrag extends Fragment {
 
         db=AppDatabase.getInstance(getContext());
 
-        //Graphs
+        //Graph Pollution
         txtTitreGraphPollution = v.findViewById(R.id.txtGraphTitrePollution);
-
-        int mYear = c.get(Calendar.YEAR);
-        int mMonth = c.get(Calendar.MONTH);
-        int mDay = c.get(Calendar.DAY_OF_MONTH);
-        final int mHour= c.get(Calendar.HOUR_OF_DAY);
-        c.set(Calendar.MINUTE,0);
-        c.set(Calendar.SECOND,0);
-        c.set(Calendar.MILLISECOND,0);
+        
+        calendarPoll.set(Calendar.MINUTE,0);
+        calendarPoll.set(Calendar.SECOND,0);
+        calendarPoll.set(Calendar.MILLISECOND,0);
 
         DatePickerDialog.OnDateSetListener dateHeure = new DatePickerDialog.OnDateSetListener() {
 
@@ -90,20 +93,20 @@ public class HistoriqueFrag extends Fragment {
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
-                c.set(Calendar.YEAR, year);
-                c.set(Calendar.MONTH, monthOfYear);
-                c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                calendarPoll.set(Calendar.YEAR, year);
+                calendarPoll.set(Calendar.MONTH, monthOfYear);
+                calendarPoll.set(Calendar.DAY_OF_MONTH, dayOfMonth);
                 TimePickerDialog timePickerDialog = new TimePickerDialog(HistoriqueFrag.this.getContext(),R.style.MyDatePicker,
                         new TimePickerDialog.OnTimeSetListener() {
 
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                c.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                                calendarPoll.set(Calendar.HOUR_OF_DAY,hourOfDay);
                                 setTitreGraphPollutionHour();
                                 graphPollutionHour();
 
                             }
-                        }, mHour, 0, true);
+                        }, calendarPoll.get(Calendar.HOUR_OF_DAY), 0, true);
                 timePickerDialog.show();
             }
 
@@ -115,10 +118,10 @@ public class HistoriqueFrag extends Fragment {
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
-                c.set(Calendar.YEAR, year);
-                c.set(Calendar.MONTH, monthOfYear);
-                c.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                c.set(Calendar.HOUR_OF_DAY,0);
+                calendarPoll.set(Calendar.YEAR, year);
+                calendarPoll.set(Calendar.MONTH, monthOfYear);
+                calendarPoll.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                calendarPoll.set(Calendar.HOUR_OF_DAY,0);
 
                 setTitreGraphPollutionDay();
 
@@ -132,10 +135,10 @@ public class HistoriqueFrag extends Fragment {
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
                 // TODO Auto-generated method stub
-                c.set(Calendar.YEAR, year);
-                c.set(Calendar.MONTH, 0);
-                c.set(Calendar.DAY_OF_MONTH, 1);
-                c.set(Calendar.HOUR_OF_DAY,0);
+                calendarPoll.set(Calendar.YEAR, year);
+                calendarPoll.set(Calendar.MONTH, 0);
+                calendarPoll.set(Calendar.DAY_OF_MONTH, 1);
+                calendarPoll.set(Calendar.HOUR_OF_DAY,0);
 
                 setTitreGraphPollutionYear();
 
@@ -143,23 +146,19 @@ public class HistoriqueFrag extends Fragment {
             }
         };
 
-        final DatePickerDialog pickerHeure = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateHeure,mYear,mMonth,mDay);
-        final DatePickerDialog pickerJour = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateJour,mYear,mMonth,mDay);
-
-
-
-        //Graphs Pollution
+        final DatePickerDialog pickerHeure = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateHeure,calendarPoll.get(Calendar.YEAR),calendarPoll.get(Calendar.MONTH),calendarPoll.get(Calendar.DAY_OF_MONTH));
+        final DatePickerDialog pickerJour = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateJour,calendarPoll.get(Calendar.YEAR),calendarPoll.get(Calendar.MONTH),calendarPoll.get(Calendar.DAY_OF_MONTH));
+        
         graphPollution= v.findViewById(R.id.graphPollution);
         
-        Button btnHourPollution = v.findViewById(R.id.btnHourPollution);
-        Button btnDayPollution = v.findViewById(R.id.btnDayPollution);
-        Button btnYearPollution = v.findViewById(R.id.btnYearPollution);
+        btnHourPollution = v.findViewById(R.id.btnHourPollution);
+        btnDayPollution = v.findViewById(R.id.btnDayPollution);
+        btnYearPollution = v.findViewById(R.id.btnYearPollution);
 
         btnHourPollution.setSelected(true);
         setTitreGraphPollutionHour();
         graphPollutionHour();
 
-        final ArrayList<Button> btnsChoixGraphPollution = new ArrayList<Button>();
         btnsChoixGraphPollution.add(btnHourPollution);
         btnsChoixGraphPollution.add(btnDayPollution);
         btnsChoixGraphPollution.add(btnYearPollution);
@@ -177,7 +176,7 @@ public class HistoriqueFrag extends Fragment {
                         b.setSelected(false);
                     }
                 }
-                switch (v.getId()){ //TODO Remplacer exemples par mesures de la BD (dans des fonctions séparées)
+                switch (v.getId()){ 
                     case R.id.btnHourPollution:
                         pickerHeure.show();
                         break;
@@ -198,8 +197,83 @@ public class HistoriqueFrag extends Fragment {
         for(Button b : btnsChoixGraphPollution){
             b.setOnClickListener(listenerChoixGraphPollution);
         }
+        
+        
 
         //Graphs Meteo
+
+        txtTitreGraphMeteo = v.findViewById(R.id.txtGraphTitreMeteo);
+
+        calendarMeteo.set(Calendar.MINUTE,0);
+        calendarMeteo.set(Calendar.SECOND,0);
+        calendarMeteo.set(Calendar.MILLISECOND,0);
+
+        DatePickerDialog.OnDateSetListener dateHeureM = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                calendarMeteo.set(Calendar.YEAR, year);
+                calendarMeteo.set(Calendar.MONTH, monthOfYear);
+                calendarMeteo.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(HistoriqueFrag.this.getContext(),R.style.MyDatePicker,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                calendarMeteo.set(Calendar.HOUR_OF_DAY,hourOfDay);
+                                setTitreGraphMeteoHour();
+                                graphMeteoHour();
+
+                            }
+                        }, calendarMeteo.get(Calendar.HOUR_OF_DAY), 0, true);
+                timePickerDialog.show();
+            }
+
+        };
+
+        DatePickerDialog.OnDateSetListener dateJourM = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                calendarMeteo.set(Calendar.YEAR, year);
+                calendarMeteo.set(Calendar.MONTH, monthOfYear);
+                calendarMeteo.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                calendarMeteo.set(Calendar.HOUR_OF_DAY,0);
+
+                setTitreGraphMeteoDay();
+
+                graphMeteoDay();
+            }
+        };
+
+        final DatePickerDialog.OnDateSetListener dateAnneeM = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                calendarMeteo.set(Calendar.YEAR, year);
+                calendarMeteo.set(Calendar.MONTH, 0);
+                calendarMeteo.set(Calendar.DAY_OF_MONTH, 1);
+                calendarMeteo.set(Calendar.HOUR_OF_DAY,0);
+
+                setTitreGraphMeteoYear();
+
+                graphMeteoYear();
+            }
+        };
+
+
+        final DatePickerDialog pickerHeureM = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateHeureM,calendarMeteo.get(Calendar.YEAR),calendarMeteo.get(Calendar.MONTH),calendarMeteo.get(Calendar.DAY_OF_MONTH));
+
+
+        //final DatePickerDialog pickerJourM = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateJourM,calendarMeteo.get(Calendar.YEAR),calendarMeteo.get(Calendar.MONTH),calendarMeteo.get(Calendar.DAY_OF_MONTH));
+
+/*
         graphMeteo= v.findViewById(R.id.graphMeteo);
 
         Button btnHourMeteo = v.findViewById(R.id.btnHourMeteo);
@@ -208,11 +282,10 @@ public class HistoriqueFrag extends Fragment {
 
         btnHourMeteo.setSelected(true);
 
-        final ArrayList<Button> btnsChoixGraphMeteo = new ArrayList<Button>();
         btnsChoixGraphMeteo.add(btnHourMeteo);
         btnsChoixGraphMeteo.add(btnDayMeteo);
         btnsChoixGraphMeteo.add(btnYearMeteo);
-
+/*
         View.OnClickListener listenerChoixGraphMeteo = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -225,15 +298,17 @@ public class HistoriqueFrag extends Fragment {
                         b.setSelected(false);
                     }
                 }
-                switch (v.getId()){ //TODO Remplacer exemples par mesures de la BD
+                switch (v.getId()){
                     case R.id.btnHourMeteo:
-                        graphMeteoHour();
+                        pickerHeureM.show();
                         break;
                     case R.id.btnDayMeteo:
-                        graphMeteoDay();
+                        pickerJourM.show();
                         break;
                     case R.id.btnYearMeteo:
-                        graphMeteoYear();
+                        YearPickerDialog y = new YearPickerDialog();
+                        y.setListener(dateAnneeM);
+                        y.show(getFragmentManager(),"pickerM");
                         break;
                     default:
                         break;
@@ -244,19 +319,12 @@ public class HistoriqueFrag extends Fragment {
         for(Button b : btnsChoixGraphMeteo){
             b.setOnClickListener(listenerChoixGraphMeteo);
         }
-
+*/
 
         // Inflate the layout for this fragment
         return v;
     }
 
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        //On initialise les graphs
-        graphPollutionHour();
-        graphMeteoHour();
-    }
 
     public static HistoriqueFrag newInstance() {
         HistoriqueFrag fragment = new HistoriqueFrag();
@@ -286,7 +354,7 @@ public class HistoriqueFrag extends Fragment {
             public void run() {
                 //Date d1 =new Date(120,3,28,11,0);
                 //Date d2= new Date(120,3,28,12,0);
-                Date d1 = c.getTime();
+                Date d1 = calendarPoll.getTime();
                 Date d2= new Date(d1.getTime()+PollutionGraph.ONE_HOUR);
                 List<MesurePollution> mesures= db.mesurePollutionDao().getAllByDate(d1,d2);
                 final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.HOUR);
@@ -300,6 +368,7 @@ public class HistoriqueFrag extends Fragment {
             }
         });
     }
+
     public void graphPollutionDay(){
         /*
         PollutionMesure md = new MoyenneDayMesuresPollution(new Date(1586988000000L),50,1,5,400);
@@ -322,7 +391,7 @@ public class HistoriqueFrag extends Fragment {
             public void run() {
                 //Date d1 =new Date(120,3,28,0,0);
                 //Date d2= new Date(120,3,29,0,0);
-                Date d1 = c.getTime();
+                Date d1 = calendarPoll.getTime();
                 Date d2= new Date(d1.getTime()+PollutionGraph.ONE_DAY);
                 List<MoyenneDayMesuresPollution> mesures= db.moyenneDayMesuresPollutionDao().getAllByDate(d1,d2);
                 final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.DAY);
@@ -337,6 +406,7 @@ public class HistoriqueFrag extends Fragment {
         });
 
     }
+
     public void graphPollutionYear(){
         /*
         PollutionMesure my = new MoyenneYearMesuresPollution(new Date(1577833200000L),50,1,5,400);
@@ -356,7 +426,7 @@ public class HistoriqueFrag extends Fragment {
 
          */
         final boolean bissextile;
-        if (c.getActualMaximum(Calendar.DAY_OF_YEAR)>365){
+        if (calendarPoll.getActualMaximum(Calendar.DAY_OF_YEAR)>365){
             bissextile=true;
         }else {
             bissextile=false;
@@ -366,7 +436,7 @@ public class HistoriqueFrag extends Fragment {
             public void run() {
                 //Date d1 =new Date(120,0,1,0,0);
                 //Date d2= new Date(121,0,1,0,0);
-                Date d1 = c.getTime();
+                Date d1 = calendarPoll.getTime();
                 Date d2= new Date(d1.getTime()+PollutionGraph.ONE_YEAR+ (bissextile ? PollutionGraph.ONE_DAY : 0));
                 List<MoyenneYearMesuresPollution> mesures= db.moyenneYearMesuresPollutionDao().getAllByDate(d1,d2);
                 final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.YEAR,bissextile);
@@ -381,6 +451,7 @@ public class HistoriqueFrag extends Fragment {
         });
 
     }
+
     public void graphMeteoHour(){
         /*
         MeteoMesure m = new MesureMeteo(new Date(1586998800000L),20.2,35);
@@ -416,6 +487,7 @@ public class HistoriqueFrag extends Fragment {
             }
         });
     }
+
     public void graphMeteoDay(){
         /*
         MeteoMesure md = new MoyenneDayMesuresMeteo(new Date(1586988000000L),20.2,35);
@@ -450,6 +522,7 @@ public class HistoriqueFrag extends Fragment {
             }
         });
     }
+
     public void graphMeteoYear(){
         /*
         MeteoMesure my = new MoyenneYearMesuresMeteo(new Date(1577833200000L),20.2,35);
@@ -488,16 +561,109 @@ public class HistoriqueFrag extends Fragment {
 
     public void setTitreGraphPollutionHour(){
         SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm");
-        txtTitreGraphPollution.setText(sdfHours.format(c.getTime()));
+        txtTitreGraphPollution.setText(sdfHours.format(calendarPoll.getTime()));
     }
 
     public void setTitreGraphPollutionDay(){
         SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy");
-        txtTitreGraphPollution.setText(sdfHours.format(c.getTime()));
+        txtTitreGraphPollution.setText(sdfHours.format(calendarPoll.getTime()));
     }
 
     public void setTitreGraphPollutionYear(){
         SimpleDateFormat sdfHours = new SimpleDateFormat("yyyy");
-        txtTitreGraphPollution.setText(sdfHours.format(c.getTime()));
+        txtTitreGraphPollution.setText(sdfHours.format(calendarPoll.getTime()));
     }
+
+    public void setTitreGraphMeteoHour(){
+        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm");
+        txtTitreGraphMeteo.setText(sdfHours.format(calendarMeteo.getTime()));
+    }
+
+    public void setTitreGraphMeteoDay(){
+        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy");
+        txtTitreGraphMeteo.setText(sdfHours.format(calendarMeteo.getTime()));
+    }
+
+    public void setTitreGraphMeteoYear(){
+        SimpleDateFormat sdfHours = new SimpleDateFormat("yyyy");
+        txtTitreGraphMeteo.setText(sdfHours.format(calendarMeteo.getTime()));
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
+        //On initialise les graphs
+        if (savedInstanceState != null){
+            ArrayList<Integer> stateP = savedInstanceState.getIntegerArrayList("stateBtnsPoll");
+            ArrayList<Integer> stateM = savedInstanceState.getIntegerArrayList("stateBtnsMeteo");
+
+            for (int i=0;i<stateP.size();i++){
+                btnsChoixGraphPollution.get(i).setSelected(stateP.get(i)==1);
+            }
+
+            for (int i=0;i<stateM.size();i++){
+                btnsChoixGraphMeteo.get(i).setSelected(stateM.get(i)==1);
+            }
+
+            calendarPoll.setTimeInMillis(savedInstanceState.getLong("calendarPoll"));
+
+            if(btnHourPollution.isSelected()){
+                setTitreGraphPollutionHour();
+                graphPollutionHour();
+            }else if(btnDayPollution.isSelected()){
+                setTitreGraphPollutionDay();
+                graphPollutionDay();
+            }else if (btnYearPollution.isSelected()){
+                setTitreGraphPollutionYear();
+                graphPollutionYear();
+            }
+
+            calendarMeteo.setTimeInMillis(savedInstanceState.getLong("calendarMeteo"));
+
+            if(btnHourMeteo.isSelected()){
+                setTitreGraphMeteoHour();
+                graphMeteoHour();
+            }else if(btnDayMeteo.isSelected()){
+                setTitreGraphMeteoDay();
+                graphMeteoDay();
+            }else if (btnYearMeteo.isSelected()){
+                setTitreGraphMeteoYear();
+                graphMeteoYear();
+            }
+
+        }else{
+            graphPollutionHour();
+            graphMeteoHour();
+        }
+    }
+
+    public Calendar getCalendarPoll() {
+        return calendarPoll;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        ArrayList<Integer> stateBtnsPoll = new ArrayList<>();
+
+        for (Button b : btnsChoixGraphPollution){
+            stateBtnsPoll.add(b.isSelected() ? 1 : 0);
+        }
+
+        ArrayList<Integer> stateBtnsMeteo = new ArrayList<>();
+
+        for (Button b : btnsChoixGraphMeteo){
+            stateBtnsMeteo.add(b.isSelected() ? 1 : 0);
+        }
+        outState.putIntegerArrayList("stateBtnsPoll",stateBtnsPoll);
+        outState.putIntegerArrayList("stateBtnsMeteo",stateBtnsMeteo);
+
+        outState.putLong("calendarPoll", calendarPoll.getTimeInMillis());
+        outState.putLong("calendarMeteo", calendarMeteo.getTimeInMillis());
+
+    }
+
+
 }
