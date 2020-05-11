@@ -10,6 +10,7 @@ import com.example.kaptair.database.AppDatabase;
 import com.example.kaptair.ui.main.HistoriqueFrag;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
@@ -36,18 +37,28 @@ public class MainActivity extends AppCompatActivity {
     BluetoothApp bluetooth;
     AppDatabase db;
 
+    MesuresFrag fragMesures = new MesuresFrag();
+    ParamFrag fragParam = new ParamFrag();
+    CarteFrag fragCarte = new CarteFrag();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final MesuresFrag fragMesures = new MesuresFrag();
-        final ParamFrag fragParam = new ParamFrag();
-        final CarteFrag fragCarte = new CarteFrag();
+        fragParam = new ParamFrag();
+        fragCarte = new CarteFrag();
+        if (savedInstanceState==null){
+            fragMesures = new MesuresFrag();
+        }else{
+            fragMesures = (MesuresFrag) getSupportFragmentManager().getFragment(savedInstanceState,"Mesures");
+        }
 
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.add(R.id.frag,fragMesures);
-        transaction.commit();
+        if(!fragMesures.isAdded()){
+            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+            transaction.add(R.id.frag,fragMesures);
+            transaction.commit();
+        }
 
         Toolbar t = findViewById(R.id.toolbar);
         final PrimaryDrawerItem mesures = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.mesures).withIcon(GoogleMaterial.Icon.gmd_straighten);
@@ -133,5 +144,11 @@ public class MainActivity extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        getSupportFragmentManager().putFragment(outState,"Mesures",fragMesures);
     }
 }

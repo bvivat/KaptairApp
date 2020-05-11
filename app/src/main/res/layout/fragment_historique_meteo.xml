@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+
+    android:id="@+id/cardMeteo"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+
+    android:paddingBottom="10dp"
+    android:paddingLeft="10dp"
+    android:paddingRight="10dp"
+
+    android:background="@drawable/card"
+
+    >
+
+
+    <TextView
+        android:id="@+id/txtMeteo"
+        style="@style/cardGraphTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:text="@string/card2"
+
+
+        tools:ignore="MissingConstraints"
+        />
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lytChoixGraphMeteo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+
+        android:layout_marginStart="50dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginRight="50dp"
+
+        style="@style/lytChoixGraph"
+
+        app:layout_constraintBottom_toTopOf="@id/lytGraphMeteo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txtMeteo">
+
+        <Button
+            android:id="@+id/btnHourMeteo"
+            style="@style/txtButtonChoixGraph"
+            android:layout_width="0dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+
+            android:background="@drawable/button_choix_graph"
+            android:text="@string/heure"
+            app:layout_constraintEnd_toStartOf="@+id/btnDayMeteo"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="2dp" />
+
+        <Button
+            android:id="@+id/btnDayMeteo"
+            style="@style/txtButtonChoixGraph"
+            android:layout_width="0dp"
+            android:background="@drawable/button_choix_graph"
+            android:text="@string/jour"
+            app:layout_constraintEnd_toStartOf="@+id/btnYearMeteo"
+
+
+            app:layout_constraintStart_toEndOf="@+id/btnHourMeteo"
+            tools:ignore="MissingConstraints" />
+
+        <Button
+            android:id="@+id/btnYearMeteo"
+            style="@style/txtButtonChoixGraph"
+            android:layout_width="0dp"
+            android:layout_marginStart="2dp"
+            android:layout_marginEnd="2dp"
+
+            android:background="@drawable/button_choix_graph"
+            android:text="@string/annee"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/btnDayMeteo"
+            tools:ignore="MissingConstraints"
+            tools:layout_editor_absoluteY="5dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lytGraphMeteo"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/lytChoixGraphMeteo"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/graph_background"
+        >
+
+        <TextView
+            android:id="@+id/txtGraphUnitLeftMeteo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_marginStart="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="5dp"
+
+            android:text="@string/temperatureEtUnit"
+            style="@style/txtGraphUnit"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/txtGraphUnitRightMeteo"
+            style="@style/txtGraphUnit"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="5dp"
+            android:layout_marginRight="5dp"
+
+            android:text="@string/humiditeEtUnit"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/graphMeteo"
+
+            app:layout_constraintTop_toBottomOf="@+id/txtGraphUnitLeftMeteo"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
