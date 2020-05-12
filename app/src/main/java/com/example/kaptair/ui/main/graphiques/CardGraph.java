@@ -128,6 +128,7 @@ public class CardGraph {
 
 
         View.OnClickListener listenerChoixGraphPollution = new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 Button btnTmp = (Button) v;
@@ -139,20 +140,14 @@ public class CardGraph {
                         b.setSelected(false);
                     }
                 }
-                switch (v.getId()){
-                    case R.id.btnHourPollution: //TODO CHANGER DES TRUCS
-                        pickerHeure.show();
-                        break;
-                    case R.id.btnDayPollution:
-                        pickerJour.show();
-                        break;
-                    case R.id.btnYearPollution:
-                        YearPickerDialog y = new YearPickerDialog();
-                        y.setListener(dateAnnee);
-                        y.show(frag.get().getFragmentManager(),"picker");
-                        break;
-                    default:
-                        break;
+                if (v.getId()==btnHour.getId()){
+                    pickerHeure.show();
+                }else if(v.getId()==btnDay.getId()){
+                    pickerJour.show();
+                }else if (v.getId()==btnYear.getId()){
+                    YearPickerDialog y = new YearPickerDialog();
+                    y.setListener(dateAnnee);
+                    y.show(frag.get().getFragmentManager(),"picker");
                 }
             }
         };
