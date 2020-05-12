@@ -154,5 +154,11 @@
             android:layout_height="0dp"
             />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageButton
+        android:id="@+id/btnFullScreenMeteo"
+        style="@style/FullScreenBtn"
+
+        tools:ignore="MissingConstraints"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

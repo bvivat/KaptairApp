@@ -113,6 +113,7 @@
 
     <style name="lytChoixGraph" >
         <item name="android:layout_marginTop">6dp</item>
+        <item name="layout_constraintWidth_max">400dp</item>
         <item name="android:background">@drawable/choix_graph_background</item>
     </style>
 
@@ -127,8 +128,20 @@
 
     <style name="cardItem" >
         <item name="android:background">@drawable/item</item>
+    </style>
+
+    <style name="FullScreenBtn" >
+        <item name="android:background">@drawable/btn_full_screen</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+
 
     </style>
+
+
 
 
 

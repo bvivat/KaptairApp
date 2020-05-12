@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.FileProvider;
@@ -48,8 +50,7 @@ public class ParamFrag extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.fragment_param, rootKey);
 
-        TextView txtTitre = getActivity().findViewById(R.id.txtTitre);
-        txtTitre.setText(R.string.param);
+
 
         db=AppDatabase.getInstance(getContext());
 
@@ -168,5 +169,10 @@ public class ParamFrag extends PreferenceFragmentCompat {
         delete.setOnPreferenceClickListener(listenerDelete);
     }
 
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        TextView txtTitre = getActivity().findViewById(R.id.txtTitre);
+        txtTitre.setText(R.string.param);
+    }
 }

@@ -1,15 +1,21 @@
 package com.example.kaptair.ui.main;
 
 
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
@@ -17,6 +23,7 @@ import com.example.kaptair.R;
 import com.example.kaptair.database.AppDatabase;
 import com.example.kaptair.ui.main.graphiques.CardGraph;
 import com.github.mikephil.charting.charts.LineChart;
+import com.google.android.material.tabs.TabLayout;
 
 import java.util.ArrayList;
 
@@ -47,6 +54,8 @@ public class HistoriqueFrag extends Fragment {
         db=AppDatabase.getInstance(getContext());
 
 
+
+
         // Inflate the layout for this fragment
         return v;
     }
@@ -61,6 +70,49 @@ public class HistoriqueFrag extends Fragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        final TabLayout tab = getActivity().findViewById(R.id.tabs);
+        final ConstraintLayout toolbar = getActivity().findViewById(R.id.appBarLayout);
+
+        AppCompatImageButton btnFullPoll = getView().findViewById(R.id.btnFullScreenPoll);
+        AppCompatImageButton btnFullMeteo = getView().findViewById(R.id.btnFullScreenMeteo);
+
+        final View fragPoll = getView().findViewById(R.id.fragHistoriquePoll);
+        final View fragMeteo = getView().findViewById(R.id.fragHistoriqueMeteo);
+
+
+        View.OnClickListener fullScreenListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(v.isSelected()){
+                    getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    tab.setVisibility(View.VISIBLE);
+                    toolbar.setVisibility(View.VISIBLE);
+                    fragMeteo.setVisibility(View.VISIBLE);
+                    fragPoll.setVisibility(View.VISIBLE);
+                    v.setSelected(false);
+                }else {
+                    switch (v.getId()){ // TODO reel fullscreen
+
+                        case R.id.btnFullScreenPoll:
+                            fragMeteo.setVisibility(View.GONE);
+                            break;
+
+                        case R.id.btnFullScreenMeteo:
+                            fragPoll.setVisibility(View.GONE);
+                            break;
+                    }
+                    tab.setVisibility(View.GONE);
+                    toolbar.setVisibility(View.GONE);
+                    getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+                    v.setSelected(true);
+                }
+
+            }
+        };
+        btnFullPoll.setOnClickListener(fullScreenListener);
+        btnFullMeteo.setOnClickListener(fullScreenListener);
+
 
         //Graph Pollution
         TextView txtTitreGraphPollution = getView().findViewById(R.id.txtGraphTitrePollution);

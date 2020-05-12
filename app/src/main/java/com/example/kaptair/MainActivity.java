@@ -12,6 +12,7 @@ import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
@@ -48,17 +49,14 @@ public class MainActivity extends AppCompatActivity {
 
         fragParam = new ParamFrag();
         fragCarte = new CarteFrag();
+
         if (savedInstanceState==null){
             fragMesures = new MesuresFrag();
-        }else{
-            fragMesures = (MesuresFrag) getSupportFragmentManager().getFragment(savedInstanceState,"Mesures");
-        }
-
-        if(!fragMesures.isAdded()){
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frag,fragMesures);
             transaction.commit();
         }
+
 
         Toolbar t = findViewById(R.id.toolbar);
         final PrimaryDrawerItem mesures = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.mesures).withIcon(GoogleMaterial.Icon.gmd_straighten);
@@ -149,6 +147,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState,"Mesures",fragMesures);
+        /*
+        if(fragMesures.isAdded()){
+            getSupportFragmentManager().putFragment(outState,"Mesures",fragMesures);
+            getSupportFragmentManager().putFragment(outState,"FragActuel",fragMesures);
+        }else if (fragCarte.isAdded()){
+            getSupportFragmentManager().putFragment(outState,"FragActuel",fragCarte);
+        }else if(fragParam.isAdded()){
+            getSupportFragmentManager().putFragment(outState,"FragActuel",fragParam);
+        }
+*/
+    outState.putString("Save","Sauvegarde");
     }
 }
