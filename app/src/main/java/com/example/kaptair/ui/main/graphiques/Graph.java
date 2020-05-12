@@ -30,11 +30,14 @@ import java.util.List;
 import java.util.Map;
 
 
-public class PollutionGraph {
+public class Graph {
 
     public static final int HOUR=0;
     public static final int DAY=1;
     public static final int YEAR=2;
+
+    public static final int GRAPH_POLLUTION=0;
+    public static final int GRAPH_METEO=1;
 
     public static final int INTERVALLE_HOUR=3600;
     public static final int INTERVALLE_DAY=86400;
@@ -46,9 +49,12 @@ public class PollutionGraph {
 
     private final String TAG = "Pollution Graph";
 
+    int type_graph;
+
     WeakReference<HistoriqueFrag> frag;
     LineChart chart;
-    List<? extends PollutionMesure> mesures;
+    List<? extends Mesure> mesures;
+    CardGraph card;
 
     int plageMin=0;
     int plageMax=0;
@@ -62,17 +68,18 @@ public class PollutionGraph {
     private long nextDay=0;
     private long nextHour=0;
 
-    public PollutionGraph(HistoriqueFrag frag, List<? extends PollutionMesure> mesures, int plage) {
-        this.frag=new WeakReference<>(frag);
-            View v = this.frag.get().getView();
-            View v2 = frag.getView();
-            chart=v.findViewById(R.id.graphPollution);
+    public Graph(HistoriqueFrag frag, CardGraph _card, List<? extends Mesure> mesures, int plage, int type_graph) {
 
-        //chart=this.frag.get().getView().findViewById(R.id.graphPollution);
+        this.frag=new WeakReference<>(frag);
+        this.card=_card;
+
+        chart=card.getChart();
+        this.type_graph=type_graph;
+
         this.mesures=mesures;
         this.plage=plage;
 
-        switch (plage){
+        switch (plage){ //TODO Fusionner cette partie entre les deux constructeurs (fonction externe ? , argument optionnel ?)
             case HOUR:
                 nextHour=ONE_HOUR;
                 plageMin=0;
@@ -87,7 +94,7 @@ public class PollutionGraph {
                 break;
             case YEAR:
                 Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(frag.getCalendarPoll().getTimeInMillis()-ONE_YEAR); //L'annee precedente
+                c.setTimeInMillis(card.getCalendrier().getTimeInMillis()-ONE_YEAR); //L'annee precedente
                 prevYear = (c.getActualMaximum(Calendar.DAY_OF_YEAR)>365 ? ONE_YEAR+ONE_DAY : ONE_YEAR); // Si bissextile, vaut 366 jours
                 nextYear=ONE_YEAR;
                 plageMin=0;
@@ -98,9 +105,11 @@ public class PollutionGraph {
 
     }
 
-    public PollutionGraph(HistoriqueFrag frag, List<? extends PollutionMesure> mesures,int plage, boolean isBissextile) {
+    public Graph(HistoriqueFrag frag, CardGraph _card, List<? extends Mesure> mesures, int plage, boolean isBissextile, int type_graph) {
         this.frag=new WeakReference<>(frag);
-        chart=this.frag.get().getView().findViewById(R.id.graphPollution);
+        this.card=_card;
+        chart=card.getChart();
+        this.type_graph=type_graph;
         this.mesures=mesures;
         this.plage=plage;
 
@@ -124,7 +133,7 @@ public class PollutionGraph {
                 break;
             case YEAR:
                 Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(frag.getCalendarPoll().getTimeInMillis()-ONE_YEAR); //L'annee precedente
+                c.setTimeInMillis(card.getCalendrier().getTimeInMillis()-ONE_YEAR); //L'annee precedente
                 prevYear = (c.getActualMaximum(Calendar.DAY_OF_YEAR)>365 ? ONE_YEAR+ONE_DAY : ONE_YEAR); // Si bissextile, vaut 366 jours
                 nextYear=ONE_YEAR+(long)anneeBissextile*ONE_HOUR;
                 plageMin=0;
@@ -137,68 +146,103 @@ public class PollutionGraph {
 
     public void draw(){
 
-        List<Entry> entriesPM1 = new ArrayList<Entry>();
-        for (PollutionMesure i : mesures) {
-            entriesPM1.add(new Entry(i.getFloatDate(),(float)i.getPm1()));
+        final HashMap<AppCompatCheckBox, DataSet> chkBoxs = new HashMap<>();
+        LineData lineData = new LineData();
+        switch (type_graph){
+
+            case GRAPH_POLLUTION:
+                //TODO Verifier instanceof et lancer exception
+                ArrayList<PollutionMesure> mesuresPoll = (ArrayList<PollutionMesure>) mesures;
+                List<Entry> entriesPM1 = new ArrayList<Entry>();
+                for (PollutionMesure i : mesuresPoll) {
+                    entriesPM1.add(new Entry(i.getFloatDate(),(float)i.getPm1()));
+                }
+
+                final LineDataSet dataSetPM1 = new LineDataSet(entriesPM1, "PM1"); // add entries to dataset
+                dataSetPM1.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphPm1));
+                dataSetPM1.setAxisDependency(YAxis.AxisDependency.LEFT);
+                formatDataSet(dataSetPM1);
+
+
+                List<Entry> entriesPM25 = new ArrayList<Entry>();
+                for (PollutionMesure i : mesuresPoll) {
+                    entriesPM25.add(new Entry(i.getFloatDate(),(float)i.getPm25()));
+                }
+
+                LineDataSet dataSetPM25 = new LineDataSet(entriesPM25, "PM2.5"); // add entries to dataset
+                dataSetPM25.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphPm25));
+                dataSetPM25.setAxisDependency(YAxis.AxisDependency.LEFT);
+                formatDataSet(dataSetPM25);
+
+
+                List<Entry> entriesPM10 = new ArrayList<Entry>();
+                for (PollutionMesure i : mesuresPoll) {
+                    entriesPM10.add(new Entry(i.getFloatDate(),(float)i.getPm10()));
+                }
+
+                LineDataSet dataSetPM10 = new LineDataSet(entriesPM10, "PM10"); // add entries to dataset
+                dataSetPM10.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphPm10));
+                dataSetPM10.setAxisDependency(YAxis.AxisDependency.LEFT);
+                formatDataSet(dataSetPM10);
+
+
+                List<Entry> entriesCO2 = new ArrayList<Entry>();
+                for (PollutionMesure i : mesuresPoll) {
+                    entriesCO2.add(new Entry(i.getFloatDate(),(float)i.getCo2()));
+                }
+
+                LineDataSet dataSetCO2 = new LineDataSet(entriesCO2, "CO2"); // add entries to dataset
+                dataSetCO2.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphCo2));
+                dataSetCO2.setAxisDependency(YAxis.AxisDependency.RIGHT);
+                formatDataSet(dataSetCO2);
+
+                lineData = new LineData(dataSetPM1,dataSetPM25,dataSetPM10,dataSetCO2);
+
+                AppCompatCheckBox chkPm1 = frag.get().getView().findViewById(R.id.chkPM1);
+                AppCompatCheckBox chkPm25 = frag.get().getView().findViewById(R.id.chkPM25);
+                AppCompatCheckBox chkPm10 = frag.get().getView().findViewById(R.id.chkPM10);
+                AppCompatCheckBox chkCo2 = frag.get().getView().findViewById(R.id.chkCO2);
+
+                chkBoxs.put(chkPm1,dataSetPM1);
+                chkBoxs.put(chkPm25,dataSetPM25);
+                chkBoxs.put(chkPm10,dataSetPM10);
+                chkBoxs.put(chkCo2,dataSetCO2);
+                break;
+
+            case GRAPH_METEO:
+
+                //TODO Verifier instanceof et lancer exception
+                ArrayList<MeteoMesure> mesuresMeteo = (ArrayList<MeteoMesure>) mesures;
+
+                List<Entry> entriesTemperature = new ArrayList<Entry>();
+                for (MeteoMesure i : mesuresMeteo) {
+                    entriesTemperature.add(new Entry(i.getFloatDate(),(float)i.getTemperature()));
+                }
+
+                LineDataSet dataSetTemperature = new LineDataSet(entriesTemperature,  frag.get().getString(R.string.temperature)); // add entries to dataset
+                dataSetTemperature.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphPm1));
+                dataSetTemperature.setAxisDependency(YAxis.AxisDependency.LEFT);
+                formatDataSet(dataSetTemperature);
+
+
+                List<Entry> entriesHumidity = new ArrayList<Entry>();
+                for (MeteoMesure i : mesuresMeteo) {
+                    entriesHumidity.add(new Entry(i.getFloatDate(),(float)i.getHumidity()));
+                }
+
+                LineDataSet dataSetHumidity = new LineDataSet(entriesHumidity,  frag.get().getString(R.string.humidite)); // add entries to dataset
+                dataSetHumidity.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphPm25));
+                dataSetHumidity.setAxisDependency(YAxis.AxisDependency.RIGHT);
+                formatDataSet(dataSetHumidity);
+
+
+                lineData = new LineData(dataSetTemperature,dataSetHumidity);
+                break;
+
+
         }
 
-        final LineDataSet dataSetPM1 = new LineDataSet(entriesPM1, "PM1"); // add entries to dataset
-        dataSetPM1.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphPm1));
-        dataSetPM1.setDrawValues(false);
-        dataSetPM1.setDrawHighlightIndicators(false);
-        dataSetPM1.setCircleColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphCircle));
-        dataSetPM1.setCircleRadius(1f);
-        dataSetPM1.setAxisDependency(YAxis.AxisDependency.LEFT);
-        dataSetPM1.setDrawCircles(false);
 
-
-        List<Entry> entriesPM25 = new ArrayList<Entry>();
-        for (PollutionMesure i : mesures) {
-            entriesPM25.add(new Entry(i.getFloatDate(),(float)i.getPm25()));
-        }
-
-        LineDataSet dataSetPM25 = new LineDataSet(entriesPM25, "PM2.5"); // add entries to dataset
-        dataSetPM25.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphPm25));
-        dataSetPM25.setDrawValues(false);
-        dataSetPM25.setDrawHighlightIndicators(false);
-        dataSetPM25.setCircleColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphCircle));
-        dataSetPM25.setCircleRadius(1f);
-        dataSetPM25.setAxisDependency(YAxis.AxisDependency.LEFT);
-        dataSetPM25.setDrawCircles(false);
-
-
-        List<Entry> entriesPM10 = new ArrayList<Entry>();
-        for (PollutionMesure i : mesures) {
-            entriesPM10.add(new Entry(i.getFloatDate(),(float)i.getPm10()));
-        }
-
-        LineDataSet dataSetPM10 = new LineDataSet(entriesPM10, "PM10"); // add entries to dataset
-        dataSetPM10.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphPm10));
-        dataSetPM10.setDrawValues(false);
-        dataSetPM10.setDrawHighlightIndicators(false);
-        dataSetPM10.setCircleColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphCircle));
-        dataSetPM10.setCircleRadius(1f);
-        dataSetPM10.setAxisDependency(YAxis.AxisDependency.LEFT);
-        dataSetPM10.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
-        dataSetPM10.setDrawCircles(false);
-
-
-
-        List<Entry> entriesCO2 = new ArrayList<Entry>();
-        for (PollutionMesure i : mesures) {
-            entriesCO2.add(new Entry(i.getFloatDate(),(float)i.getCo2()));
-        }
-
-        LineDataSet dataSetCO2 = new LineDataSet(entriesCO2, "CO2"); // add entries to dataset
-        dataSetCO2.setColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphCo2));
-        dataSetCO2.setDrawValues(false);
-        dataSetCO2.setDrawHighlightIndicators(false);
-        dataSetCO2.setCircleColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphCircle));
-        dataSetCO2.setCircleRadius(1f);
-        dataSetCO2.setAxisDependency(YAxis.AxisDependency.RIGHT);
-        dataSetCO2.setDrawCircles(false);
-
-        LineData lineData = new LineData(dataSetPM1,dataSetPM25,dataSetPM10,dataSetCO2);
 
 
         chart.setData(lineData);
@@ -222,17 +266,6 @@ public class PollutionGraph {
          */
         //Graphs Legend
 
-        final HashMap<AppCompatCheckBox, DataSet> chkBoxs = new HashMap<>();
-
-        AppCompatCheckBox chkPm1 = frag.get().getView().findViewById(R.id.chkPM1);
-        AppCompatCheckBox chkPm25 = frag.get().getView().findViewById(R.id.chkPM25);
-        AppCompatCheckBox chkPm10 = frag.get().getView().findViewById(R.id.chkPM10);
-        AppCompatCheckBox chkCo2 = frag.get().getView().findViewById(R.id.chkCO2);
-
-        chkBoxs.put(chkPm1,dataSetPM1);
-        chkBoxs.put(chkPm25,dataSetPM25);
-        chkBoxs.put(chkPm10,dataSetPM10);
-        chkBoxs.put(chkCo2,dataSetCO2);
 
         CompoundButton.OnCheckedChangeListener chkListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -246,19 +279,15 @@ public class PollutionGraph {
                 }
             }
         };
-        chkPm1.setOnCheckedChangeListener(chkListener);
-        chkPm25.setOnCheckedChangeListener(chkListener);
-        chkPm10.setOnCheckedChangeListener(chkListener);
-        chkCo2.setOnCheckedChangeListener(chkListener);
 
         for (Map.Entry<AppCompatCheckBox, DataSet> entry : chkBoxs.entrySet()) {
+            entry.getKey().setOnCheckedChangeListener(chkListener);
             if (!entry.getKey().isChecked()){
                 entry.getValue().setVisible(false);
             }
         }
 
         chart.getLegend().setEnabled(false);
-
 
         chart.setViewPortOffsets(75,10,75,45); //TODO PROBLEMES AFFICHAGE ?
 
@@ -320,7 +349,7 @@ public class PollutionGraph {
             }
 
             @Override
-            public void onChartDoubleTapped(MotionEvent me) {
+            public void onChartDoubleTapped(MotionEvent me) { //TODO Dezoomer
 
             }
 
@@ -360,21 +389,21 @@ public class PollutionGraph {
     }
 
     private void showPrevPage() {
-        Calendar c = frag.get().getCalendarPoll();
+        Calendar c = card.getCalendrier();
         c.setTimeInMillis(c.getTimeInMillis()-nextHour-nextDay-prevYear);
 
         switch (plage){
             case HOUR:
-                frag.get().graphPollutionHour();
-                frag.get().setTitreGraphPollutionHour();
+                card.graphHour();
+                card.setTitreHour();
                 break;
             case DAY:
-                frag.get().graphPollutionDay();
-                frag.get().setTitreGraphPollutionDay();
+                card.graphDay();
+                card.setTitreDay();
                 break;
             case YEAR:
-                frag.get().graphPollutionYear();
-                frag.get().setTitreGraphPollutionYear();
+                card.graphYear();
+                card.setTitreYear();
                 break;
         }
 
@@ -383,21 +412,21 @@ public class PollutionGraph {
     }
 
     private void showNextPage() {
-        Calendar c = frag.get().getCalendarPoll();
+        Calendar c = card.getCalendrier();
         c.setTimeInMillis(c.getTimeInMillis()+nextHour+nextDay+nextYear);
 
         switch (plage){
             case HOUR:
-                frag.get().graphPollutionHour();
-                frag.get().setTitreGraphPollutionHour();
+                card.graphHour();
+                card.setTitreHour();
                 break;
             case DAY:
-                frag.get().graphPollutionDay();
-                frag.get().setTitreGraphPollutionDay();
+                card.graphDay();
+                card.setTitreDay();
                 break;
             case YEAR:
-                frag.get().graphPollutionYear();
-                frag.get().setTitreGraphPollutionYear();
+                card.graphYear();
+                card.setTitreYear();
                 break;
         }
 
@@ -412,6 +441,15 @@ public class PollutionGraph {
         }else{
             return false;
         }
+    }
+
+    private void formatDataSet(LineDataSet d){
+        d.setDrawValues(false);
+        d.setDrawHighlightIndicators(false);
+        //d.setCircleColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphCircle));
+        //d.setCircleRadius(1f);
+        d.setDrawCircles(false);
+        d.setMode(LineDataSet.Mode.HORIZONTAL_BEZIER);
     }
 
 

@@ -2,7 +2,7 @@ package com.example.kaptair.ui.main.graphiques;
 
 import java.util.Date;
 
-public interface PollutionMesure {
+public interface PollutionMesure extends Mesure{
 
     Date getDate();
     double getPm1();

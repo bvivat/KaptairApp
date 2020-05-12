@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.List;
 
 @Dao
-public interface MoyenneDayMesuresPollutionDao {
+public interface MoyenneDayMesuresPollutionDao extends MesureDao{
 
     @Query("SELECT * FROM MoyenneDayMesuresPollution")
     List<MoyenneDayMesuresPollution> getAll();

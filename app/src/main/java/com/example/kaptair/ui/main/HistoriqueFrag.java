@@ -1,8 +1,6 @@
 package com.example.kaptair.ui.main;
 
 
-import android.app.DatePickerDialog;
-import android.app.TimePickerDialog;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -13,59 +11,27 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
 import com.example.kaptair.R;
 import com.example.kaptair.database.AppDatabase;
-import com.example.kaptair.database.MesureMeteo;
-import com.example.kaptair.database.MesurePollution;
-import com.example.kaptair.database.MoyenneDayMesuresMeteo;
-import com.example.kaptair.database.MoyenneDayMesuresPollution;
-import com.example.kaptair.database.MoyenneYearMesuresMeteo;
-import com.example.kaptair.database.MoyenneYearMesuresPollution;
-import com.example.kaptair.ui.main.graphiques.MeteoGraph;
-import com.example.kaptair.ui.main.graphiques.PollutionGraph;
+import com.example.kaptair.ui.main.graphiques.CardGraph;
 import com.github.mikephil.charting.charts.LineChart;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class HistoriqueFrag extends Fragment {
-    //TODO REFAIRE CLASSE (et creer nouvelles) POUR SUPPRIMER REDONDANCES
 
     private AppDatabase db;
-    private Executor executor = Executors.newSingleThreadExecutor();
 
-    LineChart graphPollution;
-    LineChart graphMeteo;
+    CardGraph cardPollution;
+    CardGraph cardMeteo;
 
-    TextView txtTitreGraphPollution;
-    TextView txtTitreGraphMeteo;
-
-    Button btnHourPollution;
-    Button btnDayPollution;
-    Button btnYearPollution;
-
-    Button btnHourMeteo;
-    Button btnDayMeteo;
-    Button btnYearMeteo;
-
-    ArrayList<Button> btnsChoixGraphPollution = new ArrayList<Button>();
-    ArrayList<Button> btnsChoixGraphMeteo = new ArrayList<Button>();
-
-    Calendar calendarPoll = Calendar.getInstance();
-    Calendar calendarMeteo = Calendar.getInstance();
+    ArrayList<CardGraph> cards = new ArrayList<CardGraph>();
 
 
     public HistoriqueFrag() {
@@ -80,246 +46,6 @@ public class HistoriqueFrag extends Fragment {
 
         db=AppDatabase.getInstance(getContext());
 
-        //Graph Pollution
-        txtTitreGraphPollution = v.findViewById(R.id.txtGraphTitrePollution);
-        
-        calendarPoll.set(Calendar.MINUTE,0);
-        calendarPoll.set(Calendar.SECOND,0);
-        calendarPoll.set(Calendar.MILLISECOND,0);
-
-        DatePickerDialog.OnDateSetListener dateHeure = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                calendarPoll.set(Calendar.YEAR, year);
-                calendarPoll.set(Calendar.MONTH, monthOfYear);
-                calendarPoll.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                TimePickerDialog timePickerDialog = new TimePickerDialog(HistoriqueFrag.this.getContext(),R.style.MyDatePicker,
-                        new TimePickerDialog.OnTimeSetListener() {
-
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                calendarPoll.set(Calendar.HOUR_OF_DAY,hourOfDay);
-                                setTitreGraphPollutionHour();
-                                graphPollutionHour();
-
-                            }
-                        }, calendarPoll.get(Calendar.HOUR_OF_DAY), 0, true);
-                timePickerDialog.show();
-            }
-
-        };
-
-        DatePickerDialog.OnDateSetListener dateJour = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                calendarPoll.set(Calendar.YEAR, year);
-                calendarPoll.set(Calendar.MONTH, monthOfYear);
-                calendarPoll.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                calendarPoll.set(Calendar.HOUR_OF_DAY,0);
-
-                setTitreGraphPollutionDay();
-
-                graphPollutionDay();
-            }
-        };
-
-        final DatePickerDialog.OnDateSetListener dateAnnee = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                calendarPoll.set(Calendar.YEAR, year);
-                calendarPoll.set(Calendar.MONTH, 0);
-                calendarPoll.set(Calendar.DAY_OF_MONTH, 1);
-                calendarPoll.set(Calendar.HOUR_OF_DAY,0);
-
-                setTitreGraphPollutionYear();
-
-                graphPollutionYear();
-            }
-        };
-
-        final DatePickerDialog pickerHeure = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateHeure,calendarPoll.get(Calendar.YEAR),calendarPoll.get(Calendar.MONTH),calendarPoll.get(Calendar.DAY_OF_MONTH));
-        final DatePickerDialog pickerJour = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateJour,calendarPoll.get(Calendar.YEAR),calendarPoll.get(Calendar.MONTH),calendarPoll.get(Calendar.DAY_OF_MONTH));
-        
-        graphPollution= v.findViewById(R.id.graphPollution);
-        
-        btnHourPollution = v.findViewById(R.id.btnHourPollution);
-        btnDayPollution = v.findViewById(R.id.btnDayPollution);
-        btnYearPollution = v.findViewById(R.id.btnYearPollution);
-
-        btnHourPollution.setSelected(true);
-        setTitreGraphPollutionHour();
-        graphPollutionHour();
-
-        btnsChoixGraphPollution.add(btnHourPollution);
-        btnsChoixGraphPollution.add(btnDayPollution);
-        btnsChoixGraphPollution.add(btnYearPollution);
-
-
-        View.OnClickListener listenerChoixGraphPollution = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Button btnTmp = (Button) v;
-                if(!btnTmp.isSelected()){
-                    btnTmp.setSelected(true);
-                }
-                for (Button b : btnsChoixGraphPollution){
-                    if(b.getId()!= btnTmp.getId() && b.isSelected()){
-                        b.setSelected(false);
-                    }
-                }
-                switch (v.getId()){ 
-                    case R.id.btnHourPollution:
-                        pickerHeure.show();
-                        break;
-                    case R.id.btnDayPollution:
-                        pickerJour.show();
-                        break;
-                    case R.id.btnYearPollution:
-                        YearPickerDialog y = new YearPickerDialog();
-                        y.setListener(dateAnnee);
-                        y.show(getFragmentManager(),"picker");
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
-        for(Button b : btnsChoixGraphPollution){
-            b.setOnClickListener(listenerChoixGraphPollution);
-        }
-        
-        
-
-        //Graphs Meteo
-
-        txtTitreGraphMeteo = v.findViewById(R.id.txtGraphTitreMeteo);
-
-        calendarMeteo.set(Calendar.MINUTE,0);
-        calendarMeteo.set(Calendar.SECOND,0);
-        calendarMeteo.set(Calendar.MILLISECOND,0);
-
-        DatePickerDialog.OnDateSetListener dateHeureM = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                calendarMeteo.set(Calendar.YEAR, year);
-                calendarMeteo.set(Calendar.MONTH, monthOfYear);
-                calendarMeteo.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                TimePickerDialog timePickerDialog = new TimePickerDialog(HistoriqueFrag.this.getContext(),R.style.MyDatePicker,
-                        new TimePickerDialog.OnTimeSetListener() {
-
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                calendarMeteo.set(Calendar.HOUR_OF_DAY,hourOfDay);
-                                setTitreGraphMeteoHour();
-                                graphMeteoHour();
-
-                            }
-                        }, calendarMeteo.get(Calendar.HOUR_OF_DAY), 0, true);
-                timePickerDialog.show();
-            }
-
-        };
-
-        DatePickerDialog.OnDateSetListener dateJourM = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                calendarMeteo.set(Calendar.YEAR, year);
-                calendarMeteo.set(Calendar.MONTH, monthOfYear);
-                calendarMeteo.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                calendarMeteo.set(Calendar.HOUR_OF_DAY,0);
-
-                setTitreGraphMeteoDay();
-
-                graphMeteoDay();
-            }
-        };
-
-        final DatePickerDialog.OnDateSetListener dateAnneeM = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                // TODO Auto-generated method stub
-                calendarMeteo.set(Calendar.YEAR, year);
-                calendarMeteo.set(Calendar.MONTH, 0);
-                calendarMeteo.set(Calendar.DAY_OF_MONTH, 1);
-                calendarMeteo.set(Calendar.HOUR_OF_DAY,0);
-
-                setTitreGraphMeteoYear();
-
-                graphMeteoYear();
-            }
-        };
-
-
-        final DatePickerDialog pickerHeureM = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateHeureM,calendarMeteo.get(Calendar.YEAR),calendarMeteo.get(Calendar.MONTH),calendarMeteo.get(Calendar.DAY_OF_MONTH));
-
-
-        //final DatePickerDialog pickerJourM = new DatePickerDialog(this.getContext(),R.style.MyDatePicker,dateJourM,calendarMeteo.get(Calendar.YEAR),calendarMeteo.get(Calendar.MONTH),calendarMeteo.get(Calendar.DAY_OF_MONTH));
-
-/*
-        graphMeteo= v.findViewById(R.id.graphMeteo);
-
-        Button btnHourMeteo = v.findViewById(R.id.btnHourMeteo);
-        Button btnDayMeteo = v.findViewById(R.id.btnDayMeteo);
-        Button btnYearMeteo = v.findViewById(R.id.btnYearMeteo);
-
-        btnHourMeteo.setSelected(true);
-
-        btnsChoixGraphMeteo.add(btnHourMeteo);
-        btnsChoixGraphMeteo.add(btnDayMeteo);
-        btnsChoixGraphMeteo.add(btnYearMeteo);
-/*
-        View.OnClickListener listenerChoixGraphMeteo = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Button btnTmp = (Button) v;
-                if(!btnTmp.isSelected()){
-                    btnTmp.setSelected(true);
-                }
-                for (Button b : btnsChoixGraphMeteo){
-                    if(b.getId()!= btnTmp.getId() && b.isSelected()){
-                        b.setSelected(false);
-                    }
-                }
-                switch (v.getId()){
-                    case R.id.btnHourMeteo:
-                        pickerHeureM.show();
-                        break;
-                    case R.id.btnDayMeteo:
-                        pickerJourM.show();
-                        break;
-                    case R.id.btnYearMeteo:
-                        YearPickerDialog y = new YearPickerDialog();
-                        y.setListener(dateAnneeM);
-                        y.show(getFragmentManager(),"pickerM");
-                        break;
-                    default:
-                        break;
-                }
-            }
-        };
-
-        for(Button b : btnsChoixGraphMeteo){
-            b.setOnClickListener(listenerChoixGraphMeteo);
-        }
-*/
 
         // Inflate the layout for this fragment
         return v;
@@ -331,337 +57,89 @@ public class HistoriqueFrag extends Fragment {
         return fragment;
     }
 
-    public void graphPollutionHour(){
-        /*
-        PollutionMesure m = new MesurePollution(new Date(1586998800000L),50,1,5,400);
-        PollutionMesure m1 = new MesurePollution(new Date(1586999703000L),10,1,100,600);
-        PollutionMesure m2 = new MesurePollution(new Date(1587000723785L),30,2,150,500);
-        PollutionMesure m3 = new MesurePollution(new Date(1587001599999L),20,3,20,800);
-
-        ArrayList<PollutionMesure> a = new ArrayList<>();
-
-        a.add(m);
-        a.add(m1);
-        a.add(m2);
-        a.add(m3);
-
-        PollutionGraph phg = new PollutionGraph(HistoriqueFrag.this,a,PollutionGraph.HOUR);
-        phg.draw();
-
-         */
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                //Date d1 =new Date(120,3,28,11,0);
-                //Date d2= new Date(120,3,28,12,0);
-                Date d1 = calendarPoll.getTime();
-                Date d2= new Date(d1.getTime()+PollutionGraph.ONE_HOUR);
-                List<MesurePollution> mesures= db.mesurePollutionDao().getAllByDate(d1,d2);
-                final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.HOUR);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        graph.draw();
-                    }
-                });
-
-            }
-        });
-    }
-
-    public void graphPollutionDay(){
-        /*
-        PollutionMesure md = new MoyenneDayMesuresPollution(new Date(1586988000000L),50,1,5,400);
-        PollutionMesure md1 = new MoyenneDayMesuresPollution(new Date(1587025949000L),10,1,100,600);
-        PollutionMesure md2 = new MoyenneDayMesuresPollution(new Date(1587042509000L),30,2,150,500);
-        PollutionMesure md3 = new MoyenneDayMesuresPollution(new Date(1587074369000L),20,3,20,800);
-
-        ArrayList<PollutionMesure> ad = new ArrayList<>();
-
-        ad.add(md);
-        ad.add(md1);
-        ad.add(md2);
-        ad.add(md3);
-        PollutionGraph pdg = new PollutionGraph(HistoriqueFrag.this,ad,PollutionGraph.DAY);
-        pdg.draw();
-
-         */
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                //Date d1 =new Date(120,3,28,0,0);
-                //Date d2= new Date(120,3,29,0,0);
-                Date d1 = calendarPoll.getTime();
-                Date d2= new Date(d1.getTime()+PollutionGraph.ONE_DAY);
-                List<MoyenneDayMesuresPollution> mesures= db.moyenneDayMesuresPollutionDao().getAllByDate(d1,d2);
-                final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.DAY);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        graph.draw();
-                    }
-                });
-
-            }
-        });
-
-    }
-
-    public void graphPollutionYear(){
-        /*
-        PollutionMesure my = new MoyenneYearMesuresPollution(new Date(1577833200000L),50,1,5,400);
-        PollutionMesure my1 = new MoyenneYearMesuresPollution(new Date(1581721200000L),10,1,100,600);
-        PollutionMesure my2 = new MoyenneYearMesuresPollution(new Date(1592431200000L),30,2,150,500);
-        PollutionMesure my3 = new MoyenneYearMesuresPollution(new Date(1609369200000L),20,3,20,800);
-
-        ArrayList<PollutionMesure> ay = new ArrayList<>();
-
-        ay.add(my);
-        ay.add(my1);
-        ay.add(my2);
-        ay.add(my3);
-
-        PollutionGraph pyg = new PollutionGraph(HistoriqueFrag.this,ay,PollutionGraph.YEAR,true);
-        pyg.draw();
-
-         */
-        final boolean bissextile;
-        if (calendarPoll.getActualMaximum(Calendar.DAY_OF_YEAR)>365){
-            bissextile=true;
-        }else {
-            bissextile=false;
-        }
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                //Date d1 =new Date(120,0,1,0,0);
-                //Date d2= new Date(121,0,1,0,0);
-                Date d1 = calendarPoll.getTime();
-                Date d2= new Date(d1.getTime()+PollutionGraph.ONE_YEAR+ (bissextile ? PollutionGraph.ONE_DAY : 0));
-                List<MoyenneYearMesuresPollution> mesures= db.moyenneYearMesuresPollutionDao().getAllByDate(d1,d2);
-                final PollutionGraph graph = new PollutionGraph(HistoriqueFrag.this,mesures,PollutionGraph.YEAR,bissextile);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        graph.draw();
-                    }
-                });
-
-            }
-        });
-
-    }
-
-    public void graphMeteoHour(){
-        /*
-        MeteoMesure m = new MesureMeteo(new Date(1586998800000L),20.2,35);
-        MeteoMesure m1 = new MesureMeteo(new Date(1586999703000L),21.9,32.3);
-        MeteoMesure m2 = new MesureMeteo(new Date(1587000723785L),31.8,8.2);
-        MeteoMesure m3 = new MesureMeteo(new Date(1587001599999L),17.4,76.1);
-
-        ArrayList<MeteoMesure> a = new ArrayList<>();
-
-        a.add(m);
-        a.add(m1);
-        a.add(m2);
-        a.add(m3);
-
-        MeteoGraph phg = new MeteoGraph(HistoriqueFrag.this,a,MeteoGraph.HOUR);
-        phg.draw();
-
-         */
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Date d1 =new Date(120,3,28,11,0);
-                Date d2= new Date(120,3,28,12,0);
-                List<MesureMeteo> mesures= db.mesureMeteoDao().getAllByDate(d1,d2);
-                final MeteoGraph graph = new MeteoGraph(HistoriqueFrag.this,mesures,MeteoGraph.HOUR);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        graph.draw();
-                    }
-                });
-
-            }
-        });
-    }
-
-    public void graphMeteoDay(){
-        /*
-        MeteoMesure md = new MoyenneDayMesuresMeteo(new Date(1586988000000L),20.2,35);
-        MeteoMesure md1 = new MoyenneDayMesuresMeteo(new Date(1587025949000L),21.9,32.3);
-        MeteoMesure md2 = new MoyenneDayMesuresMeteo(new Date(1587042509000L),31.8,8.2);
-        MeteoMesure md3 = new MoyenneDayMesuresMeteo(new Date(1587074369000L),17.4,76.1);
-
-        ArrayList<MeteoMesure> ad = new ArrayList<>();
-
-        ad.add(md);
-        ad.add(md1);
-        ad.add(md2);
-        ad.add(md3);
-        MeteoGraph pdg = new MeteoGraph(HistoriqueFrag.this,ad,MeteoGraph.DAY);
-        pdg.draw();
-
-         */
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Date d1 =new Date(120,3,28,11,0);
-                Date d2= new Date(120,3,28,12,0);
-                List<MoyenneDayMesuresMeteo> mesures= db.moyenneDayMesuresMeteoDao().getAllByDate(d1,d2);
-                final MeteoGraph graph = new MeteoGraph(HistoriqueFrag.this,mesures,MeteoGraph.DAY);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        graph.draw();
-                    }
-                });
-
-            }
-        });
-    }
-
-    public void graphMeteoYear(){
-        /*
-        MeteoMesure my = new MoyenneYearMesuresMeteo(new Date(1577833200000L),20.2,35);
-        MeteoMesure my1 = new MoyenneYearMesuresMeteo(new Date(1581721200000L),21.9,32.3);
-        MeteoMesure my2 = new MoyenneYearMesuresMeteo(new Date(1592431200000L),31.8,8.2);
-        MeteoMesure my3 = new MoyenneYearMesuresMeteo(new Date(1609369200000L),17.4,76.1);
-
-        ArrayList<MeteoMesure> ay = new ArrayList<>();
-
-        ay.add(my);
-        ay.add(my1);
-        ay.add(my2);
-        ay.add(my3);
-
-        MeteoGraph pyg = new MeteoGraph(HistoriqueFrag.this,ay,MeteoGraph.YEAR,true);
-        pyg.draw();
-
-         */
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Date d1 =new Date(120,3,28,11,0);
-                Date d2= new Date(120,3,28,12,0);
-                List<MoyenneYearMesuresMeteo> mesures= db.moyenneYearMesuresMeteoDao().getAllByDate(d1,d2);
-                final MeteoGraph graph = new MeteoGraph(HistoriqueFrag.this,mesures,MeteoGraph.YEAR,true);
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        graph.draw();
-                    }
-                });
-
-            }
-        });
-    }
-
-    public void setTitreGraphPollutionHour(){
-        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm");
-        txtTitreGraphPollution.setText(sdfHours.format(calendarPoll.getTime()));
-    }
-
-    public void setTitreGraphPollutionDay(){
-        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy");
-        txtTitreGraphPollution.setText(sdfHours.format(calendarPoll.getTime()));
-    }
-
-    public void setTitreGraphPollutionYear(){
-        SimpleDateFormat sdfHours = new SimpleDateFormat("yyyy");
-        txtTitreGraphPollution.setText(sdfHours.format(calendarPoll.getTime()));
-    }
-
-    public void setTitreGraphMeteoHour(){
-        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm");
-        txtTitreGraphMeteo.setText(sdfHours.format(calendarMeteo.getTime()));
-    }
-
-    public void setTitreGraphMeteoDay(){
-        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy");
-        txtTitreGraphMeteo.setText(sdfHours.format(calendarMeteo.getTime()));
-    }
-
-    public void setTitreGraphMeteoYear(){
-        SimpleDateFormat sdfHours = new SimpleDateFormat("yyyy");
-        txtTitreGraphMeteo.setText(sdfHours.format(calendarMeteo.getTime()));
-    }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+        //Graph Pollution
+        TextView txtTitreGraphPollution = getView().findViewById(R.id.txtGraphTitrePollution);
+
+        LineChart graphPollution= getView().findViewById(R.id.graphPollution);
+
+        Button btnHourPollution = getView().findViewById(R.id.btnHourPollution);
+        Button btnDayPollution = getView().findViewById(R.id.btnDayPollution);
+        Button btnYearPollution = getView().findViewById(R.id.btnYearPollution);
+
+        cardPollution = new CardGraph(this,db.mesurePollutionDao(),db.moyenneDayMesuresPollutionDao(),db.moyenneYearMesuresPollutionDao(),txtTitreGraphPollution,graphPollution,btnHourPollution,btnDayPollution,btnYearPollution);
+
+        //Graph Meteo
+        TextView txtTitreGraphMeteo = getView().findViewById(R.id.txtGraphTitreMeteo);
+
+        LineChart graphMeteo= getView().findViewById(R.id.graphMeteo);
+
+        Button btnHourMeteo = getView().findViewById(R.id.btnHourMeteo);
+        Button btnDayMeteo = getView().findViewById(R.id.btnDayMeteo);
+        Button btnYearMeteo = getView().findViewById(R.id.btnYearMeteo);
+
+        cardMeteo = new CardGraph(this,db.mesureMeteoDao(),db.moyenneDayMesuresMeteoDao(),db.moyenneYearMesuresMeteoDao(),txtTitreGraphMeteo,graphMeteo,btnHourMeteo,btnDayMeteo,btnYearMeteo);
+
+        cards.add(cardPollution);
+        cards.add(cardMeteo);
+
         //On initialise les graphs
         if (savedInstanceState != null){
-            ArrayList<Integer> stateP = savedInstanceState.getIntegerArrayList("stateBtnsPoll");
-            ArrayList<Integer> stateM = savedInstanceState.getIntegerArrayList("stateBtnsMeteo");
+            int saveIndex=0;
+            for( CardGraph c : cards){
+                ArrayList<Integer> stateBtns =  savedInstanceState.getIntegerArrayList("stateBtns "+saveIndex);
 
-            for (int i=0;i<stateP.size();i++){
-                btnsChoixGraphPollution.get(i).setSelected(stateP.get(i)==1);
-            }
+                for (int i=0;i<stateBtns.size();i++){
+                    cardPollution.getBtns().get(i).setSelected(stateBtns.get(i)==1);
+                }
 
-            for (int i=0;i<stateM.size();i++){
-                btnsChoixGraphMeteo.get(i).setSelected(stateM.get(i)==1);
-            }
+                c.getCalendrier().setTimeInMillis(savedInstanceState.getLong("calendrier "+saveIndex));
 
-            calendarPoll.setTimeInMillis(savedInstanceState.getLong("calendarPoll"));
+                if(c.getBtnHour().isSelected()){
+                    c.setTitreHour();
+                    c.graphHour();
+                }else if(c.getBtnDay().isSelected()){
+                    c.setTitreDay();
+                    c.graphDay();
+                }else if (c.getBtnYear().isSelected()){
+                    c.setTitreYear();
+                    c.graphYear();
+                }
 
-            if(btnHourPollution.isSelected()){
-                setTitreGraphPollutionHour();
-                graphPollutionHour();
-            }else if(btnDayPollution.isSelected()){
-                setTitreGraphPollutionDay();
-                graphPollutionDay();
-            }else if (btnYearPollution.isSelected()){
-                setTitreGraphPollutionYear();
-                graphPollutionYear();
-            }
+                saveIndex++;
 
-            calendarMeteo.setTimeInMillis(savedInstanceState.getLong("calendarMeteo"));
-
-            if(btnHourMeteo.isSelected()){
-                setTitreGraphMeteoHour();
-                graphMeteoHour();
-            }else if(btnDayMeteo.isSelected()){
-                setTitreGraphMeteoDay();
-                graphMeteoDay();
-            }else if (btnYearMeteo.isSelected()){
-                setTitreGraphMeteoYear();
-                graphMeteoYear();
             }
 
         }else{
-            graphPollutionHour();
-            graphMeteoHour();
+            for( CardGraph c : cards){
+                c.graphHour();
+                c.setTitreHour();
+            }
         }
     }
 
-    public Calendar getCalendarPoll() {
-        return calendarPoll;
-    }
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        ArrayList<Integer> stateBtnsPoll = new ArrayList<>();
+        int saveIndex=0;
+        for( CardGraph c : cards){
+            ArrayList<Integer> stateBtns = new ArrayList<>();
 
-        for (Button b : btnsChoixGraphPollution){
-            stateBtnsPoll.add(b.isSelected() ? 1 : 0);
+            for (Button b : c.getBtns()){
+                stateBtns.add(b.isSelected() ? 1 : 0);
+            }
+
+            outState.putIntegerArrayList("stateBtns "+saveIndex,stateBtns);
+            outState.putLong("calendrier "+saveIndex, c.getCalendrier().getTimeInMillis());
+            saveIndex++;
         }
 
-        ArrayList<Integer> stateBtnsMeteo = new ArrayList<>();
-
-        for (Button b : btnsChoixGraphMeteo){
-            stateBtnsMeteo.add(b.isSelected() ? 1 : 0);
-        }
-        outState.putIntegerArrayList("stateBtnsPoll",stateBtnsPoll);
-        outState.putIntegerArrayList("stateBtnsMeteo",stateBtnsMeteo);
-
-        outState.putLong("calendarPoll", calendarPoll.getTimeInMillis());
-        outState.putLong("calendarMeteo", calendarMeteo.getTimeInMillis());
 
     }
 

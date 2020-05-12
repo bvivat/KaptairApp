@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 @Dao
-public interface MesurePollutionDao {
+public interface MesurePollutionDao extends MesureDao{
 
     @Query("SELECT * FROM MesurePollution")
     List<MesurePollution> getAll();
