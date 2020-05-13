@@ -34,6 +34,8 @@ public class CardGraph {
     private Executor executor = Executors.newSingleThreadExecutor();
 
     Calendar calendrier = Calendar.getInstance();
+    int type_graph;
+
     MesureDao hourDao;
     MesureDao dayDao;
     MesureDao yearDao;
@@ -45,7 +47,7 @@ public class CardGraph {
     Button btnDay;
     Button btnYear;
 
-    public CardGraph(HistoriqueFrag _frag, MesureDao _hourDao, MesureDao _dayDao, MesureDao _yearDao, TextView _titre, LineChart _chart, Button _btnHour, Button _btnDay, Button _btnYear) {
+    public CardGraph(HistoriqueFrag _frag, MesureDao _hourDao, MesureDao _dayDao, MesureDao _yearDao, TextView _titre, LineChart _chart, Button _btnHour, Button _btnDay, Button _btnYear,int _type_graph) {
         this.frag =  new WeakReference<HistoriqueFrag>(_frag);
         this.hourDao = _hourDao;
         this.dayDao = _dayDao;
@@ -55,6 +57,7 @@ public class CardGraph {
         this.btnHour = _btnHour;
         this.btnDay=_btnDay;
         this.btnYear=_btnYear;
+        this.type_graph=_type_graph;
 
         calendrier.set(Calendar.MINUTE,0);
         calendrier.set(Calendar.SECOND,0);
@@ -170,7 +173,7 @@ public class CardGraph {
                 Date d1 = calendrier.getTime();
                 Date d2= new Date(d1.getTime()+ Graph.ONE_HOUR);
                 List<? extends Mesure> mesures= hourDao.getAllByDate(d1,d2);
-                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.HOUR, Graph.GRAPH_POLLUTION);
+                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.HOUR, type_graph);
                 frag.get().getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -190,7 +193,7 @@ public class CardGraph {
                 Date d1 = calendrier.getTime();
                 Date d2= new Date(d1.getTime()+ Graph.ONE_DAY);
                 List<? extends Mesure> mesures= dayDao.getAllByDate(d1,d2);
-                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.DAY, Graph.GRAPH_POLLUTION);
+                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.DAY, type_graph);
                 frag.get().getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -217,7 +220,7 @@ public class CardGraph {
                 Date d1 = calendrier.getTime();
                 Date d2= new Date(d1.getTime()+ Graph.ONE_YEAR+ (bissextile ? Graph.ONE_DAY : 0));
                 List<? extends Mesure> mesures=yearDao.getAllByDate(d1,d2);
-                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.YEAR,bissextile, Graph.GRAPH_POLLUTION);
+                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.YEAR,bissextile, type_graph);
                 frag.get().getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

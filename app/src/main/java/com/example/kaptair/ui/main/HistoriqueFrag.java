@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.example.kaptair.R;
 import com.example.kaptair.database.AppDatabase;
 import com.example.kaptair.ui.main.graphiques.CardGraph;
+import com.example.kaptair.ui.main.graphiques.Graph;
 import com.github.mikephil.charting.charts.LineChart;
 import com.google.android.material.tabs.TabLayout;
 
@@ -123,7 +124,7 @@ public class HistoriqueFrag extends Fragment {
         Button btnDayPollution = getView().findViewById(R.id.btnDayPollution);
         Button btnYearPollution = getView().findViewById(R.id.btnYearPollution);
 
-        cardPollution = new CardGraph(this,db.mesurePollutionDao(),db.moyenneDayMesuresPollutionDao(),db.moyenneYearMesuresPollutionDao(),txtTitreGraphPollution,graphPollution,btnHourPollution,btnDayPollution,btnYearPollution);
+        cardPollution = new CardGraph(this,db.mesurePollutionDao(),db.moyenneDayMesuresPollutionDao(),db.moyenneYearMesuresPollutionDao(),txtTitreGraphPollution,graphPollution,btnHourPollution,btnDayPollution,btnYearPollution, Graph.GRAPH_POLLUTION);
 
         //Graph Meteo
         TextView txtTitreGraphMeteo = getView().findViewById(R.id.txtGraphTitreMeteo);
@@ -134,19 +135,19 @@ public class HistoriqueFrag extends Fragment {
         Button btnDayMeteo = getView().findViewById(R.id.btnDayMeteo);
         Button btnYearMeteo = getView().findViewById(R.id.btnYearMeteo);
 
-        cardMeteo = new CardGraph(this,db.mesureMeteoDao(),db.moyenneDayMesuresMeteoDao(),db.moyenneYearMesuresMeteoDao(),txtTitreGraphMeteo,graphMeteo,btnHourMeteo,btnDayMeteo,btnYearMeteo);
+        cardMeteo = new CardGraph(this,db.mesureMeteoDao(),db.moyenneDayMesuresMeteoDao(),db.moyenneYearMesuresMeteoDao(),txtTitreGraphMeteo,graphMeteo,btnHourMeteo,btnDayMeteo,btnYearMeteo,Graph.GRAPH_METEO);
 
         cards.add(cardPollution);
         cards.add(cardMeteo);
 
-        //On initialise les graphs
+        //On initialise les cards
         if (savedInstanceState != null){
             int saveIndex=0;
             for( CardGraph c : cards){
                 ArrayList<Integer> stateBtns =  savedInstanceState.getIntegerArrayList("stateBtns "+saveIndex);
 
                 for (int i=0;i<stateBtns.size();i++){
-                    cardPollution.getBtns().get(i).setSelected(stateBtns.get(i)==1);
+                    c.getBtns().get(i).setSelected(stateBtns.get(i)==1);
                 }
 
                 c.getCalendrier().setTimeInMillis(savedInstanceState.getLong("calendrier "+saveIndex));

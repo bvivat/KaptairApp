@@ -38,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
     BluetoothApp bluetooth;
     AppDatabase db;
 
+    Drawer result;
+
     MesuresFrag fragMesures = new MesuresFrag();
     ParamFrag fragParam = new ParamFrag();
     CarteFrag fragCarte = new CarteFrag();
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        Drawer result = new DrawerBuilder()
+         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(t)
                 .addDrawerItems(
@@ -94,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         return false;
                     }
-                }).withHeader(R.layout.nav_header)
+                }).withHeader(R.layout.nav_header).withSavedInstance(savedInstanceState)
                 .build();
 
 
@@ -147,16 +149,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        /*
-        if(fragMesures.isAdded()){
-            getSupportFragmentManager().putFragment(outState,"Mesures",fragMesures);
-            getSupportFragmentManager().putFragment(outState,"FragActuel",fragMesures);
-        }else if (fragCarte.isAdded()){
-            getSupportFragmentManager().putFragment(outState,"FragActuel",fragCarte);
-        }else if(fragParam.isAdded()){
-            getSupportFragmentManager().putFragment(outState,"FragActuel",fragParam);
-        }
-*/
-    outState.putString("Save","Sauvegarde");
+        result.saveInstanceState(outState);
+
     }
 }
