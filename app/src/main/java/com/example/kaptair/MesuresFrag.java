@@ -1,6 +1,7 @@
 package com.example.kaptair;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -42,8 +43,16 @@ public class MesuresFrag extends Fragment {
         ViewPager viewPager = v.findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
 
-        TabLayout tabs = v.findViewById(R.id.tabs);
-        tabs.setupWithViewPager(viewPager);
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            TabLayout tabs = getActivity().findViewById(R.id.tabs);
+            tabs.setVisibility(View.VISIBLE);
+            tabs.setupWithViewPager(viewPager);
+            //getActivity().findViewById(R.id.txtTitre).setVisibility(View.GONE);
+        } else {
+            TabLayout tabs = v.findViewById(R.id.tabs);
+            tabs.setupWithViewPager(viewPager);
+        }
+
 
         return v;
     }
@@ -52,5 +61,13 @@ public class MesuresFrag extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            getActivity().findViewById(R.id.tabs).setVisibility(View.GONE); //Si on change de fragment alors qu'on est en paysage, on supprime le TabLayout
+        }
     }
 }

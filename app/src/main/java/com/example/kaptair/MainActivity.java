@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        result.saveInstanceState(outState);
+        result.saveInstanceState(outState); //On sauvegarde la position actuelle du drawer menu
 
     }
 }

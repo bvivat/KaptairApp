@@ -137,8 +137,10 @@
         <item name="android:layout_marginTop">5dp</item>
         <item name="layout_constraintEnd_toEndOf">parent</item>
         <item name="layout_constraintTop_toTopOf">parent</item>
+    </style>
 
-
+    <style name="txtTitreToolbar" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" >
+        <item name="android:textSize">18sp</item>
     </style>
 
 

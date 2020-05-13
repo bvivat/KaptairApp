@@ -93,7 +93,7 @@ public class HistoriqueFrag extends Fragment {
                     fragPoll.setVisibility(View.VISIBLE);
                     v.setSelected(false);
                 }else {
-                    switch (v.getId()){ // TODO reel fullscreen
+                    switch (v.getId()){
 
                         case R.id.btnFullScreenPoll:
                             fragMeteo.setVisibility(View.GONE);
