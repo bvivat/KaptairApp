@@ -181,11 +181,11 @@ public class HistoriqueFrag extends Fragment {
         super.onSaveInstanceState(outState);
 
         int saveIndex=0;
-        for( CardGraph c : cards){
+        for( CardGraph c : cards){ // Pour chaque card (pollution et meteo)
             ArrayList<Integer> stateBtns = new ArrayList<>();
 
             for (Button b : c.getBtns()){
-                stateBtns.add(b.isSelected() ? 1 : 0);
+                stateBtns.add(b.isSelected() ? 1 : 0); // On retient l'etat de ses boutons
             }
 
             outState.putIntegerArrayList("stateBtns "+saveIndex,stateBtns);

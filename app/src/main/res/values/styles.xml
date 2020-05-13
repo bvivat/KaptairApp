@@ -63,6 +63,7 @@
         <item name="android:textSize">25dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:freezesText">true</item>
     </style>
     <style name="txtUnit" parent="TextAppearance.AppCompat" >
         <item name="android:textColor">@color/colorUnit</item>

@@ -59,9 +59,14 @@ public class Device implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Device device = (Device) o;
-        return nom.equals(device.nom) &&
-                adrMac.equals(device.adrMac);
+        try{
+            return nom.equals(device.nom) && adrMac.equals(device.adrMac);
+        }catch (NullPointerException exception){
+            return false;
+        }
+
     }
 
     @Override

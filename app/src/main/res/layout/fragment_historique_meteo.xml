@@ -149,10 +149,53 @@
             android:id="@+id/graphMeteo"
 
             app:layout_constraintTop_toBottomOf="@+id/txtGraphUnitLeftMeteo"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/lytChkMeteo"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/lytChkMeteo"
+
+
+            app:layout_constraintTop_toBottomOf="@+id/graphMeteo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            >
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/chkTemperature"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/chkHumidite"
+
+                android:text="@string/temperature"
+                app:buttonTint="@color/colorGraphTemperature"
+                style="@style/txtLegend"
+
+                />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/chkHumidite"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                app:layout_constraintStart_toEndOf="@+id/chkTemperature"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+
+                style="@style/txtLegend"
+
+                android:text="@string/humidite"
+                app:buttonTint="@color/colorGraphHumidity"
+
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
     <ImageButton
         android:id="@+id/btnFullScreenMeteo"
