@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.util.Log;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -34,8 +33,10 @@ public class BluetoothApp {
     BluetoothAdapter bluetoothAdapter;
     BluetoothDevice device;
     String adrMac = "98:3B:8F:78:2C:8C";
+
     BroadcastReceiver receiver;
-    TextView txtDevices;
+    boolean isRegisteringDone = false;
+
     WeakReference<AppCompatActivity> act;
 
     public BluetoothApp(AppCompatActivity a) {
@@ -47,9 +48,9 @@ public class BluetoothApp {
     public void check() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) {
-            hasBluetooth=false;
-        }else{
-            hasBluetooth=true;
+            hasBluetooth = false;
+        } else {
+            hasBluetooth = true;
             int REQUEST_ENABLE_BT = 1;
             if (!bluetoothAdapter.isEnabled()) {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -60,9 +61,9 @@ public class BluetoothApp {
 
 
     public void rechercher() {
-        if (!hasBluetooth){
+        if (!hasBluetooth) {
             Toast.makeText(act.get(), R.string.btNoBluetooth, Toast.LENGTH_SHORT).show();
-        }else {
+        } else {
             devices = Device.fromSet(bluetoothAdapter.getBondedDevices());
 
 
@@ -85,7 +86,7 @@ public class BluetoothApp {
                         BluetoothDevice bDevice = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
 
                         Device device = new Device(bDevice);
-                        if(!devices.contains(device)){
+                        if (!devices.contains(device)) {
                             liste.addItem(device);
                         }
 
@@ -94,28 +95,44 @@ public class BluetoothApp {
                 }
             };
 
-            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-            act.get().registerReceiver(receiver, filter);
+            registerBTReciever();
 
             if (bluetoothAdapter.isDiscovering()) {
                 bluetoothAdapter.cancelDiscovery();
             }
             bluetoothAdapter.startDiscovery();
-            //TODO onClick affecter adrMac
 
         }
 
 
     }
 
+    public void registerBTReciever() {
+
+        if (!isRegisteringDone) {  // Si on a toujours besoin besoin de unregister
+            IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+            act.get().registerReceiver(receiver, filter);
+        }
+    }
+
+    public void unregisterReceiver(boolean done) {
+
+        if (!isRegisteringDone) // Si on a toujours besoin besoin de unregister
+        {
+            isRegisteringDone = done;
+            act.get().unregisterReceiver(receiver);
+        }
+
+    }
+
     public void connecter(String adrMac) {
 
-        Log.i(TAG,adrMac);
+        Log.i(TAG, adrMac);
         bluetoothAdapter.cancelDiscovery();
         final UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //UUID for serial connection
         device = bluetoothAdapter.getRemoteDevice(adrMac); //get remote device by mac, we assume these two devices are already paired
 
-        ConnectThread connect = new ConnectThread(device,SERIAL_UUID);
+        ConnectThread connect = new ConnectThread(device, SERIAL_UUID);
         connect.start();
 
         /*
@@ -156,11 +173,6 @@ public class BluetoothApp {
          */
     }
 
-    public void unregisterReceiver() {
-
-        act.get().unregisterReceiver(receiver);
-    }
-
 
     protected void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(act.get(), Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -180,7 +192,7 @@ public class BluetoothApp {
         this.adrMac = adrMac;
     }
 
-    public void TEST(){
+    public void TEST() {
         devices = Device.fromSet(bluetoothAdapter.getBondedDevices());
         //devices = new ArrayList<Device>();
 
@@ -188,4 +200,7 @@ public class BluetoothApp {
         liste.show(act.get().getSupportFragmentManager(), "dialog");
     }
 
+    public void setAct(WeakReference<AppCompatActivity> act) {
+        this.act = act;
+    }
 }

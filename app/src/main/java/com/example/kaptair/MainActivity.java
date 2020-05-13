@@ -30,12 +30,14 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+import java.lang.ref.WeakReference;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_COARSE_LOCATION = 0;
     public static HandlerUITransfert handlerUI ;
 
-    BluetoothApp bluetooth;
+    static BluetoothApp bluetooth;
     AppDatabase db;
 
     Drawer result;
@@ -57,6 +59,14 @@ public class MainActivity extends AppCompatActivity {
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
             transaction.add(R.id.frag,fragMesures);
             transaction.commit();
+            //Bluetooth
+            handlerUI = new HandlerUITransfert(this);
+            bluetooth = new BluetoothApp(this);
+            bluetooth.rechercher();
+        }else{
+            handlerUI.setAct(new WeakReference<AppCompatActivity>(this));
+            bluetooth.setAct(new WeakReference<AppCompatActivity>(this));
+            bluetooth.registerBTReciever();
         }
 
 
@@ -105,10 +115,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        //Bluetooth
-        handlerUI = new HandlerUITransfert(this);
-        bluetooth = new BluetoothApp(this);
-        bluetooth.rechercher();
+
 
 
     }
@@ -120,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bluetooth.unregisterReceiver();
-        db.close();
+        bluetooth.unregisterReceiver(false);
+        //db.close();
     }
 
     @Override

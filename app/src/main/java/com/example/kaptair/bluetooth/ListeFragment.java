@@ -1,6 +1,7 @@
 package com.example.kaptair.bluetooth;
 
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -8,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -94,6 +96,16 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
         MainActivity act =  (MainActivity)getActivity();
         BluetoothApp b =  act.getBluetooth();
         b.connecter(adapter.getItem(position).getAdrMac());
+        b.unregisterReceiver(true);
         this.dismiss();
+    }
+
+
+    @Override
+    public void onCancel(@NonNull DialogInterface dialog) {
+        super.onCancel(dialog);
+        MainActivity act =  (MainActivity)getActivity();
+        BluetoothApp b =  act.getBluetooth();
+        b.unregisterReceiver(true);
     }
 }

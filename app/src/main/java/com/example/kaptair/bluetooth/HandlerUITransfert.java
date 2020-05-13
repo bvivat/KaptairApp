@@ -269,6 +269,10 @@ public class HandlerUITransfert extends Handler {
         });
     }
 
+    public void setAct(WeakReference<AppCompatActivity> act) {
+        this.act = act;
+    }
+
     public static boolean isNumeric(String str) {
         return str.matches("-?\\d+(\\.\\d+)?");
     }
