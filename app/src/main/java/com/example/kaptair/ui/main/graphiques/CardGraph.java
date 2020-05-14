@@ -72,7 +72,6 @@ public class CardGraph {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                // TODO Auto-generated method stub
                 calendrier.set(Calendar.YEAR, year);
                 calendrier.set(Calendar.MONTH, monthOfYear);
                 calendrier.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -97,7 +96,6 @@ public class CardGraph {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                // TODO Auto-generated method stub
                 calendrier.set(Calendar.YEAR, year);
                 calendrier.set(Calendar.MONTH, monthOfYear);
                 calendrier.set(Calendar.DAY_OF_MONTH, dayOfMonth);
@@ -114,7 +112,6 @@ public class CardGraph {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear,
                                   int dayOfMonth) {
-                // TODO Auto-generated method stub
                 calendrier.set(Calendar.YEAR, year);
                 calendrier.set(Calendar.MONTH, 0);
                 calendrier.set(Calendar.DAY_OF_MONTH, 1);
@@ -173,7 +170,7 @@ public class CardGraph {
                 Date d1 = calendrier.getTime();
                 Date d2= new Date(d1.getTime()+ Graph.ONE_HOUR);
                 List<? extends Mesure> mesures= hourDao.getAllByDate(d1,d2);
-                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.HOUR, type_graph);
+                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.HOUR);
                 frag.get().getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -193,7 +190,7 @@ public class CardGraph {
                 Date d1 = calendrier.getTime();
                 Date d2= new Date(d1.getTime()+ Graph.ONE_DAY);
                 List<? extends Mesure> mesures= dayDao.getAllByDate(d1,d2);
-                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.DAY, type_graph);
+                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.DAY);
                 frag.get().getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -220,7 +217,7 @@ public class CardGraph {
                 Date d1 = calendrier.getTime();
                 Date d2= new Date(d1.getTime()+ Graph.ONE_YEAR+ (bissextile ? Graph.ONE_DAY : 0));
                 List<? extends Mesure> mesures=yearDao.getAllByDate(d1,d2);
-                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.YEAR,bissextile, type_graph);
+                final Graph graph = new Graph(frag.get(),CardGraph.this,mesures, Graph.YEAR, bissextile);
                 frag.get().getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {

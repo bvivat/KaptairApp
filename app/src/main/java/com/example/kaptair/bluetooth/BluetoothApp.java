@@ -66,12 +66,8 @@ public class BluetoothApp {
         } else {
             devices = Device.fromSet(bluetoothAdapter.getBondedDevices());
 
-
-            // TODO GERER AFFICHAGE
             liste = ListeFragment.newInstance(devices);
             liste.show(act.get().getSupportFragmentManager(), "dialog");
-            //TODO Onclick affecter adrMac
-
 
             checkLocationPermission();
 
@@ -89,8 +85,6 @@ public class BluetoothApp {
                         if (!devices.contains(device)) {
                             liste.addItem(device);
                         }
-
-                        //TODO GERER AFFICHAGE
                     }
                 }
             };

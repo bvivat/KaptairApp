@@ -68,50 +68,30 @@ public class Graph {
     private long nextDay=0;
     private long nextHour=0;
 
-    public Graph(HistoriqueFrag frag, CardGraph _card, List<? extends Mesure> mesures, int plage, int type_graph) {
+    public Graph(HistoriqueFrag frag, CardGraph _card, List<? extends Mesure> mesures, int plage) {
 
-        this.frag=new WeakReference<>(frag);
-        this.card=_card;
-
-        chart=card.getChart();
-        this.type_graph=type_graph;
-
-        this.mesures=mesures;
-        this.plage=plage;
-
-        switch (plage){ //TODO Fusionner cette partie entre les deux constructeurs (fonction externe ? , argument optionnel ?)
-            case HOUR:
-                nextHour=ONE_HOUR;
-                plageMin=0;
-                plageMax=INTERVALLE_HOUR;
-                formatter = new DatetimeHourFormatter(chart);
-                break;
-            case DAY:
-                nextDay=ONE_DAY;
-                plageMin=0;
-                plageMax=INTERVALLE_DAY;
-                formatter = new DatetimeDayFormatter(chart);
-                break;
-            case YEAR:
-                Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(card.getCalendrier().getTimeInMillis()-ONE_YEAR); //L'annee precedente
-                prevYear = (c.getActualMaximum(Calendar.DAY_OF_YEAR)>365 ? ONE_YEAR+ONE_DAY : ONE_YEAR); // Si bissextile, vaut 366 jours
-                nextYear=ONE_YEAR;
-                plageMin=0;
-                plageMax=INTERVALLE_YEAR+ anneeBissextile;
-                formatter = new DatetimeYearFormatter(chart, false);
-                break;
-        }
+       this(frag,_card,mesures,plage,false);
 
     }
 
-    public Graph(HistoriqueFrag frag, CardGraph _card, List<? extends Mesure> mesures, int plage, boolean isBissextile, int type_graph) {
+    public Graph(HistoriqueFrag frag, CardGraph _card, List<? extends Mesure> mesures, int plage, boolean isBissextile) {
         this.frag=new WeakReference<>(frag);
         this.card=_card;
         chart=card.getChart();
-        this.type_graph=type_graph;
         this.mesures=mesures;
         this.plage=plage;
+
+        //On regarde de quel type de mesures  il s'agit
+        if (!mesures.isEmpty() && mesures.get(0) instanceof PollutionMesure){
+            this.type_graph=GRAPH_POLLUTION;
+
+        }else if(!mesures.isEmpty() && mesures.get(0) instanceof MeteoMesure){
+            this.type_graph=GRAPH_METEO;
+
+        }else{
+            this.type_graph=-1;
+        }
+
 
         if (isBissextile){
             anneeBissextile=24;
@@ -151,7 +131,7 @@ public class Graph {
         switch (type_graph){
 
             case GRAPH_POLLUTION:
-                //TODO Verifier instanceof et lancer exception
+
                 ArrayList<PollutionMesure> mesuresPoll = (ArrayList<PollutionMesure>) mesures;
                 List<Entry> entriesPM1 = new ArrayList<Entry>();
                 for (PollutionMesure i : mesuresPoll) {
@@ -211,7 +191,6 @@ public class Graph {
 
             case GRAPH_METEO:
 
-                //TODO Verifier instanceof et lancer exception
                 ArrayList<MeteoMesure> mesuresMeteo = (ArrayList<MeteoMesure>) mesures;
 
                 List<Entry> entriesTemperature = new ArrayList<Entry>();
@@ -239,7 +218,8 @@ public class Graph {
                 lineData = new LineData(dataSetTemperature,dataSetHumidity);
                 break;
 
-
+            default:
+                break;
         }
 
 
@@ -255,18 +235,7 @@ public class Graph {
 
         chart.setKeepPositionOnRotation(true);
 
-        /*
-        Legend legend = chart.getLegend();
-        legend.setTextColor(ContextCompat.getColor(frag.get().getContext(), R.color.colorGraphLegend));
-        legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-        legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-        legend.setXEntrySpace(15f);
-        //chart.setExtraBottomOffset(10f);
-
-         */
         //Graphs Legend
-
-
         CompoundButton.OnCheckedChangeListener chkListener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -304,14 +273,17 @@ public class Graph {
 
         chart.getDescription().setEnabled(false);
 
+        chart.setDoubleTapToZoomEnabled(false);
 
         chart.fitScreen();
         chart.notifyDataSetChanged();
         chart.postInvalidate(); // refresh
 
-        ChartTouchListener chartListener = new BarLineChartTouchListener(chart,chart.getMatrix(), 3F){
+        ChartTouchListener chartListener = new BarLineChartTouchListener(chart,chart.getViewPortHandler().getMatrixTouch(), 3F){
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+
+                //On desactive les mouvements du viewPager lors des mouvements dans le graph
                 switch (event.getAction()){
                     case MotionEvent.ACTION_DOWN:
                         v.getParent().requestDisallowInterceptTouchEvent(true);
@@ -320,9 +292,6 @@ public class Graph {
                         v.getParent().requestDisallowInterceptTouchEvent(false);
                         return super.onTouch(v,event);
                     case MotionEvent.ACTION_MOVE:
-                        if(chart.getHighestVisibleX()==chart.getXChartMax()){
-                            Log.d(TAG,"Next by touch");
-                        }
                         v.getParent().requestDisallowInterceptTouchEvent(true);
                         return super.onTouch(v,event);
                     default:
@@ -349,8 +318,8 @@ public class Graph {
             }
 
             @Override
-            public void onChartDoubleTapped(MotionEvent me) { //TODO Dezoomer
-
+            public void onChartDoubleTapped(MotionEvent me) {
+                // /!\ Triggered when zooming multiple times
             }
 
             @Override
@@ -363,11 +332,11 @@ public class Graph {
                 if (velocityX > 0) {
                     // fling to left
                     Log.d(TAG,"Prev");
-                    showPrevPage(); // Your own implementation method.
+                    showPrevPage();
                 } else {
                     // fling to right
                     Log.d(TAG,"Next");
-                    showNextPage(); // Your own implementation method.
+                    showNextPage();
                 }
 
             }
@@ -406,9 +375,6 @@ public class Graph {
                 card.setTitreYear();
                 break;
         }
-
-        chart.fitScreen();
-        chart.invalidate();
     }
 
     private void showNextPage() {
@@ -429,9 +395,6 @@ public class Graph {
                 card.setTitreYear();
                 break;
         }
-
-        chart.fitScreen();
-        chart.invalidate();
     }
 
 
