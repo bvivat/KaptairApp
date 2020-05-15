@@ -14,12 +14,12 @@ import java.util.ArrayList;
 
 public class ListeAdapter extends RecyclerView.Adapter<ListeAdapter.ViewHolder> {
 
-    private ArrayList<Device> devices;
+    private ArrayList<Device> devices; // Les devices a afficher dans la liste
     private LayoutInflater mInflater;
     private ItemClickListener mClickListener;
 
 
-    ListeAdapter(Context context,  ArrayList<Device> devices) {
+    ListeAdapter(Context context, ArrayList<Device> devices) {
         this.mInflater = LayoutInflater.from(context);
         this.devices = devices;
     }
@@ -51,7 +51,7 @@ public class ListeAdapter extends RecyclerView.Adapter<ListeAdapter.ViewHolder> 
         ViewHolder(View itemView) {
             super(itemView);
             txtNom = itemView.findViewById(R.id.txtNom);
-            txtAdresse=itemView.findViewById(R.id.txtAdresse);
+            txtAdresse = itemView.findViewById(R.id.txtAdresse);
             itemView.setOnClickListener(this);
         }
 

@@ -10,6 +10,7 @@ import androidx.preference.PreferenceViewHolder;
 
 import com.example.kaptair.R;
 
+// Version personnalisee du widget PreferenceCategory
 public class MyPreferenceCategory extends PreferenceCategory {
     public MyPreferenceCategory(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);

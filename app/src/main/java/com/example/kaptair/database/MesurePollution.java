@@ -2,7 +2,7 @@ package com.example.kaptair.database;
 
 import androidx.room.*;
 
-import com.example.kaptair.ui.main.graphiques.PollutionMesure;
+import com.example.kaptair.database.InterfacesMesures.PollutionMesure;
 
 import java.util.Date;
 
@@ -28,8 +28,8 @@ public class MesurePollution implements PollutionMesure {
     @Ignore
     @Override
     public float getFloatDate() {
-        Date day = new Date(date.getYear(),date.getMonth(),date.getDate(),date.getHours(),0);
-        return (date.getTime()-day.getTime())/1000;
+        Date day = new Date(date.getYear(), date.getMonth(), date.getDate(), date.getHours(), 0);
+        return (date.getTime() - day.getTime()) / 1000; // On ne garde que le nombre de minutes de la mesure (independament du jour et de l'heure)
     }
 
     @Override

@@ -33,29 +33,31 @@ public class MesuresFrag extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         View v = inflater.inflate(R.layout.fragment_mesures, container, false);
 
+        // On change le titre de la toolbar
         TextView txtTitre = getActivity().findViewById(R.id.txtTitre);
         txtTitre.setText(R.string.mesures);
 
+        // On initialise le ViewPager
         SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(getContext(), getChildFragmentManager());
 
         ViewPager viewPager = v.findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
 
+        // On passe le ViewPager dans la toolbar si on est en mode paysage
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             TabLayout tabs = getActivity().findViewById(R.id.tabs);
             tabs.setVisibility(View.VISIBLE);
             tabs.setupWithViewPager(viewPager);
-            //getActivity().findViewById(R.id.txtTitre).setVisibility(View.GONE);
         } else {
             TabLayout tabs = v.findViewById(R.id.tabs);
             tabs.setupWithViewPager(viewPager);
         }
 
-
+        // Necessaire pour pouvoir modifier le menu de la toolbar
         setHasOptionsMenu(true);
 
         return v;
@@ -70,6 +72,7 @@ public class MesuresFrag extends Fragment {
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
+        // On affiche l'item Synchroniser dans la toolbar
         menu.findItem(R.id.action_synchro).setVisible(true);
     }
 
@@ -77,7 +80,7 @@ public class MesuresFrag extends Fragment {
     public void onDetach() {
         super.onDetach();
         if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            getActivity().findViewById(R.id.tabs).setVisibility(View.GONE); //Si on change de fragment alors qu'on est en paysage, on supprime le TabLayout
+            getActivity().findViewById(R.id.tabs).setVisibility(View.GONE); //Si on change de fragment alors qu'on est en paysage, on supprime le TabLayout de la toolbar
         }
     }
 }

@@ -37,11 +37,7 @@ public class TempsReelFrag extends Fragment {
 
     public static TempsReelFrag newInstance() {
         TempsReelFrag fragment = new TempsReelFrag();
-       /* Bundle bundle = new Bundle();
-        bundle.putInt(ARG_SECTION_NUMBER, index);
-        fragment.setArguments(bundle);*/
-       Log.d("TpsReelFrag","New instance created");
-       return fragment;
+        return fragment;
     }
 
 

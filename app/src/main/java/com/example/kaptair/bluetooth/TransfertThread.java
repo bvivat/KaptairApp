@@ -15,10 +15,10 @@ interface TypeMessage {
     int PARTICULES = 0;
     int ATMOSPHERE = 1;
     int LOCALISATION = 2;
-    HashMap<String,Integer> type = new HashMap<String,Integer>(){{
-        put("PM",PARTICULES);
-        put("AT",ATMOSPHERE);
-        put("GP",LOCALISATION);
+    HashMap<String, Integer> type = new HashMap<String, Integer>() {{
+        put("PM", PARTICULES);
+        put("AT", ATMOSPHERE);
+        put("GP", LOCALISATION);
 
     }};
 
@@ -33,9 +33,8 @@ public class TransfertThread extends Thread {
         return -1;
     }
 
-    private static final String TAG = "TransfertThread" ;
+    private static final String TAG = "TransfertThread";
 
-    //private static HandlerUITransfert handler = new HandlerUITransfert(Looper.getMainLooper());
     private final BluetoothSocket mmSocket;
     private final InputStream mmInStream;
     private final OutputStream mmOutStream;
@@ -43,6 +42,8 @@ public class TransfertThread extends Thread {
 
     public TransfertThread(BluetoothSocket socket) {
         mmSocket = socket;
+
+        //On initialise les streams
         InputStream tmpIn = null;
         OutputStream tmpOut = null;
 
@@ -71,18 +72,18 @@ public class TransfertThread extends Thread {
                 // Read from the InputStream.
                 numBytes = mmInStream.read(mmBuffer);
 
-                String msg = new String(mmBuffer,0,numBytes);
-                Log.i(TAG,"Message recu : "+ msg);
-                String id="";
-                if(numBytes>=2){
-                    id = msg.substring(0,2);
-                    Log.i(TAG,"id recu : "+ id);
+                String msg = new String(mmBuffer, 0, numBytes);
+                Log.i(TAG, "Message recu : " + msg);
+
+                String id = "";
+                if (numBytes >= 2) {
+                    id = msg.substring(0, 2);
+                    Log.i(TAG, "id recu : " + id);
                 }
 
                 // Send the obtained bytes to the UI activity.
-
                 Message readMsg = MainActivity.handlerUI.obtainMessage(
-                        getOrDef(TypeMessage.type,id), numBytes, -1,
+                        getOrDef(TypeMessage.type, id), numBytes, -1,
                         msg);
                 readMsg.sendToTarget();
             } catch (IOException e) {

@@ -37,7 +37,7 @@ import java.lang.ref.WeakReference;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_COARSE_LOCATION = 0;
-    public static HandlerUITransfert handlerUI ;
+    public static HandlerUITransfert handlerUI;
 
     static BluetoothApp bluetooth;
     AppDatabase db;
@@ -57,18 +57,22 @@ public class MainActivity extends AppCompatActivity {
         fragParam = new ParamFrag();
         fragCarte = new CarteFrag();
 
-        if (savedInstanceState==null){
+        if (savedInstanceState == null) {
+            // On met le fragment mesure
             fragMesures = new MesuresFrag();
             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.frag,fragMesures);
+            transaction.add(R.id.frag, fragMesures);
             transaction.commit();
+
             //Bluetooth
             handlerUI = new HandlerUITransfert(this);
             bluetooth = new BluetoothApp(this);
             bluetooth.rechercher();
-        }else{
+        } else {
+            // On actualise les references externes vers cette activite
             handlerUI.setAct(new WeakReference<AppCompatActivity>(this));
             bluetooth.setAct(new WeakReference<AppCompatActivity>(this));
+
             bluetooth.registerBTReciever();
         }
 
@@ -77,13 +81,15 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(t);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        // Material Drawer \\
+
+        // Les items du Material Drawer
         final PrimaryDrawerItem mesures = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.mesures).withIcon(GoogleMaterial.Icon.gmd_straighten);
         final PrimaryDrawerItem carte = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.carte).withIcon(GoogleMaterial.Icon.gmd_map);
         final PrimaryDrawerItem param = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.param).withIcon(GoogleMaterial.Icon.gmd_settings);
 
-
-
-         result = new DrawerBuilder()
+        // On construit le menu
+        result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(t)
                 .addDrawerItems(
@@ -95,19 +101,18 @@ public class MainActivity extends AppCompatActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        // do something with the clicked item :D
-                        if (drawerItem==param){
-
+                        // On change de fragment quand un item est clique
+                        if (drawerItem == param) {
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.frag,fragParam);
+                            transaction.replace(R.id.frag, fragParam);
                             transaction.commit();
-                        } else if(drawerItem==mesures){
+                        } else if (drawerItem == mesures) {
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.frag,fragMesures);
+                            transaction.replace(R.id.frag, fragMesures);
                             transaction.commit();
-                        }else if(drawerItem==carte){
+                        } else if (drawerItem == carte) {
                             FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                            transaction.replace(R.id.frag,fragCarte);
+                            transaction.replace(R.id.frag, fragCarte);
                             transaction.commit();
                         }
                         return false;
@@ -116,12 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 
 
-
         db = AppDatabase.getInstance(this);
-
-
-
-
 
 
     }
@@ -133,18 +133,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bluetooth.unregisterReceiver(false);
-        //db.close();
+        bluetooth.unregisterReceiver(false); // Pour eviter les leak de memoire
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        //TODO Bluetooth related
         switch (requestCode) {
             case REQUEST_COARSE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
                 } else {
@@ -161,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        // On initialise le menu de la toolbar
         getMenuInflater().inflate(R.menu.toolbar_menu, menu);
         menu.findItem(R.id.action_synchro).setVisible(false);
         return true;
@@ -168,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        // On reagit au click sur un des items du menu de la toolbar
         switch (item.getItemId()) {
             case R.id.action_synchro: {
                 // do your sign-out stuff

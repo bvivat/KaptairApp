@@ -6,11 +6,13 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
 
+import com.example.kaptair.database.InterfacesMesures.MesureDao;
+
 import java.util.Date;
 import java.util.List;
 
 @Dao
-public interface MoyenneDayMesuresPollutionDao extends MesureDao{
+public interface MoyenneDayMesuresPollutionDao extends MesureDao {
 
     @Query("SELECT * FROM MoyenneDayMesuresPollution")
     List<MoyenneDayMesuresPollution> getAll();

@@ -45,7 +45,7 @@ public class CarteFrag extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View v=inflater.inflate(R.layout.fragment_carte, container, false);
+        View v = inflater.inflate(R.layout.fragment_carte, container, false);
 
         Context ctx = getContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
@@ -64,17 +64,17 @@ public class CarteFrag extends Fragment {
 
         map.setMultiTouchControls(true);
 
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getContext()),map);
+        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getContext()), map);
         this.mLocationOverlay.enableMyLocation();
         map.getOverlays().add(this.mLocationOverlay);
 
         IMapController mapController = map.getController();
         mapController.setZoom(10.0);
 
-        GeoPoint startPoint = new GeoPoint(48.8534,2.3488); //TODO Utiliser lastLocation
+        GeoPoint startPoint = new GeoPoint(48.8534, 2.3488); //TODO Utiliser lastLocation
         mapController.setCenter(startPoint);
 
-        requestPermissionsIfNecessary(new String[] {
+        requestPermissionsIfNecessary(new String[]{
                 // if you need to show the current location, uncomment the line below
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 // WRITE_EXTERNAL_STORAGE is required in order to show the map

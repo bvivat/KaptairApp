@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.example.kaptair.ui.main.graphiques.MeteoMesure;
+import com.example.kaptair.database.InterfacesMesures.MeteoMesure;
 
 import java.util.Date;
 
@@ -19,37 +19,37 @@ public class MoyenneYearMesuresMeteo implements MeteoMesure {
     public int nbMesures;
 
     public MoyenneYearMesuresMeteo(Date date, double temperature, double humidity) {
-        this.date = new Date(date.getYear(),date.getMonth(),date.getDate()); //On garde à l'année près
+        this.date = new Date(date.getYear(), date.getMonth(), date.getDate()); //On garde au jour près
         this.temperature = temperature;
-        this.humidity=humidity;
-        this.nbMesures=1;
+        this.humidity = humidity;
+        this.nbMesures = 1;
     }
 
     @Ignore
     public MoyenneYearMesuresMeteo(MesureMeteo m) {
 
-        this.date = new Date(m.date.getYear(),m.date.getMonth(),m.date.getDate()); //On garde à l'année près
-        this.temperature =m.temperature;
-        this.humidity=m.humidity;
-        this.nbMesures=1;
+        this.date = new Date(m.date.getYear(), m.date.getMonth(), m.date.getDate()); //On garde au jour près
+        this.temperature = m.temperature;
+        this.humidity = m.humidity;
+        this.nbMesures = 1;
     }
 
     @Ignore
     public MoyenneYearMesuresMeteo(MoyenneYearMesuresMeteo mOld, MoyenneYearMesuresMeteo mNew) {
 
         this.date = mOld.date;
-        this.nbMesures=mOld.nbMesures+1;
-        this.temperature = (mOld.temperature *mOld.nbMesures + mNew.temperature)/this.nbMesures;
-        this.humidity = (mOld.humidity*mOld.nbMesures + mNew.humidity)/this.nbMesures;
+        this.nbMesures = mOld.nbMesures + 1;
+        this.temperature = (mOld.temperature * mOld.nbMesures + mNew.temperature) / this.nbMesures;
+        this.humidity = (mOld.humidity * mOld.nbMesures + mNew.humidity) / this.nbMesures;
 
     }
 
     @Override
     @Ignore
-    public float getFloatDate(){
+    public float getFloatDate() {
 
-        int offset = 1 + date.getTimezoneOffset()/60;
-        float result = (date.getTime()-new Date(date.getYear(),0,1).getTime())/1000/60/60 - offset;
+        int offset = 1 + date.getTimezoneOffset() / 60;
+        float result = (date.getTime() - new Date(date.getYear(), 0, 1).getTime()) / 1000 / 60 / 60 - offset; // On ne garde que le jour de la mesure (independament de l'annee)
         return result;
     }
 

@@ -52,10 +52,7 @@ public class HistoriqueFrag extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_historique, container, false);
 
-        db=AppDatabase.getInstance(getContext());
-
-
-
+        db = AppDatabase.getInstance(getContext());
 
         // Inflate the layout for this fragment
         return v;
@@ -81,20 +78,21 @@ public class HistoriqueFrag extends Fragment {
         final View fragPoll = getView().findViewById(R.id.fragHistoriquePoll);
         final View fragMeteo = getView().findViewById(R.id.fragHistoriqueMeteo);
 
-
+        // Listener des boutons plein ecran
         View.OnClickListener fullScreenListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.isSelected()){
+                if (v.isSelected()) {
+                    // Si deja en plein ecran, on reaffiche tout
                     getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
                     tab.setVisibility(View.VISIBLE);
                     toolbar.setVisibility(View.VISIBLE);
                     fragMeteo.setVisibility(View.VISIBLE);
                     fragPoll.setVisibility(View.VISIBLE);
                     v.setSelected(false);
-                }else {
-                    switch (v.getId()){
-
+                } else {
+                    // On enleve l'autre graph
+                    switch (v.getId()) {
                         case R.id.btnFullScreenPoll:
                             fragMeteo.setVisibility(View.GONE);
                             break;
@@ -103,8 +101,11 @@ public class HistoriqueFrag extends Fragment {
                             fragPoll.setVisibility(View.GONE);
                             break;
                     }
+                    // On enleve la toolbar et les onglets du ViewPager
                     tab.setVisibility(View.GONE);
                     toolbar.setVisibility(View.GONE);
+
+                    // On passe en mode plein ecran ( suppression de la bare de statut )
                     getActivity().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
                     v.setSelected(true);
                 }
@@ -118,47 +119,50 @@ public class HistoriqueFrag extends Fragment {
         //Graph Pollution
         TextView txtTitreGraphPollution = getView().findViewById(R.id.txtGraphTitrePollution);
 
-        LineChart graphPollution= getView().findViewById(R.id.graphPollution);
+        LineChart graphPollution = getView().findViewById(R.id.graphPollution);
 
         Button btnHourPollution = getView().findViewById(R.id.btnHourPollution);
         Button btnDayPollution = getView().findViewById(R.id.btnDayPollution);
         Button btnYearPollution = getView().findViewById(R.id.btnYearPollution);
 
-        cardPollution = new CardGraph(this,db.mesurePollutionDao(),db.moyenneDayMesuresPollutionDao(),db.moyenneYearMesuresPollutionDao(),txtTitreGraphPollution,graphPollution,btnHourPollution,btnDayPollution,btnYearPollution, Graph.GRAPH_POLLUTION);
+        cardPollution = new CardGraph(this, db.mesurePollutionDao(), db.moyenneDayMesuresPollutionDao(), db.moyenneYearMesuresPollutionDao(), txtTitreGraphPollution, graphPollution, btnHourPollution, btnDayPollution, btnYearPollution, Graph.GRAPH_POLLUTION);
 
         //Graph Meteo
         TextView txtTitreGraphMeteo = getView().findViewById(R.id.txtGraphTitreMeteo);
 
-        LineChart graphMeteo= getView().findViewById(R.id.graphMeteo);
+        LineChart graphMeteo = getView().findViewById(R.id.graphMeteo);
 
         Button btnHourMeteo = getView().findViewById(R.id.btnHourMeteo);
         Button btnDayMeteo = getView().findViewById(R.id.btnDayMeteo);
         Button btnYearMeteo = getView().findViewById(R.id.btnYearMeteo);
 
-        cardMeteo = new CardGraph(this,db.mesureMeteoDao(),db.moyenneDayMesuresMeteoDao(),db.moyenneYearMesuresMeteoDao(),txtTitreGraphMeteo,graphMeteo,btnHourMeteo,btnDayMeteo,btnYearMeteo,Graph.GRAPH_METEO);
+        cardMeteo = new CardGraph(this, db.mesureMeteoDao(), db.moyenneDayMesuresMeteoDao(), db.moyenneYearMesuresMeteoDao(), txtTitreGraphMeteo, graphMeteo, btnHourMeteo, btnDayMeteo, btnYearMeteo, Graph.GRAPH_METEO);
 
         cards.add(cardPollution);
         cards.add(cardMeteo);
 
         //On initialise les cards
-        if (savedInstanceState != null){
-            int saveIndex=0;
-            for( CardGraph c : cards){
-                ArrayList<Integer> stateBtns =  savedInstanceState.getIntegerArrayList("stateBtns "+saveIndex);
+        if (savedInstanceState != null) {
+            int saveIndex = 0;
+            for (CardGraph c : cards) {
+                ArrayList<Integer> stateBtns = savedInstanceState.getIntegerArrayList("stateBtns " + saveIndex);
 
-                for (int i=0;i<stateBtns.size();i++){
-                    c.getBtns().get(i).setSelected(stateBtns.get(i)==1);
+                for (int i = 0; i < stateBtns.size(); i++) {
+                    // On restore l'etat des boutons
+                    c.getBtns().get(i).setSelected(stateBtns.get(i) == 1);
                 }
 
-                c.getCalendrier().setTimeInMillis(savedInstanceState.getLong("calendrier "+saveIndex));
+                // On restore le calendrier
+                c.getCalendrier().setTimeInMillis(savedInstanceState.getLong("calendrier " + saveIndex));
 
-                if(c.getBtnHour().isSelected()){
+                // On initialise le graph
+                if (c.getBtnHour().isSelected()) {
                     c.setTitreHour();
                     c.graphHour();
-                }else if(c.getBtnDay().isSelected()){
+                } else if (c.getBtnDay().isSelected()) {
                     c.setTitreDay();
                     c.graphDay();
-                }else if (c.getBtnYear().isSelected()){
+                } else if (c.getBtnYear().isSelected()) {
                     c.setTitreYear();
                     c.graphYear();
                 }
@@ -167,8 +171,9 @@ public class HistoriqueFrag extends Fragment {
 
             }
 
-        }else{
-            for( CardGraph c : cards){
+        } else {
+            for (CardGraph c : cards) {
+                c.getBtnHour().setSelected(true);
                 c.graphHour();
                 c.setTitreHour();
             }
@@ -180,16 +185,16 @@ public class HistoriqueFrag extends Fragment {
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        int saveIndex=0;
-        for( CardGraph c : cards){ // Pour chaque card (pollution et meteo)
+        int saveIndex = 0;
+        for (CardGraph c : cards) { // Pour chaque card (pollution et meteo)
             ArrayList<Integer> stateBtns = new ArrayList<>();
 
-            for (Button b : c.getBtns()){
-                stateBtns.add(b.isSelected() ? 1 : 0); // On retient l'etat de ses boutons
+            for (Button b : c.getBtns()) {
+                stateBtns.add(b.isSelected() ? 1 : 0); // On sauvegarde l'etat de ses boutons
             }
 
-            outState.putIntegerArrayList("stateBtns "+saveIndex,stateBtns);
-            outState.putLong("calendrier "+saveIndex, c.getCalendrier().getTimeInMillis());
+            outState.putIntegerArrayList("stateBtns " + saveIndex, stateBtns);
+            outState.putLong("calendrier " + saveIndex, c.getCalendrier().getTimeInMillis());
             saveIndex++;
         }
 

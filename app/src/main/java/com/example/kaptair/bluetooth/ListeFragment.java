@@ -30,16 +30,21 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
 
     ArrayList<Device> devices;
     ListeAdapter adapter;
+
     public ListeFragment() {
         // Required empty public constructor
     }
 
 
     public static ListeFragment newInstance(ArrayList<Device> liste) {
+
+        //On cree une liste et on lui passe en argument les devices a afficher
         ListeFragment fragment = new ListeFragment();
+
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("LISTE", liste);
         fragment.setArguments(bundle);
+
         return fragment;
     }
 
@@ -48,12 +53,12 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-       setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Light_Dialog);
+        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Light_Dialog);
 
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         //this.getDialog().getWindow().setLayout(1000,2000);
     }
@@ -64,13 +69,16 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_liste, container, false);
 
+        //On recupere les devices a afficher
+        devices = getArguments().getParcelableArrayList("LISTE");
 
-        devices=getArguments().getParcelableArrayList("LISTE");
-
+        //On genere la recyclerView qui va lister les devices
         RecyclerView recyclerView = v.findViewById(R.id.rcyclRes);
+
         LinearLayoutManager lytManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(lytManager);
-        adapter = new ListeAdapter(this.getContext(),devices);
+
+        adapter = new ListeAdapter(this.getContext(), devices);
         adapter.setClickListener(this);
         recyclerView.setAdapter(adapter);
 
@@ -85,7 +93,7 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
         return v;
     }
 
-    public void addItem(Device device){
+    public void addItem(Device device) {
         devices.add(device);
         adapter.notifyItemInserted(devices.size() - 1);
 
@@ -93,10 +101,12 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
 
     @Override
     public void onItemClick(View view, int position) {
-        MainActivity act =  (MainActivity)getActivity();
-        BluetoothApp b =  act.getBluetooth();
-        b.connecter(adapter.getItem(position).getAdrMac());
-        b.unregisterReceiver(true);
+        MainActivity act = (MainActivity) getActivity();
+
+        BluetoothApp b = act.getBluetooth();
+        b.connecter(adapter.getItem(position).getAdrMac()); // On se connecte a l'addresse clilquee
+        b.unregisterReceiver(true); // On arrete de discover des nouveaux devices
+
         this.dismiss();
     }
 
@@ -104,8 +114,9 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
     @Override
     public void onCancel(@NonNull DialogInterface dialog) {
         super.onCancel(dialog);
-        MainActivity act =  (MainActivity)getActivity();
-        BluetoothApp b =  act.getBluetooth();
-        b.unregisterReceiver(true);
+        MainActivity act = (MainActivity) getActivity();
+
+        BluetoothApp b = act.getBluetooth();
+        b.unregisterReceiver(true); // On arrete de discover des nouveaux devices
     }
 }

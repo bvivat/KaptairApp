@@ -23,6 +23,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract MoyenneYearMesuresMeteoDao moyenneYearMesuresMeteoDao();
 
     public static AppDatabase getInstance(Context context) {
+        // Singleton pattern, pour n'avoir qu'une instance pour l'ensemble des classes
         if (INSTANCE == null) {
             synchronized (AppDatabase.class) {
                 if (INSTANCE == null) {

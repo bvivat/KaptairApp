@@ -36,7 +36,8 @@ public class YearPickerDialog extends DialogFragment {
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),R.style.MyYearDialog));
+        AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.MyYearDialog));
+
         // Get the layout inflater
         LayoutInflater inflater = getActivity().getLayoutInflater();
 

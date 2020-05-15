@@ -9,17 +9,18 @@ import java.util.UUID;
 
 public class ConnectThread extends Thread {
 
-    final static String TAG= "ConnectThread";
+    final static String TAG = "ConnectThread";
     final UUID SERIAL_UUID;
     private final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
 
 
     public ConnectThread(BluetoothDevice device, UUID SERIAL_UUID) {
-        this.SERIAL_UUID=SERIAL_UUID;
+        this.SERIAL_UUID = SERIAL_UUID;
         BluetoothSocket tmp = null;
         mmDevice = device;
 
+        //Initialisation de la socket
         try {
             tmp = device.createRfcommSocketToServiceRecord(SERIAL_UUID);
         } catch (IOException e) {
@@ -32,7 +33,7 @@ public class ConnectThread extends Thread {
 
         try {
             mmSocket.connect();
-            Log.i(TAG,"Connecté à la socket");
+            Log.i(TAG, "Connecté à la socket");
         } catch (IOException connectException) {
             // Unable to connect; close the socket and return.
             Log.e(TAG, "Could not connect to socket", connectException);
@@ -44,8 +45,7 @@ public class ConnectThread extends Thread {
             return;
         }
 
-        // The connection attempt succeeded. Perform work associated with
-        // the connection in a separate thread.
+        // Connexion reussie. On lance le transfert
         TransfertThread transfert = new TransfertThread(mmSocket);
         transfert.start();
     }

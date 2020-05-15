@@ -2,7 +2,7 @@ package com.example.kaptair.database;
 
 import androidx.room.*;
 
-import com.example.kaptair.ui.main.graphiques.MeteoMesure;
+import com.example.kaptair.database.InterfacesMesures.MeteoMesure;
 
 import java.util.Date;
 
@@ -18,15 +18,15 @@ public class MesureMeteo implements MeteoMesure {
     public MesureMeteo(Date date, double temperature, double humidity) {
         this.date = date;
         this.temperature = temperature;
-        this.humidity=humidity;
+        this.humidity = humidity;
     }
 
     @Ignore
     @Override
-    public float getFloatDate(){
+    public float getFloatDate() {
 
-        Date day = new Date(date.getYear(),date.getMonth(),date.getDate(),date.getHours(),0);
-        return (date.getTime()-day.getTime())/1000;
+        Date day = new Date(date.getYear(), date.getMonth(), date.getDate(), date.getHours(), 0);
+        return (date.getTime() - day.getTime()) / 1000; // On ne garde que le nombre de minutes de la mesure (independament du jour et de l'heure)
     }
 
     @Override

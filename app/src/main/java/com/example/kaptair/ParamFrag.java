@@ -50,7 +50,7 @@ public class ParamFrag extends PreferenceFragmentCompat {
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.fragment_param, rootKey);
 
-        db=AppDatabase.getInstance(getContext());
+        db = AppDatabase.getInstance(getContext());
 
         Preference export = findPreference("export");
         Preference delete = findPreference("delete");
@@ -59,50 +59,53 @@ public class ParamFrag extends PreferenceFragmentCompat {
         exportIntent.setAction(Intent.ACTION_SEND);
 
 
-
+        // Listener du parametre Export
         Preference.OnPreferenceClickListener listenerExport = new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 executor.execute(new Runnable() {
                     @Override
                     public void run() {
-                        FileOutputStream output = null;
+                        // Export de la BD sous forme de CSV \\
+                        FileOutputStream output;
                         String exportName = "mesures.csv";
                         String exportMsg = "SEP=,\n";
 
                         List<MesurePollution> mesuresPollution = db.mesurePollutionDao().getAll();
-                        exportMsg+="\n";
-                        exportMsg+="Date,";
-                        exportMsg+="PM1,";
-                        exportMsg+="PM2.5,";
-                        exportMsg+="PM10,";
-                        exportMsg+="CO2\n";
+                        exportMsg += "\n";
+                        exportMsg += "Date,";
+                        exportMsg += "PM1,";
+                        exportMsg += "PM2.5,";
+                        exportMsg += "PM10,";
+                        exportMsg += "CO2\n";
 
-                        for (MesurePollution m : mesuresPollution ){
-                            exportMsg+=m.date+",";
-                            exportMsg+=m.pm1+",";
-                            exportMsg+=m.pm25+",";
-                            exportMsg+=m.pm10+",";
-                            exportMsg+=m.co2+"\n";
+                        for (MesurePollution m : mesuresPollution) {
+                            exportMsg += m.date + ",";
+                            exportMsg += m.pm1 + ",";
+                            exportMsg += m.pm25 + ",";
+                            exportMsg += m.pm10 + ",";
+                            exportMsg += m.co2 + "\n";
                         }
 
                         List<MesureMeteo> mesuresMeteo = db.mesureMeteoDao().getAll();
-                        exportMsg+="\n";
-                        exportMsg+="Date,";
-                        exportMsg+=getString(R.string.temperature)+",";
-                        exportMsg+=getString(R.string.humidite);
-                        exportMsg+="\n";
+                        exportMsg += "\n";
+                        exportMsg += "Date,";
+                        exportMsg += getString(R.string.temperature) + ",";
+                        exportMsg += getString(R.string.humidite);
+                        exportMsg += "\n";
 
-                        for (MesureMeteo m : mesuresMeteo ){
-                            exportMsg+=m.date+",";
-                            exportMsg+=m.temperature+",";
-                            exportMsg+=m.humidity+"\n";
+                        for (MesureMeteo m : mesuresMeteo) {
+                            exportMsg += m.date + ",";
+                            exportMsg += m.temperature + ",";
+                            exportMsg += m.humidity + "\n";
                         }
                         try {
                             output = getContext().openFileOutput(exportName, Context.MODE_PRIVATE);
+                            // Ces 3 premiers octets permettent d'indiquer qu'il s'agit d'UTF-8
                             output.write(239);
                             output.write(187);
                             output.write(191);
+
                             output.write(exportMsg.getBytes());
                             output.close();
                         } catch (FileNotFoundException e) {
@@ -111,16 +114,20 @@ public class ParamFrag extends PreferenceFragmentCompat {
                             e.printStackTrace();
                         }
 
-                        Uri uri = FileProvider.getUriForFile(getContext(),"com.example.kaptair",new File( getContext().getFilesDir(), exportName));
+                        Uri uri = FileProvider.getUriForFile(getContext(), "com.example.kaptair", new File(getContext().getFilesDir(), exportName));
                         exportIntent.putExtra(Intent.EXTRA_STREAM, uri);
                         exportIntent.setType("application/csv");
-                        startActivity(Intent.createChooser(exportIntent,"Sauvegarder"));
+
+                        // On affiche le dialog d'exportation
+                        startActivity(Intent.createChooser(exportIntent, "Sauvegarder"));
                     }
                 });
 
                 return true;
             }
         };
+
+        // Listener du parametre Supprimer
         Preference.OnPreferenceClickListener listenerDelete = new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
@@ -129,12 +136,14 @@ public class ParamFrag extends PreferenceFragmentCompat {
                     @Override
                     public void run() {
 
+                        // Dialog de confirmation
                         final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                switch (which){
+                                switch (which) {
                                     case DialogInterface.BUTTON_POSITIVE:
                                         db.close();
+                                        // On supprime la DB
                                         getContext().deleteDatabase(AppDatabase.DB_NAME);
                                         break;
 
@@ -144,7 +153,7 @@ public class ParamFrag extends PreferenceFragmentCompat {
                             }
                         };
 
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(),R.style.ConfirmDialog));
+                        final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.ConfirmDialog));
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
