@@ -48,5 +48,6 @@
     <string name="preferencesVersionSum">1.12</string>
 
     <string name="synchroCapteur">Synchroniser les données</string>
+    <string name="preferencesSynchroSum">Synchroniser les dernières données enregistrées par le capteur avec le téléphone</string>
 
 </resources>

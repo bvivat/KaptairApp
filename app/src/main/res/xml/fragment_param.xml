@@ -8,6 +8,14 @@
         android:title="@string/preferencesCatDonnees"
         >
         <androidx.preference.Preference
+            android:icon="@drawable/ic_synchro"
+            android:key="synchro"
+            android:persistent="false"
+            android:summary="@string/preferencesSynchroSum"
+            android:title="@string/synchroCapteur"
+
+            />
+        <androidx.preference.Preference
             android:icon="@drawable/ic_export"
             android:key="export"
             android:persistent="false"
