@@ -2,6 +2,8 @@ package com.example.kaptair;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.kaptair.bluetooth.BluetoothApp;
@@ -51,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         fragParam = new ParamFrag();
         fragCarte = new CarteFrag();
 
@@ -71,6 +74,9 @@ public class MainActivity extends AppCompatActivity {
 
 
         Toolbar t = findViewById(R.id.toolbar);
+        setSupportActionBar(t);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         final PrimaryDrawerItem mesures = new PrimaryDrawerItem().withIdentifier(1).withName(R.string.mesures).withIcon(GoogleMaterial.Icon.gmd_straighten);
         final PrimaryDrawerItem carte = new PrimaryDrawerItem().withIdentifier(2).withName(R.string.carte).withIcon(GoogleMaterial.Icon.gmd_map);
         final PrimaryDrawerItem param = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.param).withIcon(GoogleMaterial.Icon.gmd_settings);
@@ -151,6 +157,25 @@ public class MainActivity extends AppCompatActivity {
             // other 'case' lines to check for other
             // permissions this app might request.
         }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        menu.findItem(R.id.action_synchro).setVisible(false);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_synchro: {
+                // do your sign-out stuff
+                break;
+            }
+            // case blocks for other MenuItems (if any)
+        }
+        return true;
     }
 
     @Override

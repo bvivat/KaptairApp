@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar">
@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -28,6 +29,13 @@
     <style name="ConfirmDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <!-- Used for the buttons -->
         <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Required for pre-Lollipop.-->
+        <item name="overlapAnchor">false</item>
+        <!-- Required for Lollipop. -->
+        <item name="android:overlapAnchor" tools:targetApi="lollipop">false</item>
     </style>
 
 

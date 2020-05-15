@@ -47,4 +47,6 @@
     <string name="preferencesVersionTitle">Version de l\'application</string>
     <string name="preferencesVersionSum">1.12</string>
 
+    <string name="synchroCapteur">Synchroniser les données</string>
+
 </resources>
