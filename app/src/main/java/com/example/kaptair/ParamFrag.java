@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.kaptair.bluetooth.OnConnectionResultListener;
 import com.example.kaptair.database.AppDatabase;
 import com.example.kaptair.database.MesureMeteo;
 import com.example.kaptair.database.MesurePollution;
@@ -44,6 +45,12 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
     private AppDatabase db;
     private Executor executor = Executors.newSingleThreadExecutor();
 
+    Preference export;
+    Preference delete;
+    Preference modifNomCapteur;
+    Preference changerCapteur;
+    private final static String TAG = "Param";
+
     public ParamFrag() {
         // Required empty public constructor
     }
@@ -54,36 +61,13 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
         db = AppDatabase.getInstance(getContext());
 
-        Preference export = findPreference("export");
-        Preference delete = findPreference("delete");
-        Preference modifNomCapteur = findPreference("modifNom"); //TODO Faire la modification du nom
-        Preference changerCapteur = findPreference("changerCapteur");
+        export = findPreference("export");
+        delete = findPreference("delete");
+        modifNomCapteur = findPreference("modifNom"); //TODO Faire la modification du nom
+        changerCapteur = findPreference("changerCapteur");
 
         // On initialise les noms de preferences dynamiques
-        try{
-            // Si l'appareil est connecte a un capteur
-            if (((MainActivity) getActivity()).getBluetooth().getConnect().isConnected()) {
-
-                modifNomCapteur.setEnabled(true);
-                modifNomCapteur.setSummary(getString(R.string.preferencesModifNomCapteurSum, ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
-
-                changerCapteur.setSummary(getString(R.string.preferencesChangerCapteurSum, ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
-
-            } else {
-                modifNomCapteur.setSummary(R.string.preferencesNotConnected);
-                modifNomCapteur.setEnabled(false);
-
-                changerCapteur.setSummary(R.string.preferencesNotConnected);
-            }
-        }catch (NullPointerException e){
-            // La connection bluetooth n'a pas ete initialisee
-            modifNomCapteur.setSummary(R.string.preferencesNotConnected);
-            modifNomCapteur.setEnabled(false);
-
-            changerCapteur.setSummary(R.string.preferencesNotConnected);
-        }
-
-
+        initDynamicParams();
 
         final Intent exportIntent = new Intent();
         exportIntent.setAction(Intent.ACTION_SEND);
@@ -177,6 +161,53 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
         };
         export.setOnPreferenceClickListener(listenerExport);
         delete.setOnPreferenceClickListener(listenerDelete);
+
+        // Listener du parametre ChangerCapteur
+        Preference.OnPreferenceClickListener listenerChangerCapteur = new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+
+                ((MainActivity) getActivity()).checkLocationPermission();
+
+                //On rafraichit le fragment param
+                ((MainActivity) getActivity()).getBluetooth().setListener(new OnConnectionResultListener() {
+                    @Override
+                    public void onConnectionResult() {
+                        initDynamicParams();
+                    }
+                });
+                return true;
+            }
+        };
+
+        changerCapteur.setOnPreferenceClickListener(listenerChangerCapteur);
+
+
+    }
+
+    private void initDynamicParams() {
+        try {
+            // Si l'appareil est connecte a un capteur
+            if (((MainActivity) getActivity()).getBluetooth().getConnect().isConnected()) {
+
+                modifNomCapteur.setEnabled(true);
+                modifNomCapteur.setSummary(getString(R.string.preferencesModifNomCapteurSum, ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
+
+                changerCapteur.setSummary(getString(R.string.preferencesChangerCapteurSum, ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
+
+            } else {
+                modifNomCapteur.setSummary(R.string.preferencesNotConnected);
+                modifNomCapteur.setEnabled(false);
+
+                changerCapteur.setSummary(R.string.preferencesNotConnected);
+            }
+        } catch (NullPointerException e) {
+            // La connection bluetooth n'a pas ete initialisee
+            modifNomCapteur.setSummary(R.string.preferencesNotConnected);
+            modifNomCapteur.setEnabled(false);
+
+            changerCapteur.setSummary(R.string.preferencesNotConnected);
+        }
     }
 
     @Override
@@ -195,7 +226,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
     @Override
     public void negativeBtnClicked() {
-        Log.d("PARAM", String.valueOf(((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
+
 
     }
 }

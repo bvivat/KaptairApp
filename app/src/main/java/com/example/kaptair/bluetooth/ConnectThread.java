@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
 
+
 public class ConnectThread extends Thread {
 
     final static String TAG = "ConnectThread";
@@ -23,6 +24,7 @@ public class ConnectThread extends Thread {
     private final BluetoothDevice mmDevice;
 
     private boolean isConnected = false;
+    OnConnectionResultListener listener;
 
 
     public ConnectThread(WeakReference<AppCompatActivity> act, BluetoothDevice device, UUID SERIAL_UUID) {
@@ -60,6 +62,7 @@ public class ConnectThread extends Thread {
             } catch (IOException closeException) {
                 Log.e(TAG, "Could not close the client socket", closeException);
             }
+            result();
             return;
         }
 
@@ -74,6 +77,7 @@ public class ConnectThread extends Thread {
 
         TransfertThread transfert = new TransfertThread(mmSocket);
         transfert.start();
+        result();
     }
 
     // Closes the client socket and causes the thread to finish.
@@ -91,5 +95,22 @@ public class ConnectThread extends Thread {
 
     public String getDeviceName(){
         return mmDevice.getName();
+    }
+
+    private void result(){
+        if (listener!=null){
+            // On gere le callback du listener
+            act.get().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listener.onConnectionResult();
+                }
+            });
+
+        }
+    }
+
+    public void setListener(OnConnectionResultListener listener) {
+        this.listener = listener;
     }
 }

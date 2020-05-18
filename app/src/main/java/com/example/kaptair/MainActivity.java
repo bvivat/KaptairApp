@@ -143,10 +143,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initBluetooth() {
-        isLocationGranted = true;
-        handlerUI = new HandlerUITransfert(this);
-        bluetooth = new BluetoothApp(this);
-        bluetooth.rechercher();
+        if (bluetooth==null){
+            isLocationGranted = true;
+            handlerUI = new HandlerUITransfert(this);
+            bluetooth = new BluetoothApp(this);
+            bluetooth.rechercher();
+        }else{
+            bluetooth.rechercher();
+        }
+
     }
 
     protected void checkLocationPermission() { // TODO Essayer de refuser, etc

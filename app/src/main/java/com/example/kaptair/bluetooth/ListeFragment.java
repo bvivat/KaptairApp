@@ -31,6 +31,8 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
     ArrayList<Device> devices;
     ListeAdapter adapter;
 
+    private DialogInterface.OnDismissListener onDismissListener;
+
     public ListeFragment() {
         // Required empty public constructor
     }
@@ -119,4 +121,11 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
         BluetoothApp b = act.getBluetooth();
         b.unregisterReceiver(true); // On arrete de discover des nouveaux devices
     }
+
+
+    public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
+    }
+
+
 }

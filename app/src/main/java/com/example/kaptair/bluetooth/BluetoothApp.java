@@ -35,6 +35,7 @@ public class BluetoothApp {
     boolean isRegisteringDone = false;
 
     ConnectThread connect;
+    private OnConnectionResultListener listener;
 
     WeakReference<AppCompatActivity> act;
 
@@ -131,6 +132,7 @@ public class BluetoothApp {
         Toast.makeText(act.get() ,act.get().getString(R.string.ToastBTConnection,device.getName()), Toast.LENGTH_SHORT).show();
 
         connect = new ConnectThread(act,device, SERIAL_UUID); // On se connecte
+        connect.setListener(listener);
         connect.start();
     }
 
@@ -141,5 +143,9 @@ public class BluetoothApp {
 
     public ConnectThread getConnect() {
         return connect;
+    }
+
+    public void setListener(OnConnectionResultListener listener) {
+        this.listener = listener;
     }
 }
