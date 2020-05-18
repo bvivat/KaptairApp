@@ -33,6 +33,26 @@
             />
     </com.example.kaptair.customWidgets.MyPreferenceCategory>
     <com.example.kaptair.customWidgets.MyPreferenceCategory
+        android:title="@string/preferencesCatCapteur"
+        >
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_info"
+            android:key="modifNom"
+            android:persistent="false"
+            android:summary="@string/preferencesModifNomCapteurSum"
+            android:title="@string/preferencesModifNomCapteurTitle"
+
+            />
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_info"
+            android:key="changerCapteur"
+            android:persistent="false"
+            android:summary="@string/preferencesChangerCapteurSum"
+            android:title="@string/preferencesChangerCapteurTitle"
+
+            />
+    </com.example.kaptair.customWidgets.MyPreferenceCategory>
+    <com.example.kaptair.customWidgets.MyPreferenceCategory
         android:title="@string/preferencesCatAbout"
         >
         <androidx.preference.Preference

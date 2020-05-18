@@ -56,10 +56,37 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
         Preference export = findPreference("export");
         Preference delete = findPreference("delete");
+        Preference modifNomCapteur = findPreference("modifNom"); //TODO Faire la modification du nom
+        Preference changerCapteur = findPreference("changerCapteur");
+
+        // On initialise les noms de preferences dynamiques
+        try{
+            // Si l'appareil est connecte a un capteur
+            if (((MainActivity) getActivity()).getBluetooth().getConnect().isConnected()) {
+
+                modifNomCapteur.setEnabled(true);
+                modifNomCapteur.setSummary(getString(R.string.preferencesModifNomCapteurSum, ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
+
+                changerCapteur.setSummary(getString(R.string.preferencesChangerCapteurSum, ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
+
+            } else {
+                modifNomCapteur.setSummary(R.string.preferencesNotConnected);
+                modifNomCapteur.setEnabled(false);
+
+                changerCapteur.setSummary(R.string.preferencesNotConnected);
+            }
+        }catch (NullPointerException e){
+            // La connection bluetooth n'a pas ete initialisee
+            modifNomCapteur.setSummary(R.string.preferencesNotConnected);
+            modifNomCapteur.setEnabled(false);
+
+            changerCapteur.setSummary(R.string.preferencesNotConnected);
+        }
+
+
 
         final Intent exportIntent = new Intent();
         exportIntent.setAction(Intent.ACTION_SEND);
-
 
         // Listener du parametre Export
         Preference.OnPreferenceClickListener listenerExport = new Preference.OnPreferenceClickListener() {
@@ -137,13 +164,13 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
                 DialogFragment dialog = new SimpleDialog();
 
                 Bundle args = new Bundle();
-                args.putString(SimpleDialog.ARG_TITLE, getString( R.string.preferencesDeleteDialogTitle));
+                args.putString(SimpleDialog.ARG_TITLE, getString(R.string.preferencesDeleteDialogTitle));
                 args.putString(SimpleDialog.ARG_MESSAGE, getString(R.string.preferencesDeleteDialogBody));
                 args.putInt(SimpleDialog.ARG_ICON, R.drawable.ic_delete);
                 args.putInt(SimpleDialog.ARG_TYPE, SimpleDialog.TYPE_YES_NO);
                 dialog.setArguments(args);
 
-                dialog.show(getChildFragmentManager(),"Delete Dialog");
+                dialog.show(getChildFragmentManager(), "Delete Dialog");
 
                 return true;
             }
@@ -168,6 +195,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
     @Override
     public void negativeBtnClicked() {
+        Log.d("PARAM", String.valueOf(((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
 
     }
 }

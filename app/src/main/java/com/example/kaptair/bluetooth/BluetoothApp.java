@@ -24,8 +24,6 @@ import java.util.UUID;
 public class BluetoothApp {
     private static final String TAG = "Bluetooth class";
 
-    private static final int REQUEST_COARSE_LOCATION = 0;
-
     ArrayList<Device> devices;
     ListeFragment liste;
 
@@ -35,6 +33,8 @@ public class BluetoothApp {
 
     BroadcastReceiver receiver;
     boolean isRegisteringDone = false;
+
+    ConnectThread connect;
 
     WeakReference<AppCompatActivity> act;
 
@@ -130,12 +130,16 @@ public class BluetoothApp {
 
         Toast.makeText(act.get() ,act.get().getString(R.string.ToastBTConnection,device.getName()), Toast.LENGTH_SHORT).show();
 
-        ConnectThread connect = new ConnectThread(act,device, SERIAL_UUID); // On se connecte
+        connect = new ConnectThread(act,device, SERIAL_UUID); // On se connecte
         connect.start();
     }
 
 
     public void setAct(WeakReference<AppCompatActivity> act) {
         this.act = act;
+    }
+
+    public ConnectThread getConnect() {
+        return connect;
     }
 }

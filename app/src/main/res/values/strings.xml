@@ -42,10 +42,20 @@
     <string name="preferencesDeleteDialogTitle">Tout supprimer ?</string>
     <string name="preferencesDeleteDialogBody">Cette opération va supprimer toutes les mesures enregistrées de manière définitive</string>
 
+    <string name="preferencesCatCapteur">Capteur</string>
+
+    <string name="preferencesModifNomCapteurTitle">Renommer le capteur</string>
+    <string name="preferencesModifNomCapteurSum">Renommer %1$s</string>
+    <string name="preferencesNotConnected">Vous n\'êtes pas connecté à un capteur</string>
+
+    <string name="preferencesChangerCapteurTitle">Se connecter à un capteur</string>
+    <string name="preferencesChangerCapteurSum">Voues êtes actuellement connecté à %1$s</string>
+
     <string name="preferencesCatAbout">À propos</string>
 
     <string name="preferencesVersionTitle">Version de l\'application</string>
     <string name="preferencesVersionSum">1.12</string>
+
 
     <string name="synchroCapteur">Synchroniser les données</string>
     <string name="preferencesSynchroSum">Synchroniser les dernières données enregistrées par le capteur avec le téléphone</string>

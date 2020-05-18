@@ -22,6 +22,8 @@ public class ConnectThread extends Thread {
     private final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
 
+    private boolean isConnected = false;
+
 
     public ConnectThread(WeakReference<AppCompatActivity> act, BluetoothDevice device, UUID SERIAL_UUID) {
         this.act = act;
@@ -45,6 +47,7 @@ public class ConnectThread extends Thread {
             Log.i(TAG, "Connecté à la socket");
         } catch (IOException connectException) {
             // Unable to connect; close the socket and return.
+            isConnected = false;
             act.get().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -61,12 +64,14 @@ public class ConnectThread extends Thread {
         }
 
         // Connexion reussie. On lance le transfert
+        isConnected = true;
         act.get().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 Toast.makeText(act.get(), act.get().getString(R.string.ToastBTConnecte, mmDevice.getName()), Toast.LENGTH_SHORT).show();
             }
         });
+
         TransfertThread transfert = new TransfertThread(mmSocket);
         transfert.start();
     }
@@ -78,5 +83,13 @@ public class ConnectThread extends Thread {
         } catch (IOException e) {
             Log.e(TAG, "Could not close the client socket", e);
         }
+    }
+
+    public boolean isConnected() {
+        return isConnected;
+    }
+
+    public String getDeviceName(){
+        return mmDevice.getName();
     }
 }
