@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                 } else {
                     // permission denied, boo!
                     isLocationGranted = false;
-                    // TODO Dialog explain why
+                    // On cree un dialog pour prevenir l'utilisateur que le bluetooth sera inutilisable
                     DialogFragment dialog = new SimpleDialog();
 
                     Bundle args = new Bundle();

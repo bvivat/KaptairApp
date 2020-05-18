@@ -128,7 +128,9 @@ public class BluetoothApp {
         final UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //UUID for serial connection
         device = bluetoothAdapter.getRemoteDevice(adrMac); //get remote device by mac, we assume these two devices are already paired
 
-        ConnectThread connect = new ConnectThread(device, SERIAL_UUID); // On se connecte
+        Toast.makeText(act.get() ,act.get().getString(R.string.ToastBTConnection,device.getName()), Toast.LENGTH_SHORT).show();
+
+        ConnectThread connect = new ConnectThread(act,device, SERIAL_UUID); // On se connecte
         connect.start();
     }
 

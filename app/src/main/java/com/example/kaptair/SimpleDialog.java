@@ -10,6 +10,7 @@ import androidx.fragment.app.DialogFragment;
 
 
 interface SimpleDialogCallback {
+    //Callback a implementer par le fragment creant ce dialog si Type = YES_NO
     void positiveBtnClicked();
     void negativeBtnClicked();
 }
@@ -36,6 +37,7 @@ public class SimpleDialog extends DialogFragment {
 
         switch (type) {
             case TYPE_OK:
+                // On cree un dialog ok avec les arguments passés
 
                 final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getActivity(), R.style.ConfirmDialog));
                 builder.setMessage(message)
@@ -50,6 +52,7 @@ public class SimpleDialog extends DialogFragment {
                 return builder.create();
 
             case TYPE_YES_NO:
+                // On cree un dialog yes/no avec les arguments passés
 
                 final SimpleDialogCallback callback;
                 try {
