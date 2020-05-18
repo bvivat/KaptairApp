@@ -71,11 +71,6 @@ public class BluetoothApp {
             liste = ListeFragment.newInstance(devices);
             liste.show(act.get().getSupportFragmentManager(), "dialog");
 
-
-            // Localisation requise pour chercher des appareils bluetooths
-            checkLocationPermission();
-
-
             // On recherche les appareils a proximite
             receiver = new BroadcastReceiver() {
                 public void onReceive(Context context, Intent intent) {
@@ -137,15 +132,6 @@ public class BluetoothApp {
         connect.start();
     }
 
-
-    protected void checkLocationPermission() { // TODO Essayer de refuser, etc
-        if (ContextCompat.checkSelfPermission(act.get(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
-            ActivityCompat.requestPermissions(act.get(),
-                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
-                    REQUEST_COARSE_LOCATION);
-        }
-    }
 
     public void setAct(WeakReference<AppCompatActivity> act) {
         this.act = act;

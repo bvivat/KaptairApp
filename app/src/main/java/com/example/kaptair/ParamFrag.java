@@ -12,10 +12,12 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.FileProvider;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +39,7 @@ import java.util.concurrent.Executors;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ParamFrag extends PreferenceFragmentCompat {
+public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogCallback {
 
     private AppDatabase db;
     private Executor executor = Executors.newSingleThreadExecutor();
@@ -131,43 +133,17 @@ public class ParamFrag extends PreferenceFragmentCompat {
         Preference.OnPreferenceClickListener listenerDelete = new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
+                // Dialog de confirmation
+                DialogFragment dialog = new SimpleDialog();
 
-                executor.execute(new Runnable() {
-                    @Override
-                    public void run() {
+                Bundle args = new Bundle();
+                args.putString(SimpleDialog.ARG_TITLE, getString( R.string.preferencesDeleteDialogTitle));
+                args.putString(SimpleDialog.ARG_MESSAGE, getString(R.string.preferencesDeleteDialogBody));
+                args.putInt(SimpleDialog.ARG_ICON, R.drawable.ic_delete);
+                args.putInt(SimpleDialog.ARG_TYPE, SimpleDialog.TYPE_YES_NO);
+                dialog.setArguments(args);
 
-                        // Dialog de confirmation
-                        final DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                switch (which) {
-                                    case DialogInterface.BUTTON_POSITIVE:
-                                        db.close();
-                                        // On supprime la DB
-                                        getContext().deleteDatabase(AppDatabase.DB_NAME);
-                                        break;
-
-                                    case DialogInterface.BUTTON_NEGATIVE:
-                                        break;
-                                }
-                            }
-                        };
-
-                        final AlertDialog.Builder builder = new AlertDialog.Builder(new ContextThemeWrapper(getContext(), R.style.ConfirmDialog));
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                builder.setMessage(R.string.preferencesDeleteDialogBody)
-                                        .setPositiveButton(android.R.string.yes, dialogClickListener)
-                                        .setNegativeButton(android.R.string.cancel, dialogClickListener)
-                                        .setTitle(R.string.preferencesDeleteDialogTitle)
-                                        .setIcon(R.drawable.ic_delete)
-                                        .show();
-                            }
-                        });
-
-                    }
-                });
+                dialog.show(getChildFragmentManager(),"Delete Dialog");
 
                 return true;
             }
@@ -181,5 +157,17 @@ public class ParamFrag extends PreferenceFragmentCompat {
         super.onViewCreated(view, savedInstanceState);
         TextView txtTitre = getActivity().findViewById(R.id.txtTitre);
         txtTitre.setText(R.string.param);
+    }
+
+    @Override
+    public void positiveBtnClicked() {
+        db.close();
+        // On supprime la DB
+        getContext().deleteDatabase(AppDatabase.DB_NAME);
+    }
+
+    @Override
+    public void negativeBtnClicked() {
+
     }
 }

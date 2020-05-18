@@ -50,4 +50,7 @@
     <string name="synchroCapteur">Synchroniser les données</string>
     <string name="preferencesSynchroSum">Synchroniser les dernières données enregistrées par le capteur avec le téléphone</string>
 
+    <string name="locationDialogTitle">Accès à la localisation refusé</string>
+    <string name="locationDialogBody">L\'accès à la localisation est requis pour chercher les capteurs bluetooth à proximité</string>
+
 </resources>

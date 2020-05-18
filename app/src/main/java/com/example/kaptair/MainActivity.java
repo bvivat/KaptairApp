@@ -1,7 +1,10 @@
 package com.example.kaptair;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -9,37 +12,34 @@ import android.view.View;
 import com.example.kaptair.bluetooth.BluetoothApp;
 import com.example.kaptair.bluetooth.HandlerUITransfert;
 import com.example.kaptair.database.AppDatabase;
-import com.example.kaptair.ui.main.HistoriqueFrag;
-import com.google.android.material.tabs.TabLayout;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.kaptair.ui.main.SectionsPagerAdapter;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
-import com.mikepenz.materialdrawer.AccountHeader;
-import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
-import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import java.lang.ref.WeakReference;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_COARSE_LOCATION = 0;
+    private static final String TAG = "MainActivity";
     public static HandlerUITransfert handlerUI;
 
     static BluetoothApp bluetooth;
+    boolean isLocationGranted = false;
     AppDatabase db;
 
     Drawer result;
@@ -53,7 +53,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
         fragParam = new ParamFrag();
         fragCarte = new CarteFrag();
 
@@ -65,15 +64,19 @@ public class MainActivity extends AppCompatActivity {
             transaction.commit();
 
             //Bluetooth
-            handlerUI = new HandlerUITransfert(this);
-            bluetooth = new BluetoothApp(this);
-            bluetooth.rechercher();
-        } else {
-            // On actualise les references externes vers cette activite
-            handlerUI.setAct(new WeakReference<AppCompatActivity>(this));
-            bluetooth.setAct(new WeakReference<AppCompatActivity>(this));
+            checkLocationPermission();
 
-            bluetooth.registerBTReciever();
+        } else {
+            // Localisation requise pour rechercher les appareils bluetooths
+            isLocationGranted = savedInstanceState.getBoolean("isLocationGranted");
+            if (isLocationGranted) {
+                // On actualise les references externes vers cette activite
+                handlerUI.setAct(new WeakReference<AppCompatActivity>(this));
+                bluetooth.setAct(new WeakReference<AppCompatActivity>(this));
+                Log.d(TAG, "LOC GRANTED AND SAVED");
+                bluetooth.registerBTReciever();
+            }
+
         }
 
 
@@ -133,7 +136,30 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        bluetooth.unregisterReceiver(false); // Pour eviter les leak de memoire
+        if (isLocationGranted) {
+            bluetooth.unregisterReceiver(false); // Pour eviter les leak de memoire
+        }
+
+    }
+
+    private void initBluetooth() {
+        isLocationGranted = true;
+        handlerUI = new HandlerUITransfert(this);
+        bluetooth = new BluetoothApp(this);
+        bluetooth.rechercher();
+    }
+
+    protected void checkLocationPermission() { // TODO Essayer de refuser, etc
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Permission pas encore acceptee/ deja refusee
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                    REQUEST_COARSE_LOCATION);
+
+        } else {
+            // Permission deja accordee
+            initBluetooth();
+        }
     }
 
     @Override
@@ -143,13 +169,24 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_COARSE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+                    // permission was granted, yay!
+                    initBluetooth();
                 } else {
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
+                    // permission denied, boo!
+                    isLocationGranted = false;
+                    // TODO Dialog explain why
+                    DialogFragment dialog = new SimpleDialog();
+
+                    Bundle args = new Bundle();
+                    args.putString(SimpleDialog.ARG_TITLE, getString( R.string.locationDialogTitle));
+                    args.putString(SimpleDialog.ARG_MESSAGE, getString(R.string.locationDialogBody));
+                    args.putInt(SimpleDialog.ARG_ICON, R.drawable.ic_warning);
+                    args.putInt(SimpleDialog.ARG_TYPE, SimpleDialog.TYPE_OK);
+                    dialog.setArguments(args);
+
+                    dialog.show(getSupportFragmentManager(),"Location Dialog");
+
                 }
-                return;
             }
 
             // other 'case' lines to check for other
@@ -182,6 +219,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         result.saveInstanceState(outState); //On sauvegarde la position actuelle du drawer menu
+        outState.putBoolean("isLocationGranted", isLocationGranted);
 
     }
 }
