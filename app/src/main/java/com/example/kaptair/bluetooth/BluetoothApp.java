@@ -159,6 +159,9 @@ public class BluetoothApp {
 
         Toast.makeText(act.get(), act.get().getString(R.string.ToastBTConnection, device.getName()), Toast.LENGTH_SHORT).show();
 
+        if (connect != null){
+            connect.cancel();
+        }
         connect = new ConnectThread(act, device, SERIAL_UUID); // On se connecte
         connect.setListener(listener);
         connect.start();

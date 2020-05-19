@@ -27,6 +27,8 @@ public class ConnectThread extends Thread {
     private final BluetoothSocket mmSocket;
     private final BluetoothDevice mmDevice;
 
+    TransfertThread transfert;
+
     private boolean isConnected = false;
     OnConnectionResultListener listener;
 
@@ -85,13 +87,17 @@ public class ConnectThread extends Thread {
         editor.putString(PREF_ADDRMAC, mmDevice.getAddress());
         editor.commit();
 
-        TransfertThread transfert = new TransfertThread(mmSocket);
+        transfert = new TransfertThread(mmSocket);
         transfert.start();
         result();
     }
 
     // Closes the client socket and causes the thread to finish.
     public void cancel() {
+        if(transfert!=null){
+            transfert.cancel();
+        }
+
         try {
             mmSocket.close();
         } catch (IOException e) {
