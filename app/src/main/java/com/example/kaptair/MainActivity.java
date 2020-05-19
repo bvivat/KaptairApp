@@ -11,6 +11,7 @@ import android.view.View;
 
 import com.example.kaptair.bluetooth.BluetoothApp;
 import com.example.kaptair.bluetooth.HandlerUITransfert;
+import com.example.kaptair.bluetooth.OnConnectionResultListener;
 import com.example.kaptair.database.AppDatabase;
 
 import androidx.annotation.NonNull;
@@ -39,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static HandlerUITransfert handlerUI;
     static BluetoothApp bluetooth;
+    OnConnectionResultListener listener;
 
     boolean isLocationGranted = false;
     AppDatabase db;
@@ -148,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
             isLocationGranted = true;
             handlerUI = new HandlerUITransfert(this);
             bluetooth = new BluetoothApp(this);
+            bluetooth.setListener(listener);
             bluetooth.rechercher();
         }else{
             bluetooth.setRegisteringDone(false);
@@ -156,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    protected void checkLocationPermission() { // TODO Essayer de refuser, etc
+    protected void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // Permission pas encore acceptee/ deja refusee
             ActivityCompat.requestPermissions(this,
@@ -228,5 +231,9 @@ public class MainActivity extends AppCompatActivity {
         result.saveInstanceState(outState); //On sauvegarde la position actuelle du drawer menu
         outState.putBoolean("isLocationGranted", isLocationGranted);
 
+    }
+
+    public void setListener(OnConnectionResultListener listener) {
+        this.listener = listener;
     }
 }

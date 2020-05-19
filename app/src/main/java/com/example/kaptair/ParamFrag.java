@@ -179,8 +179,6 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
                 //On affiche les devices bluetooth
                 ((MainActivity) getActivity()).checkLocationPermission();
 
-                //On rafraichit le fragment param
-                ((MainActivity) getActivity()).getBluetooth().setListener(connectionResultListener);
                 return true;
             }
         };
@@ -188,8 +186,11 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
         changerCapteur.setOnPreferenceClickListener(listenerChangerCapteur);
 
         try {
-            ((MainActivity) getActivity()).getBluetooth().setListener(connectionResultListener);
-            ((MainActivity) getActivity()).getBluetooth().getConnect().setListener(connectionResultListener);
+            // On garde le listener a jour pour rafraichir le fragment param lors de la fin de la tentative de connection
+            MainActivity activity = (MainActivity) getActivity();
+            activity.setListener(connectionResultListener);
+            activity.getBluetooth().setListener(connectionResultListener);
+            activity.getBluetooth().getConnect().setListener(connectionResultListener);
         } catch (NullPointerException e) {
             Log.d(TAG, "Connect thread or bluetooth null");
         }
