@@ -1,11 +1,9 @@
 package com.example.kaptair;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,12 +11,10 @@ import android.widget.Toast;
 
 import com.example.kaptair.bluetooth.BluetoothApp;
 import com.example.kaptair.bluetooth.HandlerUITransfert;
-import com.example.kaptair.bluetooth.OnConnectionResultListener;
+import com.example.kaptair.bluetooth.OnConnectionChangeListener;
 import com.example.kaptair.database.AppDatabase;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -43,7 +39,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static HandlerUITransfert handlerUI;
     static BluetoothApp bluetooth;
-    OnConnectionResultListener listener;
+    OnConnectionChangeListener listener;
 
     boolean isLocationGranted = false;
     AppDatabase db;
@@ -216,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
                 // Cas activation bluetooth
                 if(resultCode == RESULT_OK){
                     // Si le bluetooth est active
-                    bluetooth.rechercher();
+                    bluetooth.bluetoothEnabled();
                 }else{
                     Toast.makeText(this, R.string.btBluetoothDisabled, Toast.LENGTH_LONG).show();
                 }
@@ -253,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void setListener(OnConnectionResultListener listener) {
+    public void setListener(OnConnectionChangeListener listener) {
         this.listener = listener;
     }
 }

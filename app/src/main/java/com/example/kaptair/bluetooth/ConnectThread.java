@@ -30,7 +30,7 @@ public class ConnectThread extends Thread {
     TransfertThread transfert;
 
     private boolean isConnected = false;
-    OnConnectionResultListener listener;
+    OnConnectionChangeListener listener;
 
 
     public ConnectThread(WeakReference<AppCompatActivity> act, BluetoothDevice device, UUID SERIAL_UUID) {
@@ -88,6 +88,12 @@ public class ConnectThread extends Thread {
         editor.commit();
 
         transfert = new TransfertThread(mmSocket);
+        transfert.setListener(new OnConnectionChangeListener() {
+            @Override
+            public void onConnectionResult() {
+                cancel();
+            }
+        });
         transfert.start();
         result();
     }
@@ -97,7 +103,8 @@ public class ConnectThread extends Thread {
         if(transfert!=null){
             transfert.cancel();
         }
-
+        isConnected=false;
+        result();
         try {
             mmSocket.close();
         } catch (IOException e) {
@@ -126,7 +133,7 @@ public class ConnectThread extends Thread {
         }
     }
 
-    public void setListener(OnConnectionResultListener listener) {
+    public void setListener(OnConnectionChangeListener listener) {
         this.listener = listener;
     }
 }

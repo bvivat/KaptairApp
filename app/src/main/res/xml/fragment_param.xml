@@ -36,7 +36,7 @@
         android:title="@string/preferencesCatCapteur"
         >
         <androidx.preference.Preference
-            android:icon="@drawable/ic_info"
+            android:icon="@drawable/ic_edit"
             android:key="modifNom"
             android:persistent="false"
             android:summary="@string/preferencesModifNomCapteurSum"
@@ -44,7 +44,7 @@
 
             />
         <androidx.preference.Preference
-            android:icon="@drawable/ic_info"
+            android:icon="@drawable/ic_connect"
             android:key="changerCapteur"
             android:persistent="false"
             android:summary="@string/preferencesChangerCapteurSum"

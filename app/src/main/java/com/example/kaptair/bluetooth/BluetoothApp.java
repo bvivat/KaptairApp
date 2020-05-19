@@ -36,7 +36,7 @@ public class BluetoothApp {
     private boolean launch = true; // Check si il s'agit du lancement de l'application
 
     ConnectThread connect;
-    private OnConnectionResultListener listener;
+    private OnConnectionChangeListener listener;
 
     WeakReference<AppCompatActivity> act;
 
@@ -160,6 +160,7 @@ public class BluetoothApp {
         Toast.makeText(act.get(), act.get().getString(R.string.ToastBTConnection, device.getName()), Toast.LENGTH_SHORT).show();
 
         if (connect != null){
+            // On ferme les connexions existantes
             connect.cancel();
         }
         connect = new ConnectThread(act, device, SERIAL_UUID); // On se connecte
@@ -176,7 +177,7 @@ public class BluetoothApp {
         return connect;
     }
 
-    public void setListener(OnConnectionResultListener listener) {
+    public void setListener(OnConnectionChangeListener listener) {
         this.listener = listener;
     }
 

@@ -2,15 +2,12 @@ package com.example.kaptair;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -18,12 +15,10 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.kaptair.bluetooth.OnConnectionResultListener;
+import com.example.kaptair.bluetooth.OnConnectionChangeListener;
 import com.example.kaptair.database.AppDatabase;
 import com.example.kaptair.database.MesureMeteo;
 import com.example.kaptair.database.MesurePollution;
@@ -164,7 +159,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
 
         // Listener du thread Connect
-        final OnConnectionResultListener connectionResultListener = new OnConnectionResultListener() {
+        final OnConnectionChangeListener connectionResultListener = new OnConnectionChangeListener() {
             @Override
             public void onConnectionResult() {
                 initDynamicParams();

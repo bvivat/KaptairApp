@@ -26,6 +26,8 @@ interface TypeMessage {
 
 public class TransfertThread extends Thread {
 
+    private OnConnectionChangeListener listener;
+
     Integer getOrDef(HashMap<String, Integer> map, String key) {
         if (map.get(key) != null) {
             return map.get(key);
@@ -88,6 +90,9 @@ public class TransfertThread extends Thread {
                 readMsg.sendToTarget();
             } catch (IOException e) {
                 Log.d(TAG, "Input stream was disconnected", e);
+                if(listener!= null){
+                    listener.onConnectionResult();
+                }
                 break;
             }
         }
@@ -111,5 +116,9 @@ public class TransfertThread extends Thread {
         } catch (IOException e) {
             Log.e(TAG, "Could not close the connect socket", e);
         }
+    }
+
+    public void setListener(OnConnectionChangeListener listener) {
+        this.listener = listener;
     }
 }
