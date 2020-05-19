@@ -99,10 +99,15 @@ public class HandlerUITransfert extends Handler {
                     double co2 = Double.valueOf(valeurs[4]);
 
                     // On affecte ces valeurs a l'interface
-                    setPM1(pm1);
-                    setPM25(pm25);
-                    setPM10(pm10);
-                    setCO2(co2);
+                    try{
+                        setPM1(pm1);
+                        setPM25(pm25);
+                        setPM10(pm10);
+                        setCO2(co2);
+                    }catch (NullPointerException e){
+                        Log.e(TAG,"Impossible de modifier les compteurs");
+                    }
+
 
                     // On cree une nouvelle mesure a partir de ces donnees
                     MesurePollution m = new MesurePollution(date, pm1, pm25, pm10, co2);
@@ -116,9 +121,14 @@ public class HandlerUITransfert extends Handler {
                     double temperature = Double.valueOf(valeurs[1]);
                     double humidity = Double.valueOf(valeurs[2]);
                     //double pression = Double.valueOf(valeurs[3]);
-                    setTemperature(temperature);
-                    setHumidite(humidity);
-                    //setPression(pression);
+
+                    try{
+                        setTemperature(temperature);
+                        setHumidite(humidity);
+                        //setPression(pression);
+                    }catch (NullPointerException e){
+                        Log.e(TAG,"Impossible de modifier les compteurs");
+                    }
 
                     MesureMeteo m = new MesureMeteo(date, temperature, humidity);
                     insertBD(m);
@@ -129,6 +139,7 @@ public class HandlerUITransfert extends Handler {
                     double latitude = Double.valueOf(valeurs[1]);
                     double longitude = Double.valueOf(valeurs[2]);
                     double altitude = Double.valueOf(valeurs[3]);
+
 
                     //setLatitude(latitude);
                     //setLongitude(longitude);

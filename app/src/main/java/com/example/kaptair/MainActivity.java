@@ -38,6 +38,7 @@ import java.lang.ref.WeakReference;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_COARSE_LOCATION = 0;
+    public static final String PREF_ADDRMAC = "LastConnectedDevice";
     private static final String TAG = "MainActivity";
 
     public static HandlerUITransfert handlerUI;
@@ -78,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
                 // On actualise les references externes vers cette activite
                 handlerUI.setAct(new WeakReference<AppCompatActivity>(this));
                 bluetooth.setAct(new WeakReference<AppCompatActivity>(this));
-                Log.d(TAG, "LOC GRANTED AND SAVED");
                 bluetooth.registerBTReciever();
             }
 
@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (bluetooth != null && bluetooth.isRegistered()) {
+        if (bluetooth != null) {
             bluetooth.unregisterReceiver(false); // Pour eviter les leak de memoire
         }
 
@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
             isLocationGranted = true;
             handlerUI = new HandlerUITransfert(this);
             bluetooth = new BluetoothApp(this);
-            bluetooth.setListener(listener);
+            bluetooth.setListener(listener); // listener du fragment param, si il existe
             bluetooth.checkIsBluetoothEnabled();
         }else{
             bluetooth.setRegisteringDone(false);
@@ -209,12 +209,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        // Ajouter si necessaire differentes cases au switch.
         switch (requestCode){
+
             case BluetoothApp.REQUEST_ENABLE_BT:
+                // Cas activation bluetooth
                 if(resultCode == RESULT_OK){
+                    // Si le bluetooth est active
                     bluetooth.rechercher();
                 }else{
-                    Toast.makeText(this, R.string.btBluetoothDisabled, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, R.string.btBluetoothDisabled, Toast.LENGTH_LONG).show();
                 }
         }
 

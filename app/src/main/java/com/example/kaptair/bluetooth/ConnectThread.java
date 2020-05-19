@@ -2,6 +2,8 @@ package com.example.kaptair.bluetooth;
 
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -12,6 +14,8 @@ import com.example.kaptair.R;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.UUID;
+
+import static com.example.kaptair.MainActivity.PREF_ADDRMAC;
 
 
 public class ConnectThread extends Thread {
@@ -74,6 +78,12 @@ public class ConnectThread extends Thread {
                 Toast.makeText(act.get(), act.get().getString(R.string.ToastBTConnecte, mmDevice.getName()), Toast.LENGTH_SHORT).show();
             }
         });
+
+        // On enregistre l'adresse du dernier appareil connecte
+        SharedPreferences sharedPref = act.get().getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(PREF_ADDRMAC, mmDevice.getAddress());
+        editor.commit();
 
         TransfertThread transfert = new TransfertThread(mmSocket);
         transfert.start();

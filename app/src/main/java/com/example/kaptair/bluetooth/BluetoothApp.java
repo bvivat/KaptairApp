@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -16,6 +17,8 @@ import com.example.kaptair.R;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.UUID;
+
+import static com.example.kaptair.MainActivity.PREF_ADDRMAC;
 
 public class BluetoothApp {
     private static final String TAG = "Bluetooth class";
@@ -29,13 +32,14 @@ public class BluetoothApp {
     BluetoothDevice device;
 
     BroadcastReceiver receiver;
-    boolean isRegisteringDone = false;
+    boolean isRegisteringDone = true;
+    private boolean launch = true; // Check si il s'agit du lancement de l'application
 
     ConnectThread connect;
     private OnConnectionResultListener listener;
 
     WeakReference<AppCompatActivity> act;
-    private boolean isRegistered;
+
 
     public BluetoothApp(AppCompatActivity a) {
         act = new WeakReference<AppCompatActivity>(a);
@@ -61,11 +65,24 @@ public class BluetoothApp {
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 act.get().startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
             } else {
-                rechercher();
+                bluetoothEnabled();
             }
         }
     }
 
+    public void bluetoothEnabled(){
+        // On enregistre l'adresse du dernier appareil connecte
+        SharedPreferences sharedPref = act.get().getPreferences(Context.MODE_PRIVATE);
+        String adresse = sharedPref.getString(PREF_ADDRMAC,null);
+
+        if (adresse != null && launch){
+            connecter(adresse);
+            launch = false;
+        }else{
+            rechercher();
+        }
+
+    }
 
     public void rechercher() {
         if (!hasBluetooth) {
@@ -98,6 +115,7 @@ public class BluetoothApp {
                     }
                 }
             };
+            isRegisteringDone=false;
             registerBTReciever();
 
             if (bluetoothAdapter.isDiscovering()) {
@@ -113,9 +131,10 @@ public class BluetoothApp {
     public void registerBTReciever() {
 
         if (!isRegisteringDone) {  // Si on a toujours besoin de discover
-            isRegistered = true;
+
             IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             act.get().registerReceiver(receiver, filter);
+
         }
     }
 
@@ -125,7 +144,7 @@ public class BluetoothApp {
         {
             isRegisteringDone = done;
             act.get().unregisterReceiver(receiver);
-            isRegistered=false;
+
         }
 
     }
@@ -162,7 +181,4 @@ public class BluetoothApp {
         isRegisteringDone = registeringDone;
     }
 
-    public boolean isRegistered() {
-        return isRegistered;
-    }
 }
