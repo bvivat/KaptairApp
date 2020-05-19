@@ -13,6 +13,7 @@
 
     <string name="btListeTitre">Choisissez votre appareil</string>
     <string name="btNoBluetooth">Votre appareil ne supporte pas le bluetooth.</string>
+    <string name="btBluetoothDisabled">Vous devez activer le bluetooth pour vous connecter à votre capteur</string>
 
 
     <string name="heure">Heure</string>

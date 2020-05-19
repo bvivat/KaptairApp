@@ -2,12 +2,14 @@ package com.example.kaptair;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.kaptair.bluetooth.BluetoothApp;
 import com.example.kaptair.bluetooth.HandlerUITransfert;
@@ -139,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (isLocationGranted) {
+        if (bluetooth != null && bluetooth.isRegistered()) {
             bluetooth.unregisterReceiver(false); // Pour eviter les leak de memoire
         }
 
@@ -151,10 +153,10 @@ public class MainActivity extends AppCompatActivity {
             handlerUI = new HandlerUITransfert(this);
             bluetooth = new BluetoothApp(this);
             bluetooth.setListener(listener);
-            bluetooth.rechercher();
+            bluetooth.checkIsBluetoothEnabled();
         }else{
             bluetooth.setRegisteringDone(false);
-            bluetooth.rechercher();
+            bluetooth.checkIsBluetoothEnabled();
         }
 
     }
@@ -199,9 +201,23 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
-            // other 'case' lines to check for other
+            // other 'case' lines to checkHasBluetooth for other
             // permissions this app might request.
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case BluetoothApp.REQUEST_ENABLE_BT:
+                if(resultCode == RESULT_OK){
+                    bluetooth.rechercher();
+                }else{
+                    Toast.makeText(this, R.string.btBluetoothDisabled, Toast.LENGTH_SHORT).show();
+                }
+        }
+
     }
 
     @Override

@@ -1,19 +1,15 @@
 package com.example.kaptair.bluetooth;
 
-import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.pm.PackageManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import com.example.kaptair.R;
 
@@ -23,6 +19,7 @@ import java.util.UUID;
 
 public class BluetoothApp {
     private static final String TAG = "Bluetooth class";
+    public static final int REQUEST_ENABLE_BT = 1;
 
     ArrayList<Device> devices;
     ListeFragment liste;
@@ -38,23 +35,33 @@ public class BluetoothApp {
     private OnConnectionResultListener listener;
 
     WeakReference<AppCompatActivity> act;
+    private boolean isRegistered;
 
     public BluetoothApp(AppCompatActivity a) {
         act = new WeakReference<AppCompatActivity>(a);
-        check();
+        checkHasBluetooth();
     }
 
 
-    public void check() {
+    public void checkHasBluetooth() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter == null) { // On regarde si le support dispose de bluetooth
             hasBluetooth = false;
         } else {
             hasBluetooth = true;
-            int REQUEST_ENABLE_BT = 1;
+        }
+    }
+
+    public void checkIsBluetoothEnabled() {
+
+        if (!hasBluetooth) {
+            Toast.makeText(act.get(), R.string.btNoBluetooth, Toast.LENGTH_SHORT).show();
+        } else {
             if (!bluetoothAdapter.isEnabled()) { // On verifie que le bluetooth est active, sinon on demande a l'utilisateur de l'activer
                 Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                 act.get().startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            } else {
+                rechercher();
             }
         }
     }
@@ -106,6 +113,7 @@ public class BluetoothApp {
     public void registerBTReciever() {
 
         if (!isRegisteringDone) {  // Si on a toujours besoin de discover
+            isRegistered = true;
             IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
             act.get().registerReceiver(receiver, filter);
         }
@@ -117,6 +125,7 @@ public class BluetoothApp {
         {
             isRegisteringDone = done;
             act.get().unregisterReceiver(receiver);
+            isRegistered=false;
         }
 
     }
@@ -129,9 +138,9 @@ public class BluetoothApp {
         final UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //UUID for serial connection
         device = bluetoothAdapter.getRemoteDevice(adrMac); //get remote device by mac, we assume these two devices are already paired
 
-        Toast.makeText(act.get() ,act.get().getString(R.string.ToastBTConnection,device.getName()), Toast.LENGTH_SHORT).show();
+        Toast.makeText(act.get(), act.get().getString(R.string.ToastBTConnection, device.getName()), Toast.LENGTH_SHORT).show();
 
-        connect = new ConnectThread(act,device, SERIAL_UUID); // On se connecte
+        connect = new ConnectThread(act, device, SERIAL_UUID); // On se connecte
         connect.setListener(listener);
         connect.start();
     }
@@ -151,5 +160,9 @@ public class BluetoothApp {
 
     public void setRegisteringDone(boolean registeringDone) {
         isRegisteringDone = registeringDone;
+    }
+
+    public boolean isRegistered() {
+        return isRegistered;
     }
 }

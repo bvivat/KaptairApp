@@ -188,9 +188,9 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
         try {
             // On garde le listener a jour pour rafraichir le fragment param lors de la fin de la tentative de connection
             MainActivity activity = (MainActivity) getActivity();
-            activity.setListener(connectionResultListener);
-            activity.getBluetooth().setListener(connectionResultListener);
-            activity.getBluetooth().getConnect().setListener(connectionResultListener);
+            activity.setListener(connectionResultListener); // Utile si le bluetooth n'est pas encore initialise
+            activity.getBluetooth().setListener(connectionResultListener); // Utile si le thread connect n'est pas encore initialise
+            activity.getBluetooth().getConnect().setListener(connectionResultListener); // Utile si le thread connect est deja initialise
         } catch (NullPointerException e) {
             Log.d(TAG, "Connect thread or bluetooth null");
         }
@@ -202,10 +202,16 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
             // Si l'appareil est connecte a un capteur
             if (((MainActivity) getActivity()).getBluetooth().getConnect().isConnected()) {
 
-                modifNomCapteur.setEnabled(true);
-                modifNomCapteur.setSummary(getString(R.string.preferencesModifNomCapteurSum, ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
+                String name = ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName();
 
-                changerCapteur.setSummary(getString(R.string.preferencesChangerCapteurSum, ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName()));
+                if (name == null){
+                    throw new NullPointerException();
+                }
+
+                modifNomCapteur.setEnabled(true);
+                modifNomCapteur.setSummary(getString(R.string.preferencesModifNomCapteurSum, (name)));
+
+                changerCapteur.setSummary(getString(R.string.preferencesChangerCapteurSum, (name)));
 
             } else {
                 modifNomCapteur.setSummary(R.string.preferencesNotConnected);
