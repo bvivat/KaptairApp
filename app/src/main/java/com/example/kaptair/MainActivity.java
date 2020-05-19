@@ -36,9 +36,10 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_COARSE_LOCATION = 0;
     private static final String TAG = "MainActivity";
-    public static HandlerUITransfert handlerUI;
 
+    public static HandlerUITransfert handlerUI;
     static BluetoothApp bluetooth;
+
     boolean isLocationGranted = false;
     AppDatabase db;
 
@@ -149,6 +150,7 @@ public class MainActivity extends AppCompatActivity {
             bluetooth = new BluetoothApp(this);
             bluetooth.rechercher();
         }else{
+            bluetooth.setRegisteringDone(false);
             bluetooth.rechercher();
         }
 

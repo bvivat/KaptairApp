@@ -148,4 +148,8 @@ public class BluetoothApp {
     public void setListener(OnConnectionResultListener listener) {
         this.listener = listener;
     }
+
+    public void setRegisteringDone(boolean registeringDone) {
+        isRegisteringDone = registeringDone;
+    }
 }

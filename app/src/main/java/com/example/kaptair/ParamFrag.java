@@ -162,26 +162,37 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
         export.setOnPreferenceClickListener(listenerExport);
         delete.setOnPreferenceClickListener(listenerDelete);
 
+
+        // Listener du thread Connect
+        final OnConnectionResultListener connectionResultListener = new OnConnectionResultListener() {
+            @Override
+            public void onConnectionResult() {
+                initDynamicParams();
+            }
+        };
+
         // Listener du parametre ChangerCapteur
         Preference.OnPreferenceClickListener listenerChangerCapteur = new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(Preference preference) {
 
+                //On affiche les devices bluetooth
                 ((MainActivity) getActivity()).checkLocationPermission();
 
                 //On rafraichit le fragment param
-                ((MainActivity) getActivity()).getBluetooth().setListener(new OnConnectionResultListener() {
-                    @Override
-                    public void onConnectionResult() {
-                        initDynamicParams();
-                    }
-                });
+                ((MainActivity) getActivity()).getBluetooth().setListener(connectionResultListener);
                 return true;
             }
         };
 
         changerCapteur.setOnPreferenceClickListener(listenerChangerCapteur);
 
+        try {
+            ((MainActivity) getActivity()).getBluetooth().setListener(connectionResultListener);
+            ((MainActivity) getActivity()).getBluetooth().getConnect().setListener(connectionResultListener);
+        } catch (NullPointerException e) {
+            Log.d(TAG, "Connect thread or bluetooth null");
+        }
 
     }
 
