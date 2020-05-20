@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
     public static final String PREF_ADDRMAC = "LastConnectedDevice";
     private static final String TAG = "MainActivity";
 
+    public static final String SAVE_LOCATION_STATUS = "isLocationGranted";
+
     public static HandlerUITransfert handlerUI;
     static BluetoothApp bluetooth;
     OnConnectionChangeListener listener;
@@ -70,7 +72,7 @@ public class MainActivity extends AppCompatActivity {
 
         } else {
             // Localisation requise pour rechercher les appareils bluetooths
-            isLocationGranted = savedInstanceState.getBoolean("isLocationGranted");
+            isLocationGranted = savedInstanceState.getBoolean(SAVE_LOCATION_STATUS);
             if (isLocationGranted) {
                 // On actualise les references externes vers cette activite
                 handlerUI.setAct(new WeakReference<AppCompatActivity>(this));
@@ -176,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        //TODO Bluetooth related
         switch (requestCode) {
             case REQUEST_COARSE_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -249,7 +250,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         result.saveInstanceState(outState); //On sauvegarde la position actuelle du drawer menu
-        outState.putBoolean("isLocationGranted", isLocationGranted);
+        outState.putBoolean(SAVE_LOCATION_STATUS, isLocationGranted);
 
     }
     @Override

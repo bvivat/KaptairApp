@@ -36,6 +36,9 @@ public class HistoriqueFrag extends Fragment {
 
     private AppDatabase db;
 
+    public static final String SAVE_STATE_BTN = "stateBtns ";
+    public static final String SAVE_CALENDAR = "calendar ";
+
     CardGraph cardPollution;
     CardGraph cardMeteo;
 
@@ -145,7 +148,7 @@ public class HistoriqueFrag extends Fragment {
         if (savedInstanceState != null) {
             int saveIndex = 0;
             for (CardGraph c : cards) {
-                ArrayList<Integer> stateBtns = savedInstanceState.getIntegerArrayList("stateBtns " + saveIndex);
+                ArrayList<Integer> stateBtns = savedInstanceState.getIntegerArrayList(SAVE_STATE_BTN + saveIndex);
 
                 for (int i = 0; i < stateBtns.size(); i++) {
                     // On restore l'etat des boutons
@@ -153,7 +156,7 @@ public class HistoriqueFrag extends Fragment {
                 }
 
                 // On restore le calendrier
-                c.getCalendrier().setTimeInMillis(savedInstanceState.getLong("calendrier " + saveIndex));
+                c.getCalendrier().setTimeInMillis(savedInstanceState.getLong(SAVE_CALENDAR + saveIndex));
 
                 // On initialise le graph
                 if (c.getBtnHour().isSelected()) {
@@ -193,8 +196,8 @@ public class HistoriqueFrag extends Fragment {
                 stateBtns.add(b.isSelected() ? 1 : 0); // On sauvegarde l'etat de ses boutons
             }
 
-            outState.putIntegerArrayList("stateBtns " + saveIndex, stateBtns);
-            outState.putLong("calendrier " + saveIndex, c.getCalendrier().getTimeInMillis());
+            outState.putIntegerArrayList(SAVE_STATE_BTN + saveIndex, stateBtns);
+            outState.putLong(SAVE_CALENDAR + saveIndex, c.getCalendrier().getTimeInMillis());
             saveIndex++;
         }
 

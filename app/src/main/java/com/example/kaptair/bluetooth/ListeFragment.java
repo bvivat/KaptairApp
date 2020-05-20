@@ -30,6 +30,7 @@ import java.util.ArrayList;
  */
 public class ListeFragment extends DialogFragment implements ListeAdapter.ItemClickListener {
 
+    public static final String ARG_DEVICES = "devices";
 
     ArrayList<Device> devices;
     ListeAdapter adapter;
@@ -47,7 +48,7 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
         ListeFragment fragment = new ListeFragment();
 
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("LISTE", liste);
+        bundle.putParcelableArrayList(ARG_DEVICES, liste);
         fragment.setArguments(bundle);
 
         return fragment;
@@ -75,7 +76,7 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
         View v = inflater.inflate(R.layout.fragment_liste, container, false);
 
         //On recupere les devices a afficher
-        devices = getArguments().getParcelableArrayList("LISTE");
+        devices = getArguments().getParcelableArrayList(ARG_DEVICES);
 
         //On genere la recyclerView qui va lister les devices
         RecyclerView recyclerView = v.findViewById(R.id.rcyclRes);
