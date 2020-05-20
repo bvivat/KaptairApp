@@ -70,14 +70,14 @@ public class BluetoothApp {
         }
     }
 
-    public void bluetoothEnabled(){
+    public void bluetoothEnabled() {
         // On enregistre l'adresse du dernier appareil connecte
         SharedPreferences sharedPref = act.get().getPreferences(Context.MODE_PRIVATE);
-        String adresse = sharedPref.getString(PREF_ADDRMAC,null);
+        String adresse = sharedPref.getString(PREF_ADDRMAC, null);
 
-        if (adresse != null && launch){
+        if (adresse != null && launch) {
             connecter(adresse);
-        }else{
+        } else {
             rechercher();
         }
         launch = false;
@@ -115,7 +115,7 @@ public class BluetoothApp {
                     }
                 }
             };
-            isRegisteringDone=false;
+            isRegisteringDone = false;
             registerBTReciever();
 
             if (bluetoothAdapter.isDiscovering()) {
@@ -154,24 +154,32 @@ public class BluetoothApp {
         Log.i(TAG, adrMac);
         bluetoothAdapter.cancelDiscovery(); // On arrete la recherche
 
-        final UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //UUID for serial connection
-        device = bluetoothAdapter.getRemoteDevice(adrMac); //get remote device by mac, we assume these two devices are already paired
-
-        Toast.makeText(act.get(), act.get().getString(R.string.ToastBTConnection, device.getName()), Toast.LENGTH_SHORT).show();
-
-        if (connect != null){
+        if (connect != null) {
             // On ferme les connexions existantes
             connect.cancel();
         }
-        connect = new ConnectThread(act, device, SERIAL_UUID); // On se connecte
-        connect.setListener(listener);
-        connect.start();
+
+        final UUID SERIAL_UUID = UUID.fromString("00001101-0000-1000-8000-00805F9B34FB"); //UUID for serial connection
+        device = bluetoothAdapter.getRemoteDevice(adrMac); //get remote device by mac
+
+        if (bluetoothAdapter.isEnabled()) {
+            Toast.makeText(act.get(), act.get().getString(R.string.ToastBTConnection, device.getName()), Toast.LENGTH_SHORT).show();
+
+            connect = new ConnectThread(act, device, SERIAL_UUID); // On se connecte
+            connect.setListener(listener);
+            connect.start();
+
+        }else{
+            Toast.makeText(act.get(), act.get().getString(R.string.btBluetoothDisabled), Toast.LENGTH_SHORT).show();
+        }
+
+
     }
 
 
     public void setAct(WeakReference<AppCompatActivity> act) {
         this.act = act;
-        if (connect != null){
+        if (connect != null) {
             connect.setAct(act);
         }
     }
