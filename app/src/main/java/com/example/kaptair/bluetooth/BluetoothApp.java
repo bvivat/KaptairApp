@@ -77,10 +77,10 @@ public class BluetoothApp {
 
         if (adresse != null && launch){
             connecter(adresse);
-            launch = false;
         }else{
             rechercher();
         }
+        launch = false;
 
     }
 

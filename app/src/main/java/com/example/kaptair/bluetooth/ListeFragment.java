@@ -125,12 +125,7 @@ public class ListeFragment extends DialogFragment implements ListeAdapter.ItemCl
         b.unregisterReceiver(true); // On arrete de discover des nouveaux devices
     }
 
-    @Override
-    public void show(@NonNull FragmentManager manager, @Nullable String tag) {
-        FragmentTransaction ft = manager.beginTransaction();
-        ft.add(this, tag);
-        ft.commitAllowingStateLoss();
-    }
+
 
     public void setOnDismissListener(DialogInterface.OnDismissListener onDismissListener) {
         this.onDismissListener = onDismissListener;

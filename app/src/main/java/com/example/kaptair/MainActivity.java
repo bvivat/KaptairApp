@@ -140,6 +140,11 @@ public class MainActivity extends AppCompatActivity {
         if (bluetooth != null) {
             bluetooth.unregisterReceiver(false); // Pour eviter les leak de memoire
         }
+        if (isFinishing()){
+            // Si l'activite se termine, on libere les variables statiques
+            bluetooth=null;
+            handlerUI=null;
+        }
 
     }
 
@@ -248,7 +253,10 @@ public class MainActivity extends AppCompatActivity {
         outState.putBoolean("isLocationGranted", isLocationGranted);
 
     }
-
+    @Override
+    public void onBackPressed() {
+       super.onBackPressed();
+    }
     public void setListener(OnConnectionChangeListener listener) {
         this.listener = listener;
     }
