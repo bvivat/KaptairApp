@@ -171,6 +171,9 @@ public class BluetoothApp {
 
     public void setAct(WeakReference<AppCompatActivity> act) {
         this.act = act;
+        if (connect != null){
+            connect.setAct(act);
+        }
     }
 
     public ConnectThread getConnect() {

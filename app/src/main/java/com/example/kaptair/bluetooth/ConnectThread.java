@@ -133,6 +133,10 @@ public class ConnectThread extends Thread {
         }
     }
 
+    public void setAct(WeakReference<AppCompatActivity> act) {
+        this.act = act;
+    }
+
     public void setListener(OnConnectionChangeListener listener) {
         this.listener = listener;
     }

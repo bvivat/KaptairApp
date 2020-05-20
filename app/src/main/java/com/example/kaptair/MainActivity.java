@@ -156,7 +156,6 @@ public class MainActivity extends AppCompatActivity {
             bluetooth.setListener(listener); // listener du fragment param, si il existe
             bluetooth.checkIsBluetoothEnabled();
         }else{
-            bluetooth.setRegisteringDone(false);
             bluetooth.checkIsBluetoothEnabled();
         }
 
