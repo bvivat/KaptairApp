@@ -95,7 +95,8 @@ public class CarteFrag extends Fragment {
         Marker m0 = new Marker(map);
         m0.setPosition(new GeoPoint(48.599944d,2.178222d));
         m0.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
-        m0.setTitle("Mesure test");
+        m0.setTitle("20 mai 2020");
+        m0.setSnippet("PM1 : 10 | PM2.5 : 20 | PM10 : 30 | CO2 : 40");
         m0.setIcon(getResources().getDrawable(R.drawable.ic_marker));
         m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info,map));
         marqueurs.add(m0);
