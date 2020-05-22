@@ -15,7 +15,7 @@ interface SimpleDialogCallback {
     void negativeBtnClicked();
 }
 public class SimpleDialog extends DialogFragment {
-    public static final String ARG_TITLE = "Title"; //TODO Changer les bundles sous cette forme
+    public static final String ARG_TITLE = "Title";
     public static final String ARG_MESSAGE = "Message";
     public static final String ARG_ICON = "Icon";
     public static final String ARG_TYPE = "Type";

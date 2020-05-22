@@ -4,6 +4,7 @@ package com.example.kaptair;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.core.app.ActivityCompat;
@@ -21,6 +22,11 @@ import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
+import org.osmdroid.views.overlay.ItemizedIconOverlay;
+import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
+import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.OverlayItem;
+import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -64,9 +70,11 @@ public class CarteFrag extends Fragment {
 
         map.setMultiTouchControls(true);
 
-        this.mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getContext()), map);
-        this.mLocationOverlay.enableMyLocation();
-        map.getOverlays().add(this.mLocationOverlay);
+        // Icone position
+        mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getContext()), map);
+        mLocationOverlay.enableMyLocation();
+        mLocationOverlay.setPersonIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_person));
+        map.getOverlays().add(mLocationOverlay);
 
         IMapController mapController = map.getController();
         mapController.setZoom(10.0);
@@ -80,6 +88,22 @@ public class CarteFrag extends Fragment {
                 // WRITE_EXTERNAL_STORAGE is required in order to show the map
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
+
+        // Marqueurs
+        ArrayList<Marker> marqueurs = new ArrayList<Marker>();
+
+        Marker m0 = new Marker(map);
+        m0.setPosition(new GeoPoint(48.599944d,2.178222d));
+        m0.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
+        m0.setTitle("Mesure test");
+        m0.setIcon(getResources().getDrawable(R.drawable.ic_marker));
+        m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info,map));
+        marqueurs.add(m0);
+
+
+        for (Marker m : marqueurs){
+            map.getOverlays().add(m);
+        }
 
 
         return v;
