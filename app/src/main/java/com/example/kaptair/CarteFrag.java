@@ -7,6 +7,7 @@ import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -38,6 +39,9 @@ import java.util.ArrayList;
  */
 public class CarteFrag extends Fragment {
 
+    private static final String SAVE_ZOOM = "zoom";
+    private static final String SAVE_LAT = "latitude";
+    private static final String SAVE_LONG = "longitude";
     private MapView map;
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MyLocationNewOverlay mLocationOverlay;
@@ -77,9 +81,16 @@ public class CarteFrag extends Fragment {
         map.getOverlays().add(mLocationOverlay);
 
         IMapController mapController = map.getController();
-        mapController.setZoom(10.0);
+        GeoPoint startPoint;
+        if(savedInstanceState == null){
+            mapController.setZoom(10.0);
 
-        GeoPoint startPoint = new GeoPoint(48.8534, 2.3488); //TODO Utiliser lastLocation
+            startPoint = new GeoPoint(48.8534, 2.3488); //TODO Utiliser lastLocation
+
+        }else{
+            mapController.setZoom(savedInstanceState.getDouble(SAVE_ZOOM));
+            startPoint = new GeoPoint(savedInstanceState.getDouble(SAVE_LAT), savedInstanceState.getDouble(SAVE_LONG));
+        }
         mapController.setCenter(startPoint);
 
         requestPermissionsIfNecessary(new String[]{
@@ -159,5 +170,13 @@ public class CarteFrag extends Fragment {
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putDouble(SAVE_ZOOM,map.getZoomLevelDouble());
+        outState.putDouble(SAVE_LAT,map.getMapCenter().getLatitude());
+        outState.putDouble(SAVE_LONG,map.getMapCenter().getLongitude());
     }
 }
