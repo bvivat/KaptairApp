@@ -68,4 +68,8 @@
     <string name="ToastBTConnecte">Connecté à %1$s</string>
     <string name="ToastBTConnectError">Impossible de se connecter à %1$s</string>
 
+
+    <string name="synchTitre">@string/synchroCapteur</string>
+    <string name="synchDesc">Choisissez les données que vous souhaitez synchroniser</string>
+
 </resources>

@@ -82,12 +82,14 @@ public class CarteFrag extends Fragment {
 
         IMapController mapController = map.getController();
         GeoPoint startPoint;
-        if(savedInstanceState == null){
-            mapController.setZoom(10.0);
 
+        if (savedInstanceState == null) {
+            // On initialise arbitrairement la position et le niveau de zoom
+            mapController.setZoom(10.0);
             startPoint = new GeoPoint(48.8534, 2.3488); //TODO Utiliser lastLocation
 
-        }else{
+        } else {
+            // On restore la position et le niveau de zoom sauvegarde
             mapController.setZoom(savedInstanceState.getDouble(SAVE_ZOOM));
             startPoint = new GeoPoint(savedInstanceState.getDouble(SAVE_LAT), savedInstanceState.getDouble(SAVE_LONG));
         }
@@ -104,16 +106,17 @@ public class CarteFrag extends Fragment {
         ArrayList<Marker> marqueurs = new ArrayList<Marker>();
 
         Marker m0 = new Marker(map);
-        m0.setPosition(new GeoPoint(48.599944d,2.178222d));
-        m0.setAnchor(Marker.ANCHOR_CENTER,Marker.ANCHOR_BOTTOM);
+        m0.setPosition(new GeoPoint(48.599944d, 2.178222d));
+        m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         m0.setTitle("20 mai 2020");
         m0.setSnippet("PM1 : 10 | PM2.5 : 20 | PM10 : 30 | CO2 : 40");
         m0.setIcon(getResources().getDrawable(R.drawable.ic_marker));
-        m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info,map));
+        m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info, map));
         marqueurs.add(m0);
 
 
-        for (Marker m : marqueurs){
+        // On affiche les marqueurs
+        for (Marker m : marqueurs) {
             map.getOverlays().add(m);
         }
 
@@ -175,8 +178,9 @@ public class CarteFrag extends Fragment {
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putDouble(SAVE_ZOOM,map.getZoomLevelDouble());
-        outState.putDouble(SAVE_LAT,map.getMapCenter().getLatitude());
-        outState.putDouble(SAVE_LONG,map.getMapCenter().getLongitude());
+        // On sauvegarde la position et le niveau de zoom
+        outState.putDouble(SAVE_ZOOM, map.getZoomLevelDouble());
+        outState.putDouble(SAVE_LAT, map.getMapCenter().getLatitude());
+        outState.putDouble(SAVE_LONG, map.getMapCenter().getLongitude());
     }
 }
