@@ -191,16 +191,21 @@ public class Graph {
                 // On cree un lineData a partir des dataSets
                 lineData = new LineData(dataSetPM1, dataSetPM25, dataSetPM10, dataSetCO2);
 
-                // On definit les axis Y TODO
-
+                // On definit les axis Y
                 chart.getAxisLeft().setAxisMinimum(0);
-                if(chart.getAxisLeft().getAxisMaximum()<500){
-                    chart.getAxisLeft().setAxisMaximum(500);
+                if (lineData.getYMax(YAxis.AxisDependency.LEFT) < 150) {
+                    chart.getAxisLeft().setAxisMaximum(165); // Le maximum affiche sera toujours d'au moins 150 + 10%
+                } else {
+                    chart.getAxisLeft().resetAxisMaximum(); // Si superieur, on calcule automatiquement
                 }
 
 
                 chart.getAxisRight().setAxisMinimum(0);
-                chart.getAxisRight().setAxisMaximum(5000);
+                if (lineData.getYMax(YAxis.AxisDependency.RIGHT) < 2500) {
+                    chart.getAxisRight().setAxisMaximum(2750); // Le maximum affiche sera toujours d'au moins 2500 + 10%
+                } else {
+                    chart.getAxisRight().resetAxisMaximum(); // Si superieur, on calcule automatiquement
+                }
 
                 // On recupere les chkBoxs de la legende
                 AppCompatCheckBox chkPm1 = frag.get().getView().findViewById(R.id.chkPM1);
@@ -245,10 +250,10 @@ public class Graph {
 
                 // On definit les axis Y
                 chart.getAxisLeft().setAxisMinimum(0);
-                chart.getAxisLeft().setAxisMaximum(100);
+                chart.getAxisLeft().setAxisMaximum(110);
 
                 chart.getAxisRight().setAxisMinimum(0);
-                chart.getAxisRight().setAxisMaximum(100);
+                chart.getAxisRight().setAxisMaximum(110);
 
                 // On recupere les chkBoxs de la legende
                 AppCompatCheckBox chkTemperature = frag.get().getView().findViewById(R.id.chkTemperature);
