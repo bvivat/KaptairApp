@@ -22,6 +22,8 @@ import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GoogleApiAvailability;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -39,8 +41,12 @@ public class MainActivity extends AppCompatActivity {
 
     public static final String SAVE_LOCATION_STATUS = "isLocationGranted";
 
+    public static final int REQUEST_ENABLE_BT = 1;
+    public static final int REQUEST_GOOGLE_SERVICES = 2;
+
     public static HandlerUITransfert handlerUI;
     static BluetoothApp bluetooth;
+    static boolean isGooglePlayServicesAvailable = false;
     OnConnectionChangeListener listener;
 
     boolean isLocationGranted = false;
@@ -69,6 +75,13 @@ public class MainActivity extends AppCompatActivity {
 
             //Bluetooth
             checkLocationPermission();
+
+            // Localisation
+            int locationResult = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
+            isGooglePlayServicesAvailable = (locationResult == ConnectionResult.SUCCESS);
+            if(!isGooglePlayServicesAvailable){
+                GoogleApiAvailability.getInstance().getErrorDialog(this,locationResult,REQUEST_GOOGLE_SERVICES);
+            }
 
         } else {
             // Localisation requise pour rechercher les appareils bluetooths
@@ -142,22 +155,22 @@ public class MainActivity extends AppCompatActivity {
         if (bluetooth != null) {
             bluetooth.unregisterReceiver(false); // Pour eviter les leak de memoire
         }
-        if (isFinishing()){
+        if (isFinishing()) {
             // Si l'activite se termine, on libere les variables statiques
-            bluetooth=null;
-            handlerUI=null;
+            bluetooth = null;
+            handlerUI = null;
         }
 
     }
 
     private void initBluetooth() {
-        if (bluetooth==null){
+        if (bluetooth == null) {
             isLocationGranted = true;
             handlerUI = new HandlerUITransfert(this);
             bluetooth = new BluetoothApp(this);
             bluetooth.setListener(listener); // listener du fragment param, si il existe
             bluetooth.checkIsBluetoothEnabled();
-        }else{
+        } else {
             bluetooth.checkIsBluetoothEnabled();
         }
 
@@ -191,13 +204,13 @@ public class MainActivity extends AppCompatActivity {
                     DialogFragment dialog = new SimpleDialog();
 
                     Bundle args = new Bundle();
-                    args.putString(SimpleDialog.ARG_TITLE, getString( R.string.locationDialogTitle));
+                    args.putString(SimpleDialog.ARG_TITLE, getString(R.string.locationDialogTitle));
                     args.putString(SimpleDialog.ARG_MESSAGE, getString(R.string.locationDialogBody));
                     args.putInt(SimpleDialog.ARG_ICON, R.drawable.ic_warning);
                     args.putInt(SimpleDialog.ARG_TYPE, SimpleDialog.TYPE_OK);
                     dialog.setArguments(args);
 
-                    dialog.show(getSupportFragmentManager(),"Location Dialog");
+                    dialog.show(getSupportFragmentManager(), "Location Dialog");
 
                 }
             }
@@ -211,15 +224,23 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         // Ajouter si necessaire differentes cases au switch.
-        switch (requestCode){
+        switch (requestCode) {
 
-            case BluetoothApp.REQUEST_ENABLE_BT:
+            case REQUEST_ENABLE_BT:
                 // Cas activation bluetooth
-                if(resultCode == RESULT_OK){
+                if (resultCode == RESULT_OK) {
                     // Si le bluetooth est active
                     bluetooth.bluetoothEnabled();
-                }else{
+                } else {
                     Toast.makeText(this, R.string.btBluetoothDisabled, Toast.LENGTH_LONG).show();
+                }
+            case REQUEST_GOOGLE_SERVICES:
+                // Cas google services
+                if (resultCode == RESULT_OK) {
+                    // Si l'appareil possède les services google
+                    isGooglePlayServicesAvailable=true;
+                } else {
+                    Toast.makeText(this, R.string.gglNoServices, Toast.LENGTH_LONG).show();
                 }
         }
 
@@ -253,10 +274,12 @@ public class MainActivity extends AppCompatActivity {
         outState.putBoolean(SAVE_LOCATION_STATUS, isLocationGranted);
 
     }
+
     @Override
     public void onBackPressed() {
-       super.onBackPressed();
+        super.onBackPressed();
     }
+
     public void setListener(OnConnectionChangeListener listener) {
         this.listener = listener;
     }

@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.UUID;
 
 import static com.example.kaptair.MainActivity.PREF_ADDRMAC;
+import static com.example.kaptair.MainActivity.REQUEST_ENABLE_BT;
 
 public class BluetoothApp {
     private static final String TAG = "Bluetooth class";
-    public static final int REQUEST_ENABLE_BT = 1;
 
     ArrayList<Device> devices;
     ListeFragment liste;
