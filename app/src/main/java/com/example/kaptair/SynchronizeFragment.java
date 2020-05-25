@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 /**
  * A simple {@link Fragment} subclass.
  */
+//TODO Supprimer si inutilise
 public class SynchronizeFragment extends DialogFragment {
 
 

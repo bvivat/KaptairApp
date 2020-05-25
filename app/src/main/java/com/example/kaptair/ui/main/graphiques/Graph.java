@@ -191,6 +191,17 @@ public class Graph {
                 // On cree un lineData a partir des dataSets
                 lineData = new LineData(dataSetPM1, dataSetPM25, dataSetPM10, dataSetCO2);
 
+                // On definit les axis Y TODO
+
+                chart.getAxisLeft().setAxisMinimum(0);
+                if(chart.getAxisLeft().getAxisMaximum()<500){
+                    chart.getAxisLeft().setAxisMaximum(500);
+                }
+
+
+                chart.getAxisRight().setAxisMinimum(0);
+                chart.getAxisRight().setAxisMaximum(5000);
+
                 // On recupere les chkBoxs de la legende
                 AppCompatCheckBox chkPm1 = frag.get().getView().findViewById(R.id.chkPM1);
                 AppCompatCheckBox chkPm25 = frag.get().getView().findViewById(R.id.chkPM25);
@@ -231,6 +242,21 @@ public class Graph {
 
 
                 lineData = new LineData(dataSetTemperature, dataSetHumidity);
+
+                // On definit les axis Y
+                chart.getAxisLeft().setAxisMinimum(0);
+                chart.getAxisLeft().setAxisMaximum(100);
+
+                chart.getAxisRight().setAxisMinimum(0);
+                chart.getAxisRight().setAxisMaximum(100);
+
+                // On recupere les chkBoxs de la legende
+                AppCompatCheckBox chkTemperature = frag.get().getView().findViewById(R.id.chkTemperature);
+                AppCompatCheckBox chkHumidite = frag.get().getView().findViewById(R.id.chkHumidite);
+
+                chkBoxs.put(chkTemperature, dataSetTemperature);
+                chkBoxs.put(chkHumidite, dataSetHumidity);
+
                 break;
 
             default:
