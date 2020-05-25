@@ -2,8 +2,12 @@ package com.example.kaptair;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.location.Location;
 import android.os.Bundle;
+import android.os.Looper;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,6 +28,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.google.android.gms.common.api.ResolvableApiException;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResponse;
+import com.google.android.gms.location.SettingsClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.mikepenz.google_material_typeface_library.GoogleMaterial;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
@@ -43,11 +59,14 @@ public class MainActivity extends AppCompatActivity {
 
     public static final int REQUEST_ENABLE_BT = 1;
     public static final int REQUEST_GOOGLE_SERVICES = 2;
+    private static final int REQUEST_CHECK_SETTINGS = 3;
 
     public static HandlerUITransfert handlerUI;
     static BluetoothApp bluetooth;
-    static boolean isGooglePlayServicesAvailable = false;
     OnConnectionChangeListener listener;
+
+    static TrackerApp tracker;
+    static boolean isGooglePlayServicesAvailable = false;
 
     boolean isLocationGranted = false;
     AppDatabase db;
@@ -79,8 +98,9 @@ public class MainActivity extends AppCompatActivity {
             // Localisation
             int locationResult = GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(this);
             isGooglePlayServicesAvailable = (locationResult == ConnectionResult.SUCCESS);
-            if(!isGooglePlayServicesAvailable){
-                GoogleApiAvailability.getInstance().getErrorDialog(this,locationResult,REQUEST_GOOGLE_SERVICES);
+
+            if (!isGooglePlayServicesAvailable) {
+                GoogleApiAvailability.getInstance().getErrorDialog(this, locationResult, REQUEST_GOOGLE_SERVICES);
             }
 
         } else {
@@ -91,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 handlerUI.setAct(new WeakReference<AppCompatActivity>(this));
                 bluetooth.setAct(new WeakReference<AppCompatActivity>(this));
                 bluetooth.registerBTReciever();
+
+                tracker.setAct(new WeakReference<AppCompatActivity>(this));
+                tracker.startLocationUpdates();
             }
 
         }
@@ -153,12 +176,15 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (bluetooth != null) {
-            bluetooth.unregisterReceiver(false); // Pour eviter les leak de memoire
+            bluetooth.unregisterReceiver(false); // Pour eviter les leaks de memoire
         }
         if (isFinishing()) {
             // Si l'activite se termine, on libere les variables statiques
             bluetooth = null;
             handlerUI = null;
+        }
+        if (tracker != null) {
+            tracker.stopLocationUpdates(false);
         }
 
     }
@@ -175,6 +201,56 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
+
+    public void checkTrackingPermissions() {
+        if (isGooglePlayServicesAvailable) {
+
+            if (tracker==null){
+                tracker = new TrackerApp(this);
+            }
+
+            // On verifie les autorisations associees a la requete
+            LocationSettingsRequest.Builder locationSettingsBuilder = new LocationSettingsRequest.Builder().addLocationRequest(tracker.getLocationRequest());
+
+            SettingsClient client = LocationServices.getSettingsClient(this);
+            Task<LocationSettingsResponse> task = client.checkLocationSettings(locationSettingsBuilder.build());
+
+            task.addOnSuccessListener(this, new OnSuccessListener<LocationSettingsResponse>() {
+                @Override
+                public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
+                    // All location settings are satisfied
+                    tracker.initTracking();
+                }
+            });
+
+            task.addOnFailureListener(this, new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    if (e instanceof ResolvableApiException) {
+                        // Location settings are not satisfied, but this can be fixed
+                        // by showing the user a dialog.
+                        try {
+                            ResolvableApiException resolvable = (ResolvableApiException) e;
+                            resolvable.startResolutionForResult(MainActivity.this,
+                                    REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException sendEx) {
+                            // Ignore the error.
+                        }
+                    }
+                }
+            });
+        } else {
+            Toast.makeText(this, R.string.gglNoServices, Toast.LENGTH_LONG).show();
+        }
+
+    }
+
+    public void endTracking(){
+        if (isGooglePlayServicesAvailable){
+            tracker.stopLocationUpdates(true);
+        }
+    }
+
 
     protected void checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -238,9 +314,17 @@ public class MainActivity extends AppCompatActivity {
                 // Cas google services
                 if (resultCode == RESULT_OK) {
                     // Si l'appareil possède les services google
-                    isGooglePlayServicesAvailable=true;
+                    isGooglePlayServicesAvailable = true;
                 } else {
                     Toast.makeText(this, R.string.gglNoServices, Toast.LENGTH_LONG).show();
+                }
+            case REQUEST_CHECK_SETTINGS:
+                // Cas localisation precise
+                if (resultCode == RESULT_OK) {
+                    // Si les autorisations necessaires a la localisation sont acceptees
+                    tracker.initTracking();
+                } else {
+                    Toast.makeText(this, R.string.locNoRights, Toast.LENGTH_LONG).show();
                 }
         }
 
@@ -275,12 +359,11 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-    }
-
     public void setListener(OnConnectionChangeListener listener) {
         this.listener = listener;
+    }
+
+    public static TrackerApp getTracker() {
+        return tracker;
     }
 }

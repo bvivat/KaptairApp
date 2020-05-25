@@ -17,6 +17,8 @@
 
     <string name="gglNoServices">Les services Google Play sont requis pour accéder à votre localisation</string>
 
+    <string name="locNoRights">L\'accès à la localisation est requis pour localiser les mesures</string>
+
 
     <string name="heure">Heure</string>
     <string name="jour">Jour</string>

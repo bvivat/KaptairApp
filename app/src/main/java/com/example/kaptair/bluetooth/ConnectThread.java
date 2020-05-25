@@ -9,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.kaptair.MainActivity;
 import com.example.kaptair.R;
 
 import java.io.IOException;
@@ -72,7 +73,7 @@ public class ConnectThread extends Thread {
             return;
         }
 
-        // Connexion reussie. On lance le transfert
+        // Connexion reussie
         isConnected = true;
         act.get().runOnUiThread(new Runnable() {
             @Override
@@ -87,6 +88,10 @@ public class ConnectThread extends Thread {
         editor.putString(PREF_ADDRMAC, mmDevice.getAddress());
         editor.commit();
 
+        // On active le tracking des mesures
+        ((MainActivity) act.get()).checkTrackingPermissions();
+
+        // On lance le transfert
         transfert = new TransfertThread(mmSocket);
         transfert.setListener(new OnConnectionChangeListener() {
             @Override
@@ -105,6 +110,10 @@ public class ConnectThread extends Thread {
         }
         isConnected=false;
         result();
+
+        // On arrete le tracking GPS
+        ((MainActivity) act.get()).endTracking();
+
         try {
             mmSocket.close();
         } catch (IOException e) {
