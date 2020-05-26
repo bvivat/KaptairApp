@@ -23,6 +23,7 @@ import com.example.kaptair.database.MoyenneYearMesuresMeteo;
 import com.example.kaptair.database.MoyenneYearMesuresPollution;
 
 import java.lang.ref.WeakReference;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -83,6 +84,12 @@ public class HandlerUITransfert extends Handler {
         Date date = new Date();
         Location location = MainActivity.getTracker().getLastLocation();
 
+        // Si la location est null ou que la date est vieille de plus de 1 min,
+        // on remplace par une nouvelle location ( latitude et longitude = 0)
+        if (location == null || ((Calendar.getInstance().getTimeInMillis() - location.getTime()) > (60 * 1000))) {
+            location = new Location("none");
+        }
+
         //On recupere la trame et verifie son format
         String trame = (String) msg.obj;
         String[] valeurs = trame.split(",");
@@ -116,7 +123,7 @@ public class HandlerUITransfert extends Handler {
 
 
                     // On cree une nouvelle mesure a partir de ces donnees
-                    MesurePollution m = new MesurePollution(date, pm1, pm25, pm10, co2);
+                    MesurePollution m = new MesurePollution(date, pm1, pm25, pm10, co2, location.getLatitude(), location.getLongitude());
 
                     // On l'ajoute a la base de donnees
                     insertBD(m);
@@ -136,7 +143,7 @@ public class HandlerUITransfert extends Handler {
                         Log.e(TAG, "Impossible de modifier les compteurs");
                     }
 
-                    MesureMeteo m = new MesureMeteo(date, temperature, humidity);
+                    MesureMeteo m = new MesureMeteo(date, temperature, humidity, location.getLatitude(), location.getLongitude());
                     insertBD(m);
                 }
                 break;

@@ -15,10 +15,15 @@ public class MesureMeteo implements MeteoMesure {
     public double temperature;
     public double humidity;
 
-    public MesureMeteo(Date date, double temperature, double humidity) {
+    public double latitude;
+    public double longitude;
+
+    public MesureMeteo(Date date, double temperature, double humidity, double latitude, double longitude) {
         this.date = date;
         this.temperature = temperature;
         this.humidity = humidity;
+        this.latitude=latitude;
+        this.longitude=longitude;
     }
 
     @Ignore

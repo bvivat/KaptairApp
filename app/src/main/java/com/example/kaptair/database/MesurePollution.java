@@ -17,12 +17,17 @@ public class MesurePollution implements PollutionMesure {
     public double pm10;
     public double co2;
 
-    public MesurePollution(Date date, double pm1, double pm25, double pm10, double co2) {
+    public double latitude;
+    public double longitude;
+
+    public MesurePollution(Date date, double pm1, double pm25, double pm10, double co2, double latitude, double longitude) {
         this.date = date;
         this.pm1 = pm1;
         this.pm25 = pm25;
         this.pm10 = pm10;
         this.co2 = co2;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     @Ignore
