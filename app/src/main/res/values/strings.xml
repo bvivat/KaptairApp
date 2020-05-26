@@ -11,6 +11,9 @@
     <string name="humidite">Humidité</string>
     <string name="µgmCube">µg/m<sup><small>3</small></sup></string>
 
+    <string name="temperatureSansAccent">Temperature</string>
+    <string name="humiditeSansAccent">Humidite</string>
+
     <string name="btListeTitre">Choisissez votre appareil</string>
     <string name="btNoBluetooth">Votre appareil ne supporte pas le bluetooth.</string>
     <string name="btBluetoothDisabled">Vous devez activer le bluetooth pour vous connecter à votre capteur</string>

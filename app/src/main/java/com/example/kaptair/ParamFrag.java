@@ -98,8 +98,8 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
                         List<MesureMeteo> mesuresMeteo = db.mesureMeteoDao().getAll();
                         exportMsg += "\n";
                         exportMsg += "Date,";
-                        exportMsg += getString(R.string.temperature) + ",";
-                        exportMsg += getString(R.string.humidite);
+                        exportMsg += getString(R.string.temperatureSansAccent) + ",";
+                        exportMsg += getString(R.string.humiditeSansAccent);
                         exportMsg += "\n";
 
                         for (MesureMeteo m : mesuresMeteo) {
