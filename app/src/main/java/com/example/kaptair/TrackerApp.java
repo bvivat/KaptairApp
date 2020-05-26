@@ -21,6 +21,7 @@ public class TrackerApp {
     FusedLocationProviderClient fusedLocationClient;
     private boolean isTrackingDone = true;
     WeakReference<AppCompatActivity> act;
+    Location lastLocation;
 
     public TrackerApp(AppCompatActivity a) {
         act = new WeakReference<AppCompatActivity>(a);
@@ -64,6 +65,7 @@ public class TrackerApp {
                 for (Location location : locationResult.getLocations()) {
                     // Update UI with location data
                     Log.d(TAG, location.toString());
+                    lastLocation=location;
                 }
             }
         };
@@ -89,5 +91,9 @@ public class TrackerApp {
     public void setAct(WeakReference<AppCompatActivity> act) {
         this.act = act;
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(act.get());
+    }
+
+    public Location getLastLocation() {
+        return lastLocation;
     }
 }

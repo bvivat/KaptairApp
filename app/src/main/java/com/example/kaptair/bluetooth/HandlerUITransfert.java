@@ -1,5 +1,6 @@
 package com.example.kaptair.bluetooth;
 
+import android.location.Location;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -11,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.example.kaptair.MainActivity;
 import com.example.kaptair.R;
 import com.example.kaptair.database.AppDatabase;
 import com.example.kaptair.database.MesureMeteo;
@@ -77,11 +79,15 @@ public class HandlerUITransfert extends Handler {
 
     @Override
     public void handleMessage(Message msg) {
+        // Initialisation du contexte des mesures
         Date date = new Date();
+        Location location = MainActivity.getTracker().getLastLocation();
 
         //On recupere la trame et verifie son format
         String trame = (String) msg.obj;
         String[] valeurs = trame.split(",");
+
+        //TODO recuperer ici date et gps quand transmis par le capteur
 
         for (int i = 1; i < valeurs.length; i++) {
             if (!isNumeric(valeurs[i])) {
@@ -99,13 +105,13 @@ public class HandlerUITransfert extends Handler {
                     double co2 = Double.valueOf(valeurs[4]);
 
                     // On affecte ces valeurs a l'interface
-                    try{
+                    try {
                         setPM1(pm1);
                         setPM25(pm25);
                         setPM10(pm10);
                         setCO2(co2);
-                    }catch (NullPointerException e){
-                        Log.e(TAG,"Impossible de modifier les compteurs");
+                    } catch (NullPointerException e) {
+                        Log.e(TAG, "Impossible de modifier les compteurs");
                     }
 
 
@@ -122,12 +128,12 @@ public class HandlerUITransfert extends Handler {
                     double humidity = Double.valueOf(valeurs[2]);
                     //double pression = Double.valueOf(valeurs[3]);
 
-                    try{
+                    try {
                         setTemperature(temperature);
                         setHumidite(humidity);
                         //setPression(pression);
-                    }catch (NullPointerException e){
-                        Log.e(TAG,"Impossible de modifier les compteurs");
+                    } catch (NullPointerException e) {
+                        Log.e(TAG, "Impossible de modifier les compteurs");
                     }
 
                     MesureMeteo m = new MesureMeteo(date, temperature, humidity);
