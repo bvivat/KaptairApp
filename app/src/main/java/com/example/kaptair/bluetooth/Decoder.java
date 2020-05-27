@@ -6,19 +6,17 @@ import java.util.LinkedList;
 
 public class Decoder {
 
-    byte[] tab = new byte[16];
-
     public Decoder() {
 
     }
 
-    public String decode(ArrayList<Byte> msg) {
+    public String decode(byte[] trame) {
         String decodedMsg = "";
-        updateByteTab(msg,tab,0);
-        decodedMsg += ByteBuffer.wrap(tab, 0, 4).getFloat();
-        decodedMsg += ByteBuffer.wrap(tab, 4, 4).getFloat();
-        decodedMsg += ByteBuffer.wrap(tab, 8, 4).getFloat();
-        decodedMsg += ByteBuffer.wrap(tab, 12, 4).getFloat();
+
+        decodedMsg += ByteBuffer.wrap(trame, 0, 4).getFloat();
+        decodedMsg += ByteBuffer.wrap(trame, 4, 4).getFloat();
+        decodedMsg += ByteBuffer.wrap(trame, 8, 4).getFloat();
+        decodedMsg += ByteBuffer.wrap(trame, 12, 4).getFloat();
 
 
 
@@ -27,9 +25,4 @@ public class Decoder {
 
     }
 
-    private void updateByteTab(ArrayList<Byte> list, byte[] tab, int offset) {
-        for (int i=offset;i<list.size();i++) {
-            tab[i]=list.get(i);
-        }
-    }
 }

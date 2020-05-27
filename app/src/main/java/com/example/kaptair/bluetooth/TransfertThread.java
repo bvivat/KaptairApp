@@ -85,44 +85,67 @@ public class TransfertThread extends Thread {
                 String msg = new String(mmBuffer, 0, numBytes);
                 Log.i(TAG, "Message recu : " + msg);
 
+                // On regarde le type
                 String type = msg.substring(0, 3);
+
                 if (type.equals(SYNC_START_ID)) {
+                    // Si il s'agit d'une synchro,
                     Log.i(TAG, "Type Synchro ");
 
+                    // On regarde l'ID de la trame
                     id = msg.substring(3, 5);
 
-                    LinkedList<Byte> msgTmp = new LinkedList<>();
-                    updateLinkedList(msgTmp, mmBuffer,9);
+                    // On recupere le nombre de trames attendues
+                    int nbTramesMax = ByteBuffer.wrap(mmBuffer, 5, 4).getInt();
+                    Log.i(TAG, "nbTramesMax :" + nbTramesMax);
 
-                    ArrayList<Byte> trame = new ArrayList<>();
-                    int sizeTrame = 16;
+                    // Buffer directement lie au tableau de bytes
+                    ByteBuffer buffer = ByteBuffer.wrap(mmBuffer);
+                    buffer.limit(numBytes);
+                    buffer.position(9);
+
                     Decoder decoder = new Decoder();
+
+                    int sizeTrame = 16;
+
 
                     if (id.equals("PM")) {
                         Log.i(TAG, "Type PM ");
+                        // TODO Changer size trame
                     } else if (id.equals("AT")) {
                         Log.i(TAG, "Type AT ");
                     }
 
-                    int nbTramesMax = ByteBuffer.wrap(mmBuffer, 5, 4).getInt();
-                    Log.i(TAG, "nbTramesMax :" + nbTramesMax);
+                    // La trame individuelle a envoyer
+                    byte[] trame = new byte[sizeTrame];
+                    ByteBuffer trameBuffer = ByteBuffer.wrap(trame);
+                    trameBuffer.limit(sizeTrame);
+                    trameBuffer.position(0);
+
+
+                    // On initialise le nombre de trames lues
                     int nbTramesLues = 0;
 
                     while (nbTramesLues < nbTramesMax) {
 
-                        while (!msgTmp.isEmpty()) {
-                            trame.add(msgTmp.removeLast());
-                            if (trame.size() == sizeTrame) {
+                        // Tant qu'on a pas atteint le bout du message recu
+                        while (buffer.position()!= buffer.limit()) {
+
+                            // Tant qu'on a pas rempli la trame ou atteint le bout du message recu
+                            while ( trameBuffer.position() != trameBuffer.limit() && buffer.position()!= buffer.limit() ){
+                                trameBuffer.put(buffer.get());
+                            }
+                            if (trameBuffer.position() == trameBuffer.limit()) {
                                 String decodedMsg = decoder.decode(trame);
                                 send(decodedMsg);
+                                nbTramesLues++;
+                                trameBuffer.position(0);
                             }
 
                         }
                         numBytes = mmInStream.read(mmBuffer);
-                        msg = new String(mmBuffer, 0, numBytes);
-                        Log.i(TAG, "Message recu : " + msg);
-
-                        updateLinkedList(msgTmp,mmBuffer,0);
+                        buffer.position(0);
+                        buffer.limit(numBytes);
 
                     }
 
