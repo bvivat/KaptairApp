@@ -95,6 +95,13 @@ public class HandlerUITransfert extends Handler {
         String[] valeurs = trame.split(",");
 
         //TODO recuperer ici date et gps quand transmis par le capteur
+        if(isNumeric(valeurs[0])){
+            // Il s'agit d'un message synchro
+            //date= new Date(Long.valueOf(valeurs[0]));
+            //location.setLatitude(Double.valueOf(valeurs[valeurs.length-2]));
+            //location.setLongitude(Double.valueOf(valeurs[valeurs.length-1]));
+
+        }
 
         for (int i = 1; i < valeurs.length; i++) {
             if (!isNumeric(valeurs[i])) {
