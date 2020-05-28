@@ -8,6 +8,8 @@ import android.graphics.BitmapFactory;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
@@ -125,6 +127,13 @@ public class CarteFrag extends Fragment {
     }
 
     @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        final ConstraintLayout toolbar = getActivity().findViewById(R.id.appBarLayout);
+        toolbar.setVisibility(View.GONE);
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         //this will refresh the osmdroid configuration on resuming.
@@ -182,5 +191,13 @@ public class CarteFrag extends Fragment {
         outState.putDouble(SAVE_ZOOM, map.getZoomLevelDouble());
         outState.putDouble(SAVE_LAT, map.getMapCenter().getLatitude());
         outState.putDouble(SAVE_LONG, map.getMapCenter().getLongitude());
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        final ConstraintLayout toolbar = getActivity().findViewById(R.id.appBarLayout);
+        toolbar.setVisibility(View.VISIBLE);
+
     }
 }

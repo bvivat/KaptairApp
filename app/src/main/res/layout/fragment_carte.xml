@@ -7,11 +7,150 @@
     tools:context=".CarteFrag"
     >
 
+
+
     <org.osmdroid.views.MapView android:id="@+id/map"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
 
-
         />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/lytHeaderMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+
+
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        >
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+
+            android:id="@+id/lytMenuMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/map_titre_background"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/lytTitreMap"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/lytChoixReperes"
+            >
+
+            <ImageButton
+
+                android:id="@+id/btnMenuMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_menu"
+                android:tint="@color/colorPrimary"
+
+                android:backgroundTint="@color/colorBackground"
+
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lytTitreMap"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+
+            android:background="@drawable/map_titre_background"
+
+            android:layout_marginLeft="5dp"
+
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/lytMenuMap"
+            app:layout_constraintBottom_toTopOf="@+id/lytChoixReperes"
+            >
+            <TextView
+                android:id="@+id/txtTitreMap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="28/05/2020"
+                android:textColor="@color/colorPrimary"
+                android:textSize="17dp"
+
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/lytChoixReperes"
+            style="@style/lytChoixGraph"
+            android:layout_width="0dp"
+
+            android:layout_height="wrap_content"
+
+            app:layout_constraintTop_toBottomOf="@+id/lytTitreMap"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/lytMenuMap"
+            >
+
+            <Button
+                android:id="@+id/btnHourPollution"
+                style="@style/txtButtonChoixGraph"
+                android:layout_width="0dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+
+                android:background="@drawable/button_choix_graph"
+                android:text="@string/heure"
+                app:layout_constraintEnd_toStartOf="@+id/btnDayPollution"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteY="2dp" />
+
+            <Button
+                android:id="@+id/btnDayPollution"
+                style="@style/txtButtonChoixGraph"
+                android:layout_width="0dp"
+                android:background="@drawable/button_choix_graph"
+                android:text="@string/jour"
+                app:layout_constraintEnd_toStartOf="@+id/btnYearPollution"
+
+
+                app:layout_constraintStart_toEndOf="@+id/btnHourPollution"
+                tools:ignore="MissingConstraints" />
+
+            <Button
+                android:id="@+id/btnYearPollution"
+                style="@style/txtButtonChoixGraph"
+                android:layout_width="0dp"
+                android:layout_marginStart="2dp"
+                android:layout_marginEnd="2dp"
+
+                android:background="@drawable/button_choix_graph"
+                android:text="@string/annee"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/btnDayPollution"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteY="5dp" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
