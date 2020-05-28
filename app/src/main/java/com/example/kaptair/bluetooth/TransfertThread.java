@@ -10,8 +10,10 @@ import com.google.android.gms.common.util.ArrayUtils;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -74,6 +76,12 @@ public class TransfertThread extends Thread {
 
     public void run() {
         mmBuffer = new byte[1024];
+
+        // Buffer pour conserver le message entier si le début n'est pas passe en 1 morceau
+        byte[] savedMsg = new byte[1024];
+        ByteBuffer bufferSaved = ByteBuffer.wrap(savedMsg);
+        bufferSaved.position(0);
+
         int numBytes; // bytes returned from read()
 
         // Keep listening to the InputStream until an exception occurs.
@@ -81,33 +89,42 @@ public class TransfertThread extends Thread {
             try {
                 // Read from the InputStream.
                 numBytes = mmInStream.read(mmBuffer);
+                bufferSaved.put(mmBuffer, 0, numBytes);
 
-                String msg = new String(mmBuffer, 0, numBytes);
-                Log.i(TAG, "Message recu : " + msg);
+                String msg = new String(savedMsg, 0, bufferSaved.position());
+                Log.i(TAG, "Message : " + msg);
 
                 // On regarde le type
-                String type = msg.substring(0, 3);
+                String type = "";
+                if (bufferSaved.position() >= 3) {
+                    type = msg.substring(0, 3);
+                } else {
+                    continue;
+                }
 
                 if (type.equals(SYNC_START_ID)) {
-                    // Si il s'agit d'une synchro,
+
                     Log.i(TAG, "Type Synchro ");
+
+                    // Si le header de la trame n'est pas complet
+                    if (bufferSaved.position() < 9) {
+                        continue;
+                    }
 
                     // On regarde l'ID de la trame
                     id = msg.substring(3, 5);
 
                     // On recupere le nombre de trames attendues
-                    int nbTramesMax = ByteBuffer.wrap(mmBuffer, 5, 4).getInt();
+                    int nbTramesMax = ByteBuffer.wrap(savedMsg, 5, 4).getInt();
                     Log.i(TAG, "nbTramesMax :" + nbTramesMax);
 
-                    // Buffer directement lie au tableau de bytes
-                    ByteBuffer buffer = ByteBuffer.wrap(mmBuffer);
-                    buffer.limit(numBytes);
-                    buffer.position(9);
+                    // On prepare le buffer pour lire a partir de la fin du header
+                    bufferSaved.limit(bufferSaved.position());
+                    bufferSaved.position(9);
 
                     Decoder decoder = new Decoder();
 
                     int sizeTrame = 16;
-
 
                     if (id.equals("PM")) {
                         Log.i(TAG, "Type PM ");
@@ -128,12 +145,12 @@ public class TransfertThread extends Thread {
 
                     while (nbTramesLues < nbTramesMax) {
 
-                        // Tant qu'on a pas atteint le bout du message recu
-                        while (buffer.position()!= buffer.limit()) {
+                        // Tant qu'on a pas atteint le bout du message recu et qu'on souhaite lire plus de trames
+                        while (bufferSaved.position() != bufferSaved.limit() && nbTramesLues < nbTramesMax) {
 
                             // Tant qu'on a pas rempli la trame ou atteint le bout du message recu
-                            while ( trameBuffer.position() != trameBuffer.limit() && buffer.position()!= buffer.limit() ){
-                                trameBuffer.put(buffer.get());
+                            while (trameBuffer.position() != trameBuffer.limit() && bufferSaved.position() != bufferSaved.limit()) {
+                                trameBuffer.put(bufferSaved.get());
                             }
                             if (trameBuffer.position() == trameBuffer.limit()) {
                                 String decodedMsg = decoder.decode(trame);
@@ -143,22 +160,32 @@ public class TransfertThread extends Thread {
                             }
 
                         }
-                        numBytes = mmInStream.read(mmBuffer);
-                        buffer.position(0);
-                        buffer.limit(numBytes);
+
+                        // Si il reste des trames a lire
+                        if(nbTramesLues<nbTramesMax){
+                            Arrays.fill(savedMsg, (byte) 0);
+
+                            // On lit la suite du message
+                            numBytes = mmInStream.read(savedMsg);
+                            bufferSaved.position(0);
+                            bufferSaved.limit(numBytes);
+                        }
+
 
                     }
 
                 } else {
                     Log.i(TAG, "Type Instantane ");
 
-                    if (numBytes >= 2) {
-                        id = msg.substring(0, 2);
-                        Log.i(TAG, "id recu : " + id);
-                    }
-
+                    id = msg.substring(0, 2);
+                    Log.i(TAG, "id recu : " + id);
                     send(msg);
                 }
+
+
+                // On reinitialise le buffer
+                Arrays.fill(savedMsg, (byte) 0);
+                bufferSaved.clear();
 
             } catch (IOException e) {
                 Log.d(TAG, "Input stream was disconnected", e);
@@ -194,17 +221,12 @@ public class TransfertThread extends Thread {
         this.listener = listener;
     }
 
-    private void updateLinkedList(LinkedList<Byte> list, byte[] tab, int offset) {
-        for (int i=offset;i<tab.length && tab[i]!= '\0';i++) {
-            list.add(tab[i]);
-        }
-    }
-
     private void send(String msg) {
         // Send the obtained bytes to the UI activity.
         Message readMsg = MainActivity.handlerUI.obtainMessage(
                 getOrDef(TypeMessage.type, id), -1, -1,
                 msg);
+        Log.d(TAG,msg);
         readMsg.sendToTarget();
     }
 }
