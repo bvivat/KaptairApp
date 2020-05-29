@@ -23,6 +23,8 @@
     <color name="colorGraphLegend">@color/colorUnit</color>
     <color name="colorGraphGraduations">@color/colorNom</color>
 
+    <color name="colorAccentMapTitre">#F0F0F0</color>
+
 
     <!-- OVERWRITE THESE COLORS FOR A LIGHT THEME -->
     <!-- MaterialDrawer DEFAULT colors -->

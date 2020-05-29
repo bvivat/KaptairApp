@@ -120,6 +120,16 @@
         <item name="android:layout_height">30dp</item>
     </style>
 
+    <style name="txtButtonChoixMap" parent="@style/Widget.AppCompat.Button.Borderless" >
+        <item name="android:textColor">@color/colorNom</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="android:layout_height">30dp</item>
+    </style>
+
     <style name="lytChoixGraph" >
         <item name="android:layout_marginTop">6dp</item>
         <item name="layout_constraintWidth_max">400dp</item>

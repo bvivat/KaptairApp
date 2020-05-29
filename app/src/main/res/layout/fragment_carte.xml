@@ -112,12 +112,10 @@
 
             <Button
                 android:id="@+id/btnHourMap"
-                style="@style/txtButtonChoixGraph"
+                style="@style/txtButtonChoixMap"
                 android:layout_width="0dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
 
-                android:background="@drawable/button_choix_map"
+                android:background="@drawable/button_choix_map_left"
                 android:text="@string/heure"
                 app:layout_constraintEnd_toStartOf="@+id/btnDayMap"
                 app:layout_constraintStart_toStartOf="parent"
@@ -126,7 +124,7 @@
 
             <Button
                 android:id="@+id/btnDayMap"
-                style="@style/txtButtonChoixGraph"
+                style="@style/txtButtonChoixMap"
                 android:layout_width="0dp"
                 android:background="@drawable/button_choix_map"
                 android:text="@string/jour"
@@ -138,12 +136,10 @@
 
             <Button
                 android:id="@+id/btnYearMap"
-                style="@style/txtButtonChoixGraph"
+                style="@style/txtButtonChoixMap"
                 android:layout_width="0dp"
-                android:layout_marginStart="2dp"
-                android:layout_marginEnd="2dp"
 
-                android:background="@drawable/button_choix_map"
+                android:background="@drawable/button_choix_map_right"
                 android:text="@string/annee"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btnDayMap"
