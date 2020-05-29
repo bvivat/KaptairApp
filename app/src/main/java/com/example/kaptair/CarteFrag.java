@@ -2,6 +2,8 @@ package com.example.kaptair;
 
 
 import android.Manifest;
+import android.app.DatePickerDialog;
+import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
@@ -18,22 +20,35 @@ import androidx.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
+import android.widget.TimePicker;
+
+import com.example.kaptair.database.AppDatabase;
+import com.example.kaptair.database.InterfacesMesures.Mesure;
+import com.example.kaptair.database.InterfacesMesures.MesureDao;
+import com.example.kaptair.ui.main.YearPickerDialog;
+import com.example.kaptair.ui.main.graphiques.CardGraph;
+import com.example.kaptair.ui.main.graphiques.Graph;
 
 import org.osmdroid.api.IMapController;
 import org.osmdroid.config.Configuration;
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
-import org.osmdroid.views.overlay.ItemizedIconOverlay;
-import org.osmdroid.views.overlay.ItemizedOverlayWithFocus;
 import org.osmdroid.views.overlay.Marker;
-import org.osmdroid.views.overlay.OverlayItem;
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 
 /**
@@ -47,6 +62,21 @@ public class CarteFrag extends Fragment {
     private MapView map;
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MyLocationNewOverlay mLocationOverlay;
+
+    // Non map related attributs
+    private AppDatabase db;
+    private Executor executor = Executors.newSingleThreadExecutor();
+    Calendar calendrier = Calendar.getInstance();
+
+    MesureDao hourDao;
+    MesureDao dayDao;
+    MesureDao yearDao;
+
+    ArrayList<Button> btns = new ArrayList<>();
+    TextView titre;
+    Button btnHour;
+    Button btnDay;
+    Button btnYear;
 
     public CarteFrag() {
         // Required empty public constructor
@@ -131,6 +161,125 @@ public class CarteFrag extends Fragment {
         super.onActivityCreated(savedInstanceState);
         final ConstraintLayout toolbar = getActivity().findViewById(R.id.appBarLayout);
         toolbar.setVisibility(View.GONE);
+
+        db = AppDatabase.getInstance(getContext());
+
+        calendrier.set(Calendar.MINUTE, 0);
+        calendrier.set(Calendar.SECOND, 0);
+        calendrier.set(Calendar.MILLISECOND, 0);
+
+        hourDao =  db.mesurePollutionDao();
+        dayDao =  db.moyenneDayMesuresPollutionDao();
+        yearDao = db.moyenneYearMesuresPollutionDao();
+
+        titre = getView().findViewById(R.id.txtTitreMap);
+
+        btnHour = getView().findViewById(R.id.btnHourMap);
+        btnDay = getView().findViewById(R.id.btnDayMap);
+        btnYear = getView().findViewById(R.id.btnYearMap);
+
+        btns.add(btnHour);
+        btns.add(btnDay);
+        btns.add(btnYear);
+
+        // Date Pickers Listeners \\
+        DatePickerDialog.OnDateSetListener dateHeure = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                //On definit le calendrier aux valeurs choisies par l'utilisateur
+                calendrier.set(Calendar.YEAR, year);
+                calendrier.set(Calendar.MONTH, monthOfYear);
+                calendrier.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                TimePickerDialog timePickerDialog = new TimePickerDialog(getContext(), R.style.MyDatePicker,
+                        new TimePickerDialog.OnTimeSetListener() {
+
+                            @Override
+                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+                                calendrier.set(Calendar.HOUR_OF_DAY, hourOfDay);
+
+                                // On met a jour le graph et son titre
+                                setTitreHour();
+                                reperesHour();
+
+                            }
+                        }, calendrier.get(Calendar.HOUR_OF_DAY), 0, true);
+                timePickerDialog.show();
+            }
+
+        };
+
+        DatePickerDialog.OnDateSetListener dateJour = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                //On definit le calendrier aux valeurs choisies par l'utilisateur
+                calendrier.set(Calendar.YEAR, year);
+                calendrier.set(Calendar.MONTH, monthOfYear);
+                calendrier.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                calendrier.set(Calendar.HOUR_OF_DAY, 0);
+
+                // On met a jour le graph et son titre
+                setTitreDay();
+                reperesDay();
+            }
+        };
+
+        final DatePickerDialog.OnDateSetListener dateAnnee = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                //On definit le calendrier aux valeurs choisies par l'utilisateur
+                calendrier.set(Calendar.YEAR, year);
+                calendrier.set(Calendar.MONTH, 0);
+                calendrier.set(Calendar.DAY_OF_MONTH, 1);
+                calendrier.set(Calendar.HOUR_OF_DAY, 0);
+
+                // On met a jour le graph et son titre
+                setTitreYear();
+                reperesYear();
+            }
+        };
+
+        final DatePickerDialog pickerHeure = new DatePickerDialog(getContext(), R.style.MyDatePicker, dateHeure, calendrier.get(Calendar.YEAR), calendrier.get(Calendar.MONTH), calendrier.get(Calendar.DAY_OF_MONTH));
+        final DatePickerDialog pickerJour = new DatePickerDialog(getContext(), R.style.MyDatePicker, dateJour, calendrier.get(Calendar.YEAR), calendrier.get(Calendar.MONTH), calendrier.get(Calendar.DAY_OF_MONTH));
+
+
+        // Boutons Listener \\
+        View.OnClickListener listenerChoixGraphPollution = new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                Button btnTmp = (Button) v;
+                if (!btnTmp.isSelected()) {
+                    btnTmp.setSelected(true); // On le selectionne
+                }
+                for (Button b : btns) {
+                    if (b.getId() != btnTmp.getId() && b.isSelected()) {
+                        b.setSelected(false); // On deselectionne les autres boutons
+                    }
+                }
+
+                //On affiche le date picker associe
+                if (v.getId() == btnHour.getId()) {
+                    pickerHeure.show();
+                } else if (v.getId() == btnDay.getId()) {
+                    pickerJour.show();
+                } else if (v.getId() == btnYear.getId()) {
+                    YearPickerDialog y = new YearPickerDialog();
+                    y.setListener(dateAnnee);
+                    y.show(getFragmentManager(), "picker");
+                }
+            }
+        };
+
+        // On affecte le listener aux boutons
+        for (Button b : btns) {
+            b.setOnClickListener(listenerChoixGraphPollution);
+        }
     }
 
     @Override
@@ -198,6 +347,79 @@ public class CarteFrag extends Fragment {
         super.onDetach();
         final ConstraintLayout toolbar = getActivity().findViewById(R.id.appBarLayout);
         toolbar.setVisibility(View.VISIBLE);
+
+    }
+
+    public void setTitreHour() {
+        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy HH:mm");
+        titre.setText(sdfHours.format(calendrier.getTime()));
+    }
+
+    public void setTitreDay() {
+        SimpleDateFormat sdfHours = new SimpleDateFormat("EEEE dd MMMM yyyy");
+        titre.setText(sdfHours.format(calendrier.getTime()));
+    }
+
+    public void setTitreYear() {
+        SimpleDateFormat sdfHours = new SimpleDateFormat("yyyy");
+        titre.setText(sdfHours.format(calendrier.getTime()));
+    }
+
+    //TODO changer et renommer ces fonctions
+    public void reperesHour() {
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                // On recupere les donnees associees a l'heure choisie dans la BD
+                Date d1 = calendrier.getTime();
+                Date d2 = new Date(d1.getTime() + Graph.ONE_HOUR);
+                List<? extends Mesure> mesures = hourDao.getAllByDate(d1, d2);
+
+                // On construit les reperes
+
+            }
+        });
+    }
+
+    public void reperesDay() {
+
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                // On recupere les donnees associees a l'heure choisie dans la BD
+                Date d1 = calendrier.getTime();
+                Date d2 = new Date(d1.getTime() + Graph.ONE_DAY);
+                List<? extends Mesure> mesures = dayDao.getAllByDate(d1, d2);
+
+                // On construit les reperes
+
+
+            }
+        });
+
+    }
+
+    public void reperesYear() {
+
+        final boolean bissextile;
+        if (calendrier.getActualMaximum(Calendar.DAY_OF_YEAR) > 365) {
+            bissextile = true;
+        } else {
+            bissextile = false;
+        }
+        executor.execute(new Runnable() {
+            @Override
+            public void run() {
+                // On recupere les donnees associees a l'heure choisie dans la BD
+                Date d1 = calendrier.getTime();
+                Date d2 = new Date(d1.getTime() + Graph.ONE_YEAR + (bissextile ? Graph.ONE_DAY : 0));
+                List<? extends Mesure> mesures = yearDao.getAllByDate(d1, d2);
+
+                // On construit les reperes
+
+            }
+        });
 
     }
 }

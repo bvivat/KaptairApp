@@ -125,6 +125,9 @@
         <item name="layout_constraintWidth_max">400dp</item>
         <item name="android:background">@drawable/choix_graph_background</item>
     </style>
+    <style name="lytChoixMap" >
+        <item name="android:background">@drawable/map_titre_background_bas</item>
+    </style>
 
     <style name="txtLegend" parent="TextAppearance.AppCompat" >
         <item name="android:textColor">@color/colorGraphLegend</item>
