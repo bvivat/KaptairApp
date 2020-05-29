@@ -22,6 +22,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -59,6 +60,8 @@ public class CarteFrag extends Fragment {
     private static final String SAVE_ZOOM = "zoom";
     private static final String SAVE_LAT = "latitude";
     private static final String SAVE_LONG = "longitude";
+    private static final String SAVE_STATE_BTN = "stateBtns ";
+    private static final String SAVE_CALENDAR = "calendar ";
     private MapView map;
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MyLocationNewOverlay mLocationOverlay;
@@ -162,14 +165,24 @@ public class CarteFrag extends Fragment {
         final ConstraintLayout toolbar = getActivity().findViewById(R.id.appBarLayout);
         toolbar.setVisibility(View.GONE);
 
+        ImageButton btnMenu = getView().findViewById(R.id.btnMenuMap);
+
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MainActivity) getActivity()).getDrawer().openDrawer();
+            }
+        });
+
+
         db = AppDatabase.getInstance(getContext());
 
         calendrier.set(Calendar.MINUTE, 0);
         calendrier.set(Calendar.SECOND, 0);
         calendrier.set(Calendar.MILLISECOND, 0);
 
-        hourDao =  db.mesurePollutionDao();
-        dayDao =  db.moyenneDayMesuresPollutionDao();
+        hourDao = db.mesurePollutionDao();
+        dayDao = db.moyenneDayMesuresPollutionDao();
         yearDao = db.moyenneYearMesuresPollutionDao();
 
         titre = getView().findViewById(R.id.txtTitreMap);
@@ -280,6 +293,36 @@ public class CarteFrag extends Fragment {
         for (Button b : btns) {
             b.setOnClickListener(listenerChoixGraphPollution);
         }
+
+
+        if (savedInstanceState != null) {
+
+            ArrayList<Integer> stateBtns = savedInstanceState.getIntegerArrayList(SAVE_STATE_BTN);
+
+            for (int i = 0; i < stateBtns.size(); i++) {
+                // On restore l'etat des boutons
+                btns.get(i).setSelected(stateBtns.get(i) == 1);
+            }
+
+            // On restore le calendrier
+            calendrier.setTimeInMillis(savedInstanceState.getLong(SAVE_CALENDAR));
+
+            // On initialise le graph
+            if (btnHour.isSelected()) {
+                setTitreHour();
+                reperesHour();
+            } else if (btnDay.isSelected()) {
+                setTitreDay();
+                reperesDay();
+            } else if (btnYear.isSelected()) {
+                setTitreYear();
+                reperesYear();
+            }
+        } else {
+            btnHour.setSelected(true);
+            setTitreHour();
+            reperesHour();
+        }
     }
 
     @Override
@@ -340,6 +383,16 @@ public class CarteFrag extends Fragment {
         outState.putDouble(SAVE_ZOOM, map.getZoomLevelDouble());
         outState.putDouble(SAVE_LAT, map.getMapCenter().getLatitude());
         outState.putDouble(SAVE_LONG, map.getMapCenter().getLongitude());
+
+        // On sauvegarde l'etat des boutons et la date choisie
+        ArrayList<Integer> stateBtns = new ArrayList<>();
+
+        for (Button b : btns) {
+            stateBtns.add(b.isSelected() ? 1 : 0);
+        }
+
+        outState.putIntegerArrayList(SAVE_STATE_BTN, stateBtns);
+        outState.putLong(SAVE_CALENDAR, calendrier.getTimeInMillis());
     }
 
     @Override
@@ -422,4 +475,6 @@ public class CarteFrag extends Fragment {
         });
 
     }
+
+
 }

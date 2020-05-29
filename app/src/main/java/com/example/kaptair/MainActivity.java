@@ -4,10 +4,7 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
-import android.os.Looper;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -29,10 +26,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.common.api.ResolvableApiException;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
@@ -71,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     boolean isLocationGranted = false;
     AppDatabase db;
 
-    Drawer result;
+    Drawer drawer;
 
     MesuresFrag fragMesures = new MesuresFrag();
     ParamFrag fragParam = new ParamFrag();
@@ -131,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
         final PrimaryDrawerItem param = new PrimaryDrawerItem().withIdentifier(3).withName(R.string.param).withIcon(GoogleMaterial.Icon.gmd_settings);
 
         // On construit le menu
-        result = new DrawerBuilder()
+        drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(t)
                 .addDrawerItems(
@@ -269,7 +262,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         switch (requestCode) {
             case REQUEST_COARSE_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
+                // If request is cancelled, the drawer arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay!
                     initBluetooth();
@@ -354,7 +347,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        result.saveInstanceState(outState); //On sauvegarde la position actuelle du drawer menu
+        drawer.saveInstanceState(outState); //On sauvegarde la position actuelle du drawer menu
         outState.putBoolean(SAVE_LOCATION_STATUS, isLocationGranted);
 
     }
@@ -365,5 +358,9 @@ public class MainActivity extends AppCompatActivity {
 
     public static TrackerApp getTracker() {
         return tracker;
+    }
+
+    public Drawer getDrawer() {
+        return drawer;
     }
 }
