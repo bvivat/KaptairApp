@@ -10,4 +10,7 @@ public interface PollutionMesure extends Mesure{
     double getPm10();
     double getCo2();
     float getFloatDate();
+
+    double getLatitude();
+    double getLongitude();
 }

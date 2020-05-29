@@ -82,5 +82,13 @@ public class MesurePollution implements PollutionMesure {
         this.co2 = co2;
     }
 
+    @Override
+    public double getLatitude() {
+        return latitude;
+    }
 
+    @Override
+    public double getLongitude() {
+        return longitude;
+    }
 }

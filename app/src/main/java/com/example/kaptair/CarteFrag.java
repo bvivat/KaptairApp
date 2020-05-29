@@ -29,6 +29,13 @@ import android.widget.TimePicker;
 import com.example.kaptair.database.AppDatabase;
 import com.example.kaptair.database.InterfacesMesures.Mesure;
 import com.example.kaptair.database.InterfacesMesures.MesureDao;
+import com.example.kaptair.database.InterfacesMesures.PollutionMesure;
+import com.example.kaptair.database.MesureMeteoDao;
+import com.example.kaptair.database.MesurePollution;
+import com.example.kaptair.database.MesurePollutionDao;
+import com.example.kaptair.database.MoyenneDayMesuresPollution;
+import com.example.kaptair.database.MoyenneDayMesuresPollutionDao;
+import com.example.kaptair.database.MoyenneYearMesuresPollutionDao;
 import com.example.kaptair.ui.main.YearPickerDialog;
 import com.example.kaptair.ui.main.graphiques.CardGraph;
 import com.example.kaptair.ui.main.graphiques.Graph;
@@ -43,6 +50,7 @@ import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,9 +79,9 @@ public class CarteFrag extends Fragment {
     private Executor executor = Executors.newSingleThreadExecutor();
     Calendar calendrier = Calendar.getInstance();
 
-    MesureDao hourDao;
-    MesureDao dayDao;
-    MesureDao yearDao;
+    MesurePollutionDao hourDao;
+    MoyenneDayMesuresPollutionDao dayDao;
+    MoyenneYearMesuresPollutionDao yearDao;
 
     ArrayList<Button> btns = new ArrayList<>();
     TextView titre;
@@ -427,9 +435,10 @@ public class CarteFrag extends Fragment {
                 // On recupere les donnees associees a l'heure choisie dans la BD
                 Date d1 = calendrier.getTime();
                 Date d2 = new Date(d1.getTime() + Graph.ONE_HOUR);
-                List<? extends Mesure> mesures = hourDao.getAllByDate(d1, d2);
+                List<? extends PollutionMesure> mesures = hourDao.getAllByDate(d1, d2);
 
                 // On construit les reperes
+                addMarkers(mesures);
 
             }
         });
@@ -443,7 +452,7 @@ public class CarteFrag extends Fragment {
                 // On recupere les donnees associees a l'heure choisie dans la BD
                 Date d1 = calendrier.getTime();
                 Date d2 = new Date(d1.getTime() + Graph.ONE_DAY);
-                List<? extends Mesure> mesures = dayDao.getAllByDate(d1, d2);
+                List<? extends PollutionMesure> mesures = dayDao.getAllByDate(d1, d2);
 
                 // On construit les reperes
 
@@ -467,13 +476,49 @@ public class CarteFrag extends Fragment {
                 // On recupere les donnees associees a l'heure choisie dans la BD
                 Date d1 = calendrier.getTime();
                 Date d2 = new Date(d1.getTime() + Graph.ONE_YEAR + (bissextile ? Graph.ONE_DAY : 0));
-                List<? extends Mesure> mesures = yearDao.getAllByDate(d1, d2);
+                List<? extends PollutionMesure> mesures = yearDao.getAllByDate(d1, d2);
 
                 // On construit les reperes
 
             }
         });
 
+    }
+
+    private void addMarkers(List<? extends PollutionMesure> mesures){
+
+        SimpleDateFormat formatter;
+
+        if (!mesures.isEmpty() && mesures.get(0) instanceof MesurePollution){
+            formatter =new SimpleDateFormat("HH:mm");
+        }else if (!mesures.isEmpty() && mesures.get(0) instanceof MoyenneDayMesuresPollution){
+            formatter =new SimpleDateFormat("HH:mm");
+        }else{
+            formatter =new SimpleDateFormat("dd MMMM");
+        }
+
+        // Marqueurs
+        ArrayList<Marker> marqueurs = new ArrayList<Marker>();
+
+        for (PollutionMesure m : mesures){
+            Marker m0 = new Marker(map);
+            m0.setPosition(new GeoPoint(m.getLatitude(), m.getLongitude()));
+            m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+            m0.setTitle(formatter.format(m.getDate()));
+            m0.setSnippet("PM1 :"+m.getPm1() + " | " + "PM2.5 :" + m.getPm25()); // TODO changer couleur
+            m0.setIcon(getResources().getDrawable(R.drawable.ic_marker));  // TODO changer couleur
+            m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info, map));
+            marqueurs.add(m0);
+        }
+
+
+
+
+
+        // On affiche les marqueurs
+        for (Marker m : marqueurs) {
+            map.getOverlays().add(m);
+        }
     }
 
 

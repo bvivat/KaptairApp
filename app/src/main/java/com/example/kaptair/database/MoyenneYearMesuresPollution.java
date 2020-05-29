@@ -151,4 +151,15 @@ public class MoyenneYearMesuresPollution implements PollutionMesure {
         return nbMesures;
     }
 
+
+    @Override
+    public double getLatitude() {
+        return maxLatitude;
+    }
+
+    @Override
+    public double getLongitude() {
+        return maxLongitude;
+    }
+
 }
