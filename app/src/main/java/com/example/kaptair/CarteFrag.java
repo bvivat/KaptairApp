@@ -17,6 +17,13 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.SpannedString;
+import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +33,8 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.kaptair.bluetooth.HandlerUITransfert;
+import com.example.kaptair.bluetooth.TypeDangerDonnees;
 import com.example.kaptair.database.AppDatabase;
 import com.example.kaptair.database.InterfacesMesures.Mesure;
 import com.example.kaptair.database.InterfacesMesures.MesureDao;
@@ -65,6 +74,12 @@ import java.util.concurrent.Executors;
  */
 public class CarteFrag extends Fragment {
 
+    private static final String TAG = "Fragment Carte";
+
+    private static final int LEVEL_SAFE=0;
+    private static final int LEVEL_WARNING=1;
+    private static final int LEVEL_DANGER=2;
+
     private static final String SAVE_ZOOM = "zoom";
     private static final String SAVE_LAT = "latitude";
     private static final String SAVE_LONG = "longitude";
@@ -88,6 +103,8 @@ public class CarteFrag extends Fragment {
     Button btnHour;
     Button btnDay;
     Button btnYear;
+
+    int levelDanger = 0;
 
     public CarteFrag() {
         // Required empty public constructor
@@ -501,24 +518,60 @@ public class CarteFrag extends Fragment {
         ArrayList<Marker> marqueurs = new ArrayList<Marker>();
 
         for (PollutionMesure m : mesures){
+            levelDanger = LEVEL_SAFE;
             Marker m0 = new Marker(map);
             m0.setPosition(new GeoPoint(m.getLatitude(), m.getLongitude()));
             m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             m0.setTitle(formatter.format(m.getDate()));
-            m0.setSnippet("PM1 :"+m.getPm1() + " | " + "PM2.5 :" + m.getPm25()); // TODO changer couleur
+
+            String coloredData = "PM1 :";
+            coloredData += getColoredData(m.getPm1(), TypeDangerDonnees.PM1_WARNING, TypeDangerDonnees.PM1_DANGER);
+            coloredData += " | PM2.5 :";
+            coloredData += getColoredData(m.getPm25(), TypeDangerDonnees.PM25_WARNING, TypeDangerDonnees.PM25_DANGER);
+            coloredData += " | PM10 :";
+            coloredData += getColoredData(m.getPm10(), TypeDangerDonnees.PM10_WARNING, TypeDangerDonnees.PM10_DANGER);
+            m0.setSnippet(coloredData);
+
             m0.setIcon(getResources().getDrawable(R.drawable.ic_marker));  // TODO changer couleur
             m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info, map));
             marqueurs.add(m0);
         }
 
 
-
-
-
         // On affiche les marqueurs
         for (Marker m : marqueurs) {
+            Log.d(TAG, "marqueur ajouté");
             map.getOverlays().add(m);
         }
+    }
+
+    private String getColoredData(double data, double warningLevel, double dangerLevel){
+        // On cree un string personnalisable
+        String coloredData ="<font color=";
+
+        // La couleur a utiliser pour la valeur
+        int color;
+
+        // Le niveau de danger
+        int level;
+
+        if(data > dangerLevel){
+            color=getResources().getColor( R.color.colorDanger);
+            level = LEVEL_DANGER;
+        }else if (data > warningLevel){
+            color=getResources().getColor( R.color.colorWarning);
+            level = LEVEL_WARNING;
+        }else{
+            color=getResources().getColor( R.color.colorSafe);
+            level = LEVEL_SAFE;
+        }
+
+        coloredData +=color+">"+data+ "</font>";
+
+        // On garde le niveau max atteint
+        levelDanger = level > levelDanger ? level : levelDanger;
+
+        return coloredData;
     }
 
 
