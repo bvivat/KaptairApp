@@ -67,4 +67,10 @@ public class YearPickerDialog extends DialogFragment {
 
         return builder.create();
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        this.dismiss();
+    }
 }
