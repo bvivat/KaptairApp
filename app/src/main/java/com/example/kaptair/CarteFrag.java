@@ -7,6 +7,7 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -17,12 +18,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.SpannedString;
-import android.text.TextUtils;
-import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,20 +28,15 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
-import com.example.kaptair.bluetooth.HandlerUITransfert;
 import com.example.kaptair.bluetooth.TypeDangerDonnees;
 import com.example.kaptair.database.AppDatabase;
-import com.example.kaptair.database.InterfacesMesures.Mesure;
-import com.example.kaptair.database.InterfacesMesures.MesureDao;
 import com.example.kaptair.database.InterfacesMesures.PollutionMesure;
-import com.example.kaptair.database.MesureMeteoDao;
 import com.example.kaptair.database.MesurePollution;
 import com.example.kaptair.database.MesurePollutionDao;
 import com.example.kaptair.database.MoyenneDayMesuresPollution;
 import com.example.kaptair.database.MoyenneDayMesuresPollutionDao;
 import com.example.kaptair.database.MoyenneYearMesuresPollutionDao;
 import com.example.kaptair.ui.main.YearPickerDialog;
-import com.example.kaptair.ui.main.graphiques.CardGraph;
 import com.example.kaptair.ui.main.graphiques.Graph;
 
 import org.osmdroid.api.IMapController;
@@ -59,7 +49,6 @@ import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -76,9 +65,9 @@ public class CarteFrag extends Fragment {
 
     private static final String TAG = "Fragment Carte";
 
-    private static final int LEVEL_SAFE=0;
-    private static final int LEVEL_WARNING=1;
-    private static final int LEVEL_DANGER=2;
+    private static final int LEVEL_SAFE = 0;
+    private static final int LEVEL_WARNING = 1;
+    private static final int LEVEL_DANGER = 2;
 
     private static final String SAVE_ZOOM = "zoom";
     private static final String SAVE_LAT = "latitude";
@@ -170,7 +159,7 @@ public class CarteFrag extends Fragment {
         m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
         m0.setTitle("20 mai 2020");
         m0.setSnippet("PM1 : 10 | PM2.5 : 20 | PM10 : 30 | CO2 : 40");
-        m0.setIcon(getResources().getDrawable(R.drawable.ic_marker));
+        m0.setIcon(getResources().getDrawable(R.drawable.ic_marker_safe));
         m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info, map));
         marqueurs.add(m0);
 
@@ -502,22 +491,22 @@ public class CarteFrag extends Fragment {
 
     }
 
-    private void addMarkers(List<? extends PollutionMesure> mesures){
+    private void addMarkers(List<? extends PollutionMesure> mesures) {
 
         SimpleDateFormat formatter;
 
-        if (!mesures.isEmpty() && mesures.get(0) instanceof MesurePollution){
-            formatter =new SimpleDateFormat("HH:mm");
-        }else if (!mesures.isEmpty() && mesures.get(0) instanceof MoyenneDayMesuresPollution){
-            formatter =new SimpleDateFormat("HH:mm");
-        }else{
-            formatter =new SimpleDateFormat("dd MMMM");
+        if (!mesures.isEmpty() && mesures.get(0) instanceof MesurePollution) {
+            formatter = new SimpleDateFormat("HH:mm");
+        } else if (!mesures.isEmpty() && mesures.get(0) instanceof MoyenneDayMesuresPollution) {
+            formatter = new SimpleDateFormat("HH:mm");
+        } else {
+            formatter = new SimpleDateFormat("dd MMMM");
         }
 
         // Marqueurs
         ArrayList<Marker> marqueurs = new ArrayList<Marker>();
 
-        for (PollutionMesure m : mesures){
+        for (PollutionMesure m : mesures) {
             levelDanger = LEVEL_SAFE;
             Marker m0 = new Marker(map);
             m0.setPosition(new GeoPoint(m.getLatitude(), m.getLongitude()));
@@ -532,7 +521,20 @@ public class CarteFrag extends Fragment {
             coloredData += getColoredData(m.getPm10(), TypeDangerDonnees.PM10_WARNING, TypeDangerDonnees.PM10_DANGER);
             m0.setSnippet(coloredData);
 
-            m0.setIcon(getResources().getDrawable(R.drawable.ic_marker));  // TODO changer couleur
+            Drawable d = getResources().getDrawable(R.drawable.ic_marker_safe);
+            switch (levelDanger) {
+                case LEVEL_SAFE:
+                    break;
+                case LEVEL_WARNING:
+                    d = getResources().getDrawable(R.drawable.ic_marker_warning);
+                    break;
+                case LEVEL_DANGER:
+                    d = getResources().getDrawable(R.drawable.ic_marker_danger);
+                    break;
+            }
+
+            m0.setIcon(d);
+
             m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info, map));
             marqueurs.add(m0);
         }
@@ -545,9 +547,9 @@ public class CarteFrag extends Fragment {
         }
     }
 
-    private String getColoredData(double data, double warningLevel, double dangerLevel){
+    private String getColoredData(double data, double warningLevel, double dangerLevel) {
         // On cree un string personnalisable
-        String coloredData ="<font color=";
+        String coloredData = "<font color=";
 
         // La couleur a utiliser pour la valeur
         int color;
@@ -555,18 +557,18 @@ public class CarteFrag extends Fragment {
         // Le niveau de danger
         int level;
 
-        if(data > dangerLevel){
-            color=getResources().getColor( R.color.colorDanger);
+        if (data > dangerLevel) {
+            color = getResources().getColor(R.color.colorDanger);
             level = LEVEL_DANGER;
-        }else if (data > warningLevel){
-            color=getResources().getColor( R.color.colorWarning);
+        } else if (data > warningLevel) {
+            color = getResources().getColor(R.color.colorWarning);
             level = LEVEL_WARNING;
-        }else{
-            color=getResources().getColor( R.color.colorSafe);
+        } else {
+            color = getResources().getColor(R.color.colorSafe);
             level = LEVEL_SAFE;
         }
 
-        coloredData +=color+">"+data+ "</font>";
+        coloredData += color + ">" + data + "</font>";
 
         // On garde le niveau max atteint
         levelDanger = level > levelDanger ? level : levelDanger;
