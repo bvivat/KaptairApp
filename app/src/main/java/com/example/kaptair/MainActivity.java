@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public BluetoothApp getBluetooth() {
+    public static  BluetoothApp getBluetooth() {
         return bluetooth;
     }
 
@@ -336,7 +336,7 @@ public class MainActivity extends AppCompatActivity {
         // On reagit au click sur un des items du menu de la toolbar
         switch (item.getItemId()) {
             case R.id.action_synchro: {
-                // do your sign-out stuff
+                ParamFrag.syncronize();
                 break;
             }
             // case blocks for other MenuItems (if any)

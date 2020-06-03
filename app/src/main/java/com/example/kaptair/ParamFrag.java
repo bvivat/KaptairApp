@@ -42,6 +42,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
     private AppDatabase db;
     private Executor executor = Executors.newSingleThreadExecutor();
 
+    Preference synch;
     Preference export;
     Preference delete;
     Preference modifNomCapteur;
@@ -58,6 +59,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
         db = AppDatabase.getInstance(getContext());
 
+        synch = findPreference("synchro");
         export = findPreference("export");
         delete = findPreference("delete");
         modifNomCapteur = findPreference("modifNom");
@@ -65,6 +67,16 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
         // On initialise les noms de preferences dynamiques
         initDynamicParams();
+
+        // Listener du parametre Synchroniser
+        Preference.OnPreferenceClickListener listenerSynch = new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                syncronize();
+                return true;
+            }
+        };
+        synch.setOnPreferenceClickListener(listenerSynch);
 
         final Intent exportIntent = new Intent();
         exportIntent.setAction(Intent.ACTION_SEND);
@@ -218,9 +230,9 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
     private void initDynamicParams() {
         try {
             // Si l'appareil est connecte a un capteur
-            if (((MainActivity) getActivity()).getBluetooth().getConnect().isConnected()) {
+            if (MainActivity.getBluetooth().getConnect().isConnected()) {
 
-                String name = ((MainActivity) getActivity()).getBluetooth().getConnect().getDeviceName();
+                String name = MainActivity.getBluetooth().getConnect().getDeviceName();
 
                 if (name == null){
                     throw new NullPointerException();
@@ -253,6 +265,11 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
         txtTitre.setText(R.string.param);
     }
 
+    public static void syncronize(){
+        byte[] msg = "SYNCHRONIZE".getBytes();
+        MainActivity.getBluetooth().getConnect().getTransfert().write(msg);
+    }
+
     @Override
     public void positiveBtnClicked() {
         db.close();
@@ -271,7 +288,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
         input = "RENAME,"+ input;
         byte[] msg = input.getBytes();
 
-        ((MainActivity)getActivity()).getBluetooth().getConnect().getTransfert().write(msg);
+        MainActivity.getBluetooth().getConnect().getTransfert().write(msg);
     }
 
     @Override
