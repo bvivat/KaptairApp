@@ -27,6 +27,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -35,7 +37,7 @@ import java.util.concurrent.Executors;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogCallback {
+public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogCallback, SimpleDialogInputCallback {
 
     private AppDatabase db;
     private Executor executor = Executors.newSingleThreadExecutor();
@@ -58,7 +60,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
         export = findPreference("export");
         delete = findPreference("delete");
-        modifNomCapteur = findPreference("modifNom"); //TODO Faire la modification du nom
+        modifNomCapteur = findPreference("modifNom");
         changerCapteur = findPreference("changerCapteur");
 
         // On initialise les noms de preferences dynamiques
@@ -180,6 +182,27 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
         changerCapteur.setOnPreferenceClickListener(listenerChangerCapteur);
 
+        // Listener du parametre Renommer
+        Preference.OnPreferenceClickListener listenerRename = new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                // Dialog de confirmation
+                DialogFragment dialog = new SimpleDialog();
+
+                Bundle args = new Bundle();
+                args.putString(SimpleDialog.ARG_TITLE, getString(R.string.RenameFragTitre));
+                args.putString(SimpleDialog.ARG_MESSAGE, getString(R.string.RenameFragBody));
+                args.putInt(SimpleDialog.ARG_ICON, R.drawable.ic_edit);
+                args.putInt(SimpleDialog.ARG_TYPE, SimpleDialog.TYPE_INPUT);
+                dialog.setArguments(args);
+
+                dialog.show(getChildFragmentManager(), "Rename Dialog");
+
+                return true;
+            }
+        };
+        modifNomCapteur.setOnPreferenceClickListener(listenerRename);
+
         try {
             // On garde le listener a jour pour rafraichir le fragment param lors de la fin de la tentative de connection
             MainActivity activity = (MainActivity) getActivity();
@@ -240,6 +263,19 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
     @Override
     public void negativeBtnClicked() {
 
+
+    }
+
+    @Override
+    public void inputPositiveBtnClicked(String input) {
+        input = "RENAME,"+ input;
+        byte[] msg = input.getBytes();
+
+        ((MainActivity)getActivity()).getBluetooth().getConnect().getTransfert().write(msg);
+    }
+
+    @Override
+    public void inputNegativeBtnClicked() {
 
     }
 }

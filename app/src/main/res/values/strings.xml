@@ -79,4 +79,7 @@
     <string name="synchTitre">@string/synchroCapteur</string>
     <string name="synchDesc">Choisissez les données que vous souhaitez synchroniser</string>
 
+    <string name="RenameFragTitre">Renommer le capteur</string>
+    <string name="RenameFragBody">Veuillez entrer le nouveau nom du capteur</string>
+
 </resources>

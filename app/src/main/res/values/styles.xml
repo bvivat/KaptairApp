@@ -8,6 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorBackground</item>
         <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -29,6 +30,10 @@
     <style name="ConfirmDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
         <!-- Used for the buttons -->
         <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+    <style name="InputDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorControlNormal">@color/colorNom</item>
+        <item name="colorControlActivated">@color/colorUnit</item>
     </style>
 
     <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">

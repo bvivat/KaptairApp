@@ -149,4 +149,8 @@ public class ConnectThread extends Thread {
     public void setListener(OnConnectionChangeListener listener) {
         this.listener = listener;
     }
+
+    public TransfertThread getTransfert() {
+        return transfert;
+    }
 }
