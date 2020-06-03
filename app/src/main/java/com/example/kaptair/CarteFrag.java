@@ -512,40 +512,47 @@ public class CarteFrag extends Fragment {
         ArrayList<Marker> marqueurs = new ArrayList<Marker>();
 
         for (PollutionMesure m : mesures) {
-            // Pour chaque mesure, on cree un marqueur
-            levelDanger = LEVEL_SAFE;
-            Marker m0 = new Marker(map);
-            m0.setPosition(new GeoPoint(m.getLatitude(), m.getLongitude()));
-            m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-            m0.setTitle(formatter.format(m.getDate()));
+            // Pour chaque mesure, on cree un marqueur,
+            // si les coordonnees ne valent pas toutes les deux 0
 
-            // On genere la description a afficher
-            String coloredData = "PM1 : ";
-            coloredData += getColoredData(m.getPm1(), TypeDangerDonnees.PM1_WARNING, TypeDangerDonnees.PM1_DANGER);
-            coloredData += "  |  PM2.5 : ";
-            coloredData += getColoredData(m.getPm25(), TypeDangerDonnees.PM25_WARNING, TypeDangerDonnees.PM25_DANGER);
-            coloredData += "  |  PM10 : ";
-            coloredData += getColoredData(m.getPm10(), TypeDangerDonnees.PM10_WARNING, TypeDangerDonnees.PM10_DANGER);
-            m0.setSnippet(coloredData);
+            if (m.getLatitude() != 0 || m.getLongitude() != 0) {
+                
+                levelDanger = LEVEL_SAFE;
+                Marker m0 = new Marker(map);
+                m0.setPosition(new GeoPoint(m.getLatitude(), m.getLongitude()));
+                m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
+                m0.setTitle(formatter.format(m.getDate()));
 
-            // On choisit la couleur la plus elevee pour le marqueur
-            Drawable d = getResources().getDrawable(R.drawable.ic_marker_safe);
-            switch (levelDanger) {
-                case LEVEL_SAFE:
-                    break;
-                case LEVEL_WARNING:
-                    d = getResources().getDrawable(R.drawable.ic_marker_warning);
-                    break;
-                case LEVEL_DANGER:
-                    d = getResources().getDrawable(R.drawable.ic_marker_danger);
-                    break;
+                // On genere la description a afficher
+                String coloredData = "PM1 : ";
+                coloredData += getColoredData(m.getPm1(), TypeDangerDonnees.PM1_WARNING, TypeDangerDonnees.PM1_DANGER);
+                coloredData += "  |  PM2.5 : ";
+                coloredData += getColoredData(m.getPm25(), TypeDangerDonnees.PM25_WARNING, TypeDangerDonnees.PM25_DANGER);
+                coloredData += "  |  PM10 : ";
+                coloredData += getColoredData(m.getPm10(), TypeDangerDonnees.PM10_WARNING, TypeDangerDonnees.PM10_DANGER);
+                coloredData += " (" + "µg/m<sup><small>3</small></sup>" + ")";
+                m0.setSnippet(coloredData);
+
+                // On choisit la couleur la plus elevee pour le marqueur
+                Drawable d = getResources().getDrawable(R.drawable.ic_marker_safe);
+                switch (levelDanger) {
+                    case LEVEL_SAFE:
+                        break;
+                    case LEVEL_WARNING:
+                        d = getResources().getDrawable(R.drawable.ic_marker_warning);
+                        break;
+                    case LEVEL_DANGER:
+                        d = getResources().getDrawable(R.drawable.ic_marker_danger);
+                        break;
+                }
+                m0.setIcon(d);
+
+                m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info, map));
+
+                // On ajoute le marqueur
+                marqueurs.add(m0);
             }
-            m0.setIcon(d);
 
-            m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info, map));
-
-            // On ajoute le marqueur
-            marqueurs.add(m0);
         }
 
 
