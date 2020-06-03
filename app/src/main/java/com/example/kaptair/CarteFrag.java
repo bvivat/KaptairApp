@@ -157,8 +157,8 @@ public class CarteFrag extends Fragment {
         Marker m0 = new Marker(map);
         m0.setPosition(new GeoPoint(48.599944d, 2.178222d));
         m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        m0.setTitle("20 mai 2020");
-        m0.setSnippet("PM1 : 10 | PM2.5 : 20 | PM10 : 30 | CO2 : 40");
+        m0.setTitle("Jeudi 11 juin ");
+        m0.setSnippet("PM1 : <font color=-8924333>31.0</font>  |  PM2.5 : <font color=-8924333>8.6</font>  |  PM10 : <font color=-8924333>16.2</font>");
         m0.setIcon(getResources().getDrawable(R.drawable.ic_marker_safe));
         m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info, map));
         marqueurs.add(m0);
@@ -500,7 +500,7 @@ public class CarteFrag extends Fragment {
         } else if (!mesures.isEmpty() && mesures.get(0) instanceof MoyenneDayMesuresPollution) {
             formatter = new SimpleDateFormat("HH:mm");
         } else {
-            formatter = new SimpleDateFormat("dd MMMM");
+            formatter = new SimpleDateFormat("EEEE dd MMMM");
         }
 
         // Marqueurs
@@ -513,11 +513,11 @@ public class CarteFrag extends Fragment {
             m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
             m0.setTitle(formatter.format(m.getDate()));
 
-            String coloredData = "PM1 :";
+            String coloredData = "PM1 : ";
             coloredData += getColoredData(m.getPm1(), TypeDangerDonnees.PM1_WARNING, TypeDangerDonnees.PM1_DANGER);
-            coloredData += " | PM2.5 :";
+            coloredData += "  |  PM2.5 : ";
             coloredData += getColoredData(m.getPm25(), TypeDangerDonnees.PM25_WARNING, TypeDangerDonnees.PM25_DANGER);
-            coloredData += " | PM10 :";
+            coloredData += "  |  PM10 : ";
             coloredData += getColoredData(m.getPm10(), TypeDangerDonnees.PM10_WARNING, TypeDangerDonnees.PM10_DANGER);
             m0.setSnippet(coloredData);
 

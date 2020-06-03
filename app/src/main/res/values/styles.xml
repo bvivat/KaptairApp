@@ -165,6 +165,22 @@
         <item name="android:textSize">18sp</item>
     </style>
 
+    <style name="txtDescMarker" parent="TextAppearance.AppCompat" >
+        <item name="android:textColor">@color/colorNom</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+    </style>
+
+    <style name="txtTitreMarker" parent="TextAppearance.AppCompat" >
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+
+    </style>
 
 
 
