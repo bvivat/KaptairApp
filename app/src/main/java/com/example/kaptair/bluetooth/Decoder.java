@@ -13,14 +13,14 @@ public class Decoder {
     public String decode(byte[] trame) {
         String decodedMsg = "";
 
-        // TODO automatiser en fonction de la taille de trame
-        decodedMsg += ByteBuffer.wrap(trame, 0, 4).getFloat();
-        decodedMsg += ",";
-        decodedMsg += ByteBuffer.wrap(trame, 4, 4).getFloat();
-        decodedMsg += ",";
-        decodedMsg += ByteBuffer.wrap(trame, 8, 4).getFloat();
-        decodedMsg += ",";
-        decodedMsg += ByteBuffer.wrap(trame, 12, 4).getFloat();
+        for(int i=0;i<trame.length;i+=4){
+            // On recupere le float associe a chaque tranche de 4 octets
+            decodedMsg += ByteBuffer.wrap(trame, i, 4).getFloat();
+            decodedMsg += ",";
+        }
+
+        // On enleve la derniere virgule
+        decodedMsg = decodedMsg.substring(0,decodedMsg.length()-1);
 
 
 

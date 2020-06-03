@@ -124,13 +124,14 @@ public class TransfertThread extends Thread {
 
                     Decoder decoder = new Decoder();
 
-                    int sizeTrame = 16;
+                    int sizeTrame = 0;
 
                     if (id.equals("PM")) {
                         Log.i(TAG, "Type PM ");
-                        // TODO Changer size trame
+                        sizeTrame = 16;
                     } else if (id.equals("AT")) {
                         Log.i(TAG, "Type AT ");
+                        sizeTrame = 8;
                     }
 
                     // La trame individuelle a envoyer

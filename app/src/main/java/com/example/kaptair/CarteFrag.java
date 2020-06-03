@@ -432,7 +432,7 @@ public class CarteFrag extends Fragment {
         titre.setText(sdfHours.format(calendrier.getTime()));
     }
 
-    //TODO changer et renommer ces fonctions
+    //TODO changer ces fonctions
     public void reperesHour() {
 
         executor.execute(new Runnable() {
@@ -516,7 +516,7 @@ public class CarteFrag extends Fragment {
             // si les coordonnees ne valent pas toutes les deux 0
 
             if (m.getLatitude() != 0 || m.getLongitude() != 0) {
-                
+
                 levelDanger = LEVEL_SAFE;
                 Marker m0 = new Marker(map);
                 m0.setPosition(new GeoPoint(m.getLatitude(), m.getLongitude()));
