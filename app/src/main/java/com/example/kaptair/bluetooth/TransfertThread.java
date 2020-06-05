@@ -122,6 +122,7 @@ public class TransfertThread extends Thread {
                     long date = ByteBuffer.wrap(savedMsg, 9, 8).getLong();
                     Log.i(TAG, "date :" + date);
 
+                    // Frequence des mesures en seconde
                     int frequence = ByteBuffer.wrap(savedMsg, 17, 4).getInt();
                     Log.i(TAG, "frequence :" + frequence);
 

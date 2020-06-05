@@ -18,20 +18,6 @@ public class MoyenneYearMesuresPollution implements PollutionMesure {
     public double co2;
     public int nbMesures;
 
-    public double maxPm1;
-    public double maxPm25;
-    public double maxPm10;
-    public double maxCo2;
-    public double maxLatitude;
-    public double maxLongitude;
-
-    public double minPm1;
-    public double minPm25;
-    public double minPm10;
-    public double minCo2;
-    public double minLatitude;
-    public double minLongitude;
-
     public MoyenneYearMesuresPollution(Date date, double pm1, double pm25, double pm10, double co2) {
         this.date = new Date(date.getYear(), date.getMonth(), date.getDate()); //On garde à l'année près
         this.pm1 = pm1;
@@ -50,20 +36,6 @@ public class MoyenneYearMesuresPollution implements PollutionMesure {
         this.pm10 = m.pm10;
         this.co2 = m.co2;
         this.nbMesures = 1;
-
-        this.maxPm1 = m.pm1;
-        this.maxPm25 = m.pm25;
-        this.maxPm10 = m.pm10;
-        this.maxCo2 = m.co2;
-        this.maxLatitude = m.latitude;
-        this.maxLongitude = m.longitude;
-
-        this.minPm1 = m.pm1;
-        this.minPm25 = m.pm25;
-        this.minPm10 = m.pm10;
-        this.minCo2 = m.co2;
-        this.minLatitude = m.latitude;
-        this.minLongitude = m.longitude;
         
     }
 
@@ -77,21 +49,6 @@ public class MoyenneYearMesuresPollution implements PollutionMesure {
         this.pm10 = (mOld.pm10 * mOld.nbMesures + mNew.pm10) / this.nbMesures;
         this.co2 = (mOld.co2 * mOld.nbMesures + mNew.co2) / this.nbMesures;
 
-
-        // TODO tout changer
-        this.maxPm1 = mNew.pm1 > mOld.pm1 ? mNew.pm1 : mOld.pm1 ;
-        this.maxPm25 = mNew.pm25 > mOld.pm25 ? mNew.pm25 : mOld.pm25 ;
-        this.maxPm10 = mNew.pm10 > mOld.pm10 ? mNew.pm10 : mOld.pm10 ;
-        this.maxCo2 = mNew.co2 > mOld.co2 ? mNew.co2 : mOld.co2 ;
-        this.maxLatitude = mNew.maxLatitude > mOld.maxLatitude ? mNew.maxLatitude : mOld.maxLatitude ;
-        this.maxLongitude = mNew.maxLongitude > mOld.maxLongitude ? mNew.maxLongitude : mOld.maxLongitude ;
-        
-        this.minPm1 = mNew.pm1 < mOld.pm1 ? mNew.pm1 : mOld.pm1 ;
-        this.minPm25 = mNew.pm25 < mOld.pm25 ? mNew.pm25 : mOld.pm25 ;
-        this.minPm10 = mNew.pm10 < mOld.pm10 ? mNew.pm10 : mOld.pm10 ;
-        this.minCo2 = mNew.co2 < mOld.co2 ? mNew.co2 : mOld.co2 ;
-        this.minLatitude = mNew.minLatitude < mOld.minLatitude ? mNew.minLatitude : mOld.minLatitude ;
-        this.minLongitude = mNew.minLongitude < mOld.minLongitude ? mNew.minLongitude : mOld.minLongitude ;
     }
 
     @Ignore
@@ -154,12 +111,12 @@ public class MoyenneYearMesuresPollution implements PollutionMesure {
 
     @Override
     public double getLatitude() {
-        return maxLatitude;
+        return 0.0;
     }
 
     @Override
     public double getLongitude() {
-        return maxLongitude;
+        return 0.0;
     }
 
 }

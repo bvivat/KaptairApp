@@ -18,20 +18,6 @@ public class MoyenneDayMesuresPollution implements PollutionMesure {
     public double co2;
     public int nbMesures;
 
-    public double maxPm1;
-    public double maxPm25;
-    public double maxPm10;
-    public double maxCo2;
-    public double maxLatitude;
-    public double maxLongitude;
-
-    public double minPm1;
-    public double minPm25;
-    public double minPm10;
-    public double minCo2;
-    public double minLatitude;
-    public double minLongitude;
-
     public MoyenneDayMesuresPollution(Date date, double pm1, double pm25, double pm10, double co2) {
         int minutes = date.getMinutes() - (date.getMinutes() % 5); //On garde aux 5 minutes près
         this.date = new Date(date.getYear(), date.getMonth(), date.getDate(), date.getHours(), minutes);
@@ -124,12 +110,12 @@ public class MoyenneDayMesuresPollution implements PollutionMesure {
 
     @Override
     public double getLatitude() {
-        return maxLatitude;
+        return 0.0;
     }
 
     @Override
     public double getLongitude() {
-        return maxLongitude;
+        return 0.0;
     }
 
 }
