@@ -76,7 +76,8 @@ public class HandlerUITransfert extends Handler {
         //TODO recuperer ici date et gps quand transmis par le capteur
         if(isNumeric(valeurs[0])){
             // Il s'agit d'un message synchro
-            //date= new Date(Long.valueOf(valeurs[0]));
+            date= new Date(Long.valueOf(valeurs[0]));
+            Log.d(TAG,"Nouvelle mesure from synchro :" + date);
             //location.setLatitude(Double.valueOf(valeurs[valeurs.length-2]));
             //location.setLongitude(Double.valueOf(valeurs[valeurs.length-1]));
 

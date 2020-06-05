@@ -34,6 +34,7 @@ interface TypeMessage {
 public class TransfertThread extends Thread {
 
     private static final String SYNC_START_ID = "SYN";
+    private static final int HEADER_SIZE = 21;
 
     private OnConnectionChangeListener listener;
 
@@ -107,7 +108,7 @@ public class TransfertThread extends Thread {
                     Log.i(TAG, "Type Synchro ");
 
                     // Si le header de la trame n'est pas complet
-                    if (bufferSaved.position() < 9) {
+                    if (bufferSaved.position() < HEADER_SIZE) {
                         continue;
                     }
 
@@ -118,9 +119,15 @@ public class TransfertThread extends Thread {
                     int nbTramesMax = ByteBuffer.wrap(savedMsg, 5, 4).getInt();
                     Log.i(TAG, "nbTramesMax :" + nbTramesMax);
 
+                    long date = ByteBuffer.wrap(savedMsg, 9, 8).getLong();
+                    Log.i(TAG, "date :" + date);
+
+                    int frequence = ByteBuffer.wrap(savedMsg, 17, 4).getInt();
+                    Log.i(TAG, "frequence :" + frequence);
+
                     // On prepare le buffer pour lire a partir de la fin du header
                     bufferSaved.limit(bufferSaved.position());
-                    bufferSaved.position(9);
+                    bufferSaved.position(HEADER_SIZE);
 
                     Decoder decoder = new Decoder();
 
@@ -154,8 +161,12 @@ public class TransfertThread extends Thread {
                                 trameBuffer.put(bufferSaved.get());
                             }
                             if (trameBuffer.position() == trameBuffer.limit()) {
-                                String decodedMsg = decoder.decode(trame);
+                                // On cree une trame et l'envoie au handler
+                                String decodedMsg = ""+ date +",";
+                                decodedMsg += decoder.decode(trame);
                                 send(decodedMsg);
+
+                                date+=frequence*1000;
                                 nbTramesLues++;
                                 trameBuffer.position(0);
                             }
