@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">Kaptair</string>
-    <string name="Accueil" translatable="false">Mesures</string>
+    <string name="Accueil">Mesures</string>
     <string name="tab_text_1">Temps réel</string>
     <string name="tab_text_2">Historique</string>
 
@@ -64,6 +64,11 @@
     <string name="preferencesVersionTitle">Version de l\'application</string>
     <string name="preferencesVersionSum" translatable="false">1.12</string>
 
+    <string name="preferencesCatAutre">Autres</string>
+
+    <string name="preferencesFreqGpsTitle">Fréquence d\'acquisition du GPS</string>
+    <string name="preferencesFreqGpsSum" translatable="false">1.12</string>
+
 
     <string name="synchroCapteur">Synchroniser les données</string>
     <string name="preferencesSynchroSum">Synchroniser les dernières données enregistrées par le capteur avec le téléphone</string>
@@ -81,5 +86,16 @@
 
     <string name="RenameFragTitre">Renommer le capteur</string>
     <string name="RenameFragBody">Veuillez entrer le nouveau nom du capteur</string>
+
+
+    <plurals name="secondes">
+        <item quantity="one">%d seconde</item>
+        <item quantity="other">%d secondes</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <string name="jamais">Jamais</string>
 
 </resources>

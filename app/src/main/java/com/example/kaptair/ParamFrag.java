@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -47,6 +48,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
     Preference delete;
     Preference modifNomCapteur;
     Preference changerCapteur;
+    ListPreference freqGps;
     private final static String TAG = "Param";
 
     public ParamFrag() {
@@ -64,6 +66,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
         delete = findPreference("delete");
         modifNomCapteur = findPreference("modifNom");
         changerCapteur = findPreference("changerCapteur");
+        freqGps = findPreference("freqGps");
 
         // On initialise les noms de preferences dynamiques
         initDynamicParams();
@@ -225,6 +228,32 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
             Log.d(TAG, "Connect thread or bluetooth null");
         }
 
+        // Frequence GPS
+
+        // Liste des frequences disponibles
+        freqGps.setEntries(new CharSequence[]{
+                getResources().getQuantityString(R.plurals.secondes,10,10),
+                getResources().getQuantityString(R.plurals.secondes,20,20),
+                getResources().getQuantityString(R.plurals.secondes,30,30),
+                getResources().getQuantityString(R.plurals.minutes,1,1),
+                getString(R.string.jamais)});
+        // Valeurs associees en secondes
+        freqGps.setEntryValues(new CharSequence[]{"10","20","30","60","0"});
+
+        // On initialise la description du parametre
+        freqGps.setSummary(freqGps.getEntry());
+
+        // Listener du parametre freqGps
+        Preference.OnPreferenceChangeListener listenerFreqGps = new Preference.OnPreferenceChangeListener() {
+            @Override
+            public boolean onPreferenceChange(Preference preference, Object newValue) {
+                // On met a jour la description du parametre
+                freqGps.setSummary(freqGps.getEntries()[freqGps.findIndexOfValue((String)newValue)]);
+                return true;
+            }
+        };
+
+        freqGps.setOnPreferenceChangeListener(listenerFreqGps);
     }
 
     private void initDynamicParams() {

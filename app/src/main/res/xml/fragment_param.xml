@@ -53,6 +53,19 @@
             />
     </com.example.kaptair.customWidgets.MyPreferenceCategory>
     <com.example.kaptair.customWidgets.MyPreferenceCategory
+        android:title="@string/preferencesCatAutre"
+        >
+        <androidx.preference.ListPreference
+            android:icon="@drawable/ic_gps"
+            android:key="freqGps"
+            android:persistent="true"
+            android:summary=""
+            android:title="@string/preferencesFreqGpsTitle"
+            android:defaultValue="10"
+            style="@style/ConfirmDialog"
+            />
+    </com.example.kaptair.customWidgets.MyPreferenceCategory>
+    <com.example.kaptair.customWidgets.MyPreferenceCategory
         android:title="@string/preferencesCatAbout"
         >
         <androidx.preference.Preference

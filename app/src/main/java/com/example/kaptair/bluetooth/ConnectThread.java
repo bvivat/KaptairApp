@@ -112,7 +112,9 @@ public class ConnectThread extends Thread {
         result();
 
         // On arrete le tracking GPS
-        ((MainActivity) act.get()).endTracking();
+        if (act.get()!=null){
+            ((MainActivity) act.get()).endTracking();
+        }
 
         try {
             mmSocket.close();

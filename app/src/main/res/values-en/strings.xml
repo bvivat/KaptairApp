@@ -50,4 +50,16 @@
     <string name="temperature">Temperature</string>
     <string name="temperatureEtUnit">Temperature (°C)</string>
     <string name="temperatureSansAccent">Temperature</string>
+    <string name="preferencesFreqGpsTitle">GPS refresh rate</string>
+    <string name="preferencesCatAutre">Others</string>
+    <string name="jamais">Never</string>
+
+    <plurals name="secondes">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
 </resources>
