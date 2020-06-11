@@ -1,10 +1,16 @@
 package com.example.kaptair;
 
+import android.Manifest;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Looper;
 import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
@@ -13,6 +19,8 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 
 import java.lang.ref.WeakReference;
+
+import static com.example.kaptair.MainActivity.REQUEST_FINE_LOCATION;
 
 public class TrackerApp {
     private static final String TAG = "TrackerApp";
@@ -23,13 +31,29 @@ public class TrackerApp {
     WeakReference<AppCompatActivity> act;
     Location lastLocation;
 
+    private int intervalle; // En secondes
+
     public TrackerApp(AppCompatActivity a) {
         act = new WeakReference<AppCompatActivity>(a);
 
+        // On verifie l'acces a la localisation
+        if (ContextCompat.checkSelfPermission(act.get(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // Permission is not granted
+            ActivityCompat.requestPermissions(
+                    act.get(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_FINE_LOCATION);
+        }
+
+        // On recupere l'intervalle choisi par l'utilisateur
+        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(act.get());
+        intervalle = Integer.valueOf(settings.getString("freqGps", "20"));
+        Log.d(TAG,""+intervalle);
+
         // On cree la requete
         locationRequest = LocationRequest.create();
-        locationRequest.setInterval(10 * 1000); // Requetes effectuees par l'application
-        locationRequest.setFastestInterval(5 * 1000); // Requetes effectuees par d'autres apps
+        locationRequest.setInterval(intervalle * 1000); // Requetes effectuees par l'application
+        locationRequest.setFastestInterval(intervalle/2 * 1000); // Requetes effectuees par d'autres apps
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(act.get());
@@ -54,6 +78,10 @@ public class TrackerApp {
 
     public void initTracking() {
 
+        if (intervalle==0){
+            isTrackingDone =true;
+            return;
+        }
         // On cree le callback
         locationCallback = new LocationCallback() {
             @Override
@@ -76,6 +104,11 @@ public class TrackerApp {
         startLocationUpdates();
     }
 
+    public void restartTracking(){
+        stopLocationUpdates(false);
+        initTracking();
+    }
+
     public LocationRequest getLocationRequest() {
         return locationRequest;
     }
@@ -95,5 +128,22 @@ public class TrackerApp {
 
     public Location getLastLocation() {
         return lastLocation;
+    }
+
+    public int getIntervalle() {
+        return intervalle;
+    }
+
+    public void setIntervalle(int intervalle) {
+        this.intervalle = intervalle;
+        // On recree la requete
+        locationRequest = LocationRequest.create();
+        locationRequest.setInterval(intervalle * 1000); // Requetes effectuees par l'application
+        locationRequest.setFastestInterval(intervalle/2 * 1000); // Requetes effectuees par d'autres apps
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(act.get());
+
+        restartTracking();
     }
 }

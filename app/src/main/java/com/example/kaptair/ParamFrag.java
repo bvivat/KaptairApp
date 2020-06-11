@@ -232,13 +232,13 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
         // Liste des frequences disponibles
         freqGps.setEntries(new CharSequence[]{
-                getResources().getQuantityString(R.plurals.secondes,10,10),
-                getResources().getQuantityString(R.plurals.secondes,20,20),
-                getResources().getQuantityString(R.plurals.secondes,30,30),
-                getResources().getQuantityString(R.plurals.minutes,1,1),
+                getResources().getQuantityString(R.plurals.secondes, 10, 10),
+                getResources().getQuantityString(R.plurals.secondes, 20, 20),
+                getResources().getQuantityString(R.plurals.secondes, 30, 30),
+                getResources().getQuantityString(R.plurals.minutes, 1, 1),
                 getString(R.string.jamais)});
         // Valeurs associees en secondes
-        freqGps.setEntryValues(new CharSequence[]{"10","20","30","60","0"});
+        freqGps.setEntryValues(new CharSequence[]{"10", "20", "30", "60", "0"});
 
         // On initialise la description du parametre
         freqGps.setSummary(freqGps.getEntry());
@@ -248,7 +248,8 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
             @Override
             public boolean onPreferenceChange(Preference preference, Object newValue) {
                 // On met a jour la description du parametre
-                freqGps.setSummary(freqGps.getEntries()[freqGps.findIndexOfValue((String)newValue)]);
+                freqGps.setSummary(freqGps.getEntries()[freqGps.findIndexOfValue((String) newValue)]);
+                MainActivity.getTracker().setIntervalle(Integer.valueOf((String)newValue));
                 return true;
             }
         };
@@ -263,7 +264,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
                 String name = MainActivity.getBluetooth().getConnect().getDeviceName();
 
-                if (name == null){
+                if (name == null) {
                     throw new NullPointerException();
                 }
 
@@ -294,7 +295,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
         txtTitre.setText(R.string.param);
     }
 
-    public static void syncronize(){
+    public static void syncronize() {
         byte[] msg = "SYNCHRONIZE".getBytes();
         MainActivity.getBluetooth().getConnect().getTransfert().write(msg);
     }
@@ -314,7 +315,7 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
     @Override
     public void inputPositiveBtnClicked(String input) {
-        input = "RENAME,"+ input;
+        input = "RENAME," + input;
         byte[] msg = input.getBytes();
 
         MainActivity.getBluetooth().getConnect().getTransfert().write(msg);

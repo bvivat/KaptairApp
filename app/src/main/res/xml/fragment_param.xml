@@ -61,7 +61,7 @@
             android:persistent="true"
             android:summary=""
             android:title="@string/preferencesFreqGpsTitle"
-            android:defaultValue="10"
+            android:defaultValue="20"
             style="@style/ConfirmDialog"
             />
     </com.example.kaptair.customWidgets.MyPreferenceCategory>

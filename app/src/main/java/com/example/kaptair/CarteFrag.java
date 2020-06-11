@@ -125,7 +125,7 @@ public class CarteFrag extends Fragment {
 
         // Icone position
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getContext()), map);
-        mLocationOverlay.enableMyLocation();
+        //mLocationOverlay.enableMyLocation();
         mLocationOverlay.setPersonIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_person));
         map.getOverlays().add(mLocationOverlay);
 
