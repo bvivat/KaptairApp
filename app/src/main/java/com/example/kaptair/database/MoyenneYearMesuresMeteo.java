@@ -4,7 +4,7 @@ import androidx.room.Entity;
 import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
-import com.example.kaptair.database.InterfacesMesures.MeteoMesure;
+import com.example.kaptair.database.interfacesMesures.MeteoMesure;
 
 import java.util.Date;
 

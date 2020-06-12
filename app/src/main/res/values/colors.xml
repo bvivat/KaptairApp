@@ -19,7 +19,6 @@
     <color name="colorGraphTemperature">@color/colorSafe</color>
     <color name="colorGraphHumidity">@color/colorWarning</color>
 
-    <color name="colorGraphCircle">@color/colorNom</color>
     <color name="colorGraphLegend">@color/colorUnit</color>
     <color name="colorGraphGraduations">@color/colorNom</color>
 

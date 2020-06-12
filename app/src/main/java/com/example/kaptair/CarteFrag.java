@@ -30,15 +30,11 @@ import android.widget.TimePicker;
 
 import com.example.kaptair.bluetooth.TypeDangerDonnees;
 import com.example.kaptair.database.AppDatabase;
-import com.example.kaptair.database.InterfacesMesures.MeteoMesure;
-import com.example.kaptair.database.InterfacesMesures.PollutionMesure;
+import com.example.kaptair.database.interfacesMesures.MeteoMesure;
+import com.example.kaptair.database.interfacesMesures.PollutionMesure;
 import com.example.kaptair.database.MesureMeteoDao;
-import com.example.kaptair.database.MesurePollution;
 import com.example.kaptair.database.MesurePollutionDao;
-import com.example.kaptair.database.MoyenneDayMesuresPollution;
 import com.example.kaptair.database.MoyenneDayMesuresPollutionDao;
-import com.example.kaptair.database.MoyenneYearMesuresPollutionDao;
-import com.example.kaptair.ui.main.YearPickerDialog;
 import com.example.kaptair.ui.main.graphiques.Graph;
 
 import org.osmdroid.api.IMapController;

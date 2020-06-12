@@ -2,7 +2,7 @@ package com.example.kaptair.database;
 
 import androidx.room.*;
 
-import com.example.kaptair.database.InterfacesMesures.PollutionMesure;
+import com.example.kaptair.database.interfacesMesures.PollutionMesure;
 
 import java.util.Date;
 

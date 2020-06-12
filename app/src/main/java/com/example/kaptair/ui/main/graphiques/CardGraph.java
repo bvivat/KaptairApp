@@ -3,8 +3,8 @@ package com.example.kaptair.ui.main.graphiques;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.kaptair.database.InterfacesMesures.Mesure;
-import com.example.kaptair.database.InterfacesMesures.MesureDao;
+import com.example.kaptair.database.interfacesMesures.Mesure;
+import com.example.kaptair.database.interfacesMesures.MesureDao;
 import com.example.kaptair.ui.main.HistoriqueFrag;
 import com.example.kaptair.ui.main.YearPickerDialog;
 import com.github.mikephil.charting.charts.LineChart;

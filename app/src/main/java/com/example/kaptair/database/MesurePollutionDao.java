@@ -2,7 +2,7 @@ package com.example.kaptair.database;
 
 import androidx.room.*;
 
-import com.example.kaptair.database.InterfacesMesures.MesureDao;
+import com.example.kaptair.database.interfacesMesures.MesureDao;
 
 import java.util.Date;
 import java.util.List;

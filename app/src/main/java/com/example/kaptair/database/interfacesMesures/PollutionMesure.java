@@ -1,4 +1,4 @@
-package com.example.kaptair.database.InterfacesMesures;
+package com.example.kaptair.database.interfacesMesures;
 
 import java.util.Date;
 

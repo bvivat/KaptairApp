@@ -9,9 +9,9 @@ import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.core.content.ContextCompat;
 
 import com.example.kaptair.R;
-import com.example.kaptair.database.InterfacesMesures.Mesure;
-import com.example.kaptair.database.InterfacesMesures.MeteoMesure;
-import com.example.kaptair.database.InterfacesMesures.PollutionMesure;
+import com.example.kaptair.database.interfacesMesures.Mesure;
+import com.example.kaptair.database.interfacesMesures.MeteoMesure;
+import com.example.kaptair.database.interfacesMesures.PollutionMesure;
 import com.example.kaptair.ui.main.HistoriqueFrag;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;

@@ -124,7 +124,7 @@
                 android:id="@+id/btnDayMap"
                 style="@style/txtButtonChoixMap"
                 android:layout_width="0dp"
-                android:background="@drawable/button_choix_map"
+                android:background="@drawable/button_choix_map_right"
                 android:text="@string/jour"
                 app:layout_constraintEnd_toEndOf="parent"
 

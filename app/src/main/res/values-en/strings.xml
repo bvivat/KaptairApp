@@ -4,7 +4,7 @@
     <string name="RenameFragTitre">Rename the sensor</string>
     <string name="ToastBTConnectError">Unable to connect to %1$s</string>
     <string name="ToastBTConnecte">Connected to %1$s</string>
-    <string name="ToastBTConnection">Connection to %1$s ...</string>
+    <string name="ToastBTConnection">Connection to %1$s …</string>
     <string name="annee">Year</string>
     <string name="btBluetoothDisabled">You must activate Bluetooth in order to connect to your sensor</string>
     <string name="btListeTitre">Choose a sensor</string>
@@ -43,7 +43,6 @@
     <string name="preferencesNotConnected">You\'re not connected to a sensor</string>
     <string name="preferencesSynchroSum">Synchronize last recorded data with the phone</string>
     <string name="preferencesVersionTitle">App version</string>
-    <string name="synchDesc">Choose the data you want to synchronize</string>
     <string name="synchroCapteur">Synchronize data</string>
     <string name="tab_text_1">Real time</string>
     <string name="tab_text_2">History</string>
