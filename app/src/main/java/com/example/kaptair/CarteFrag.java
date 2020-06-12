@@ -30,7 +30,9 @@ import android.widget.TimePicker;
 
 import com.example.kaptair.bluetooth.TypeDangerDonnees;
 import com.example.kaptair.database.AppDatabase;
+import com.example.kaptair.database.InterfacesMesures.MeteoMesure;
 import com.example.kaptair.database.InterfacesMesures.PollutionMesure;
+import com.example.kaptair.database.MesureMeteoDao;
 import com.example.kaptair.database.MesurePollution;
 import com.example.kaptair.database.MesurePollutionDao;
 import com.example.kaptair.database.MoyenneDayMesuresPollution;
@@ -86,6 +88,9 @@ public class CarteFrag extends Fragment {
     MesurePollutionDao hourDao;
     MoyenneDayMesuresPollutionDao dayDao;
     MoyenneYearMesuresPollutionDao yearDao;
+
+    MesureMeteoDao meteoDao;
+    MeteoMesure mesureMeteo;
 
     ArrayList<Button> btns = new ArrayList<>();
     TextView titre;
@@ -198,6 +203,8 @@ public class CarteFrag extends Fragment {
         hourDao = db.mesurePollutionDao();
         dayDao = db.moyenneDayMesuresPollutionDao();
         yearDao = db.moyenneYearMesuresPollutionDao();
+
+        meteoDao = db.mesureMeteoDao();
 
         titre = getView().findViewById(R.id.txtTitreMap);
 
@@ -491,7 +498,7 @@ public class CarteFrag extends Fragment {
 
     }
 
-    private void addMarkers(List<? extends PollutionMesure> mesures) {
+    private void addMarkers(final List<? extends PollutionMesure> mesures) {
         // On supprime tous les marqueurs de la carte
         map.getOverlays().clear();
 
@@ -501,7 +508,7 @@ public class CarteFrag extends Fragment {
         SimpleDateFormat formatter;
 
         if (!mesures.isEmpty() && mesures.get(0) instanceof MesurePollution) {
-            formatter = new SimpleDateFormat("HH:mm");
+            formatter = new SimpleDateFormat("HH:mm:ss");
         } else if (!mesures.isEmpty() && mesures.get(0) instanceof MoyenneDayMesuresPollution) {
             formatter = new SimpleDateFormat("HH:mm");
         } else {
@@ -511,17 +518,38 @@ public class CarteFrag extends Fragment {
         // Marqueurs
         ArrayList<Marker> marqueurs = new ArrayList<Marker>();
 
-        for (PollutionMesure m : mesures) {
+        for (final PollutionMesure m : mesures) {
             // Pour chaque mesure, on cree un marqueur,
             // si les coordonnees ne valent pas toutes les deux 0
 
             if (m.getLatitude() != 0 || m.getLongitude() != 0) {
 
                 levelDanger = LEVEL_SAFE;
-                Marker m0 = new Marker(map);
+                final Marker m0 = new Marker(map);
                 m0.setPosition(new GeoPoint(m.getLatitude(), m.getLongitude()));
                 m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                 m0.setTitle(formatter.format(m.getDate()));
+
+                executor.execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        // On recupere les donnees meteo correspondantes a chaque mesures (a 10 secondes pres)
+                        mesureMeteo = meteoDao.getClosestByDate(m.getDate());
+                        if (mesureMeteo != null) {
+
+                            String subDesc = "";
+                            subDesc += getString(R.string.temperature) + " : " + getColoredData(
+                                    mesureMeteo.getTemperature(),
+                                    TypeDangerDonnees.TEMP_WARNING,
+                                    TypeDangerDonnees.TEMP_DANGER) + " (°C) | ";
+                            subDesc += getString(R.string.humidite) + " : " + getColoredData(
+                                    mesureMeteo.getHumidity(),
+                                    TypeDangerDonnees.HUMIDITY_WARNING,
+                                    TypeDangerDonnees.HUMIDITY_DANGER) + " (%)";
+                            m0.setSubDescription(subDesc);
+                        }
+                    }
+                });
 
                 // On genere la description a afficher
                 String coloredData = "PM1 : ";
@@ -530,8 +558,9 @@ public class CarteFrag extends Fragment {
                 coloredData += getColoredData(m.getPm25(), TypeDangerDonnees.PM25_WARNING, TypeDangerDonnees.PM25_DANGER);
                 coloredData += "  |  PM10 : ";
                 coloredData += getColoredData(m.getPm10(), TypeDangerDonnees.PM10_WARNING, TypeDangerDonnees.PM10_DANGER);
-                coloredData += " (" + "µg/m<sup><small>3</small></sup>" + ")";
+                coloredData += " (" + "µg/m<sup><small>3</small></sup>" + ")\ntest";
                 m0.setSnippet(coloredData);
+
 
                 // On choisit la couleur la plus elevee pour le marqueur
                 Drawable d = getResources().getDrawable(R.drawable.ic_marker_safe);
