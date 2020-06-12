@@ -432,10 +432,10 @@ public class CarteFrag extends Fragment {
                 // On recupere les donnees associees a l'heure choisie dans la BD
                 Date d1 = calendrier.getTime();
                 Date d2 = new Date(d1.getTime() + Graph.ONE_DAY);
-                List<? extends PollutionMesure> mesures = dayDao.getAllByDate(d1, d2);
+                List<? extends PollutionMesure> mesures = hourDao.getAllByDate(d1, d2);
 
                 // On construit les reperes
-
+                addMarkers(mesures);
 
             }
         });
@@ -452,11 +452,7 @@ public class CarteFrag extends Fragment {
 
         SimpleDateFormat formatter;
 
-        if (!mesures.isEmpty() && mesures.get(0) instanceof MesurePollution) {
-            formatter = new SimpleDateFormat("HH:mm:ss");
-        } else {
-            formatter = new SimpleDateFormat("HH:mm");
-        }
+        formatter = new SimpleDateFormat("HH:mm:ss");
 
         // Marqueurs
         ArrayList<Marker> marqueurs = new ArrayList<Marker>();
@@ -502,7 +498,7 @@ public class CarteFrag extends Fragment {
                 coloredData += getColoredData(m.getPm25(), TypeDangerDonnees.PM25_WARNING, TypeDangerDonnees.PM25_DANGER);
                 coloredData += "  |  PM10 : ";
                 coloredData += getColoredData(m.getPm10(), TypeDangerDonnees.PM10_WARNING, TypeDangerDonnees.PM10_DANGER);
-                coloredData += " (" + "µg/m<sup><small>3</small></sup>" + ")\ntest";
+                coloredData += " (" + "µg/m<sup><small>3</small></sup>" + ")";
                 m0.setSnippet(coloredData);
 
 
