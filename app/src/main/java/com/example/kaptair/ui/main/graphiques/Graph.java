@@ -310,8 +310,8 @@ public class Graph {
 
         // Configuration du graph \\
 
-        // On aligne le graph comme on le souhaite
-        chart.setViewPortOffsets(75, 10, 82, 45); //TODO PROBLEMES AFFICHAGE ?
+        // On aligne le graph comme on le souhaite.
+        chart.setViewPortOffsets(75, 10, 82, 45);
 
 
         XAxis x = chart.getXAxis();

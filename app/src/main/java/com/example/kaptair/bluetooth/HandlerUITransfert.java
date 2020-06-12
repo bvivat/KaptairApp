@@ -130,7 +130,7 @@ public class HandlerUITransfert extends Handler {
                         Log.e(TAG, "Impossible de modifier les compteurs");
                     }
 
-                    MesureMeteo m = new MesureMeteo(date, temperature, humidity, location.getLatitude(), location.getLongitude());
+                    MesureMeteo m = new MesureMeteo(date, temperature, humidity);
                     insertBD(m);
                 }
                 break;

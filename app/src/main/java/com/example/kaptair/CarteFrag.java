@@ -407,7 +407,6 @@ public class CarteFrag extends Fragment {
     }
 
 
-    //TODO changer ces fonctions
     public void reperesHour() {
 
         executor.execute(new Runnable() {
