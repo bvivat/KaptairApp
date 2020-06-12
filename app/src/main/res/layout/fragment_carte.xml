@@ -128,23 +128,10 @@
                 android:layout_width="0dp"
                 android:background="@drawable/button_choix_map"
                 android:text="@string/jour"
-                app:layout_constraintEnd_toStartOf="@+id/btnYearMap"
-
+                app:layout_constraintEnd_toEndOf="parent"
 
                 app:layout_constraintStart_toEndOf="@+id/btnHourMap"
                 tools:ignore="MissingConstraints" />
-
-            <Button
-                android:id="@+id/btnYearMap"
-                style="@style/txtButtonChoixMap"
-                android:layout_width="0dp"
-
-                android:background="@drawable/button_choix_map_right"
-                android:text="@string/annee"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/btnDayMap"
-                tools:ignore="MissingConstraints"
-                tools:layout_editor_absoluteY="5dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

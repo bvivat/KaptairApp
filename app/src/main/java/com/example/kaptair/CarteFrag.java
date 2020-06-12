@@ -87,7 +87,6 @@ public class CarteFrag extends Fragment {
 
     MesurePollutionDao hourDao;
     MoyenneDayMesuresPollutionDao dayDao;
-    MoyenneYearMesuresPollutionDao yearDao;
 
     MesureMeteoDao meteoDao;
     MeteoMesure mesureMeteo;
@@ -96,7 +95,6 @@ public class CarteFrag extends Fragment {
     TextView titre;
     Button btnHour;
     Button btnDay;
-    Button btnYear;
 
     int levelDanger = 0;
 
@@ -130,7 +128,7 @@ public class CarteFrag extends Fragment {
 
         // Icone position
         mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(getContext()), map);
-        //mLocationOverlay.enableMyLocation();
+        mLocationOverlay.enableMyLocation();
         mLocationOverlay.setPersonIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_person));
         map.getOverlays().add(mLocationOverlay);
 
@@ -202,7 +200,6 @@ public class CarteFrag extends Fragment {
 
         hourDao = db.mesurePollutionDao();
         dayDao = db.moyenneDayMesuresPollutionDao();
-        yearDao = db.moyenneYearMesuresPollutionDao();
 
         meteoDao = db.mesureMeteoDao();
 
@@ -210,11 +207,9 @@ public class CarteFrag extends Fragment {
 
         btnHour = getView().findViewById(R.id.btnHourMap);
         btnDay = getView().findViewById(R.id.btnDayMap);
-        btnYear = getView().findViewById(R.id.btnYearMap);
 
         btns.add(btnHour);
         btns.add(btnDay);
-        btns.add(btnYear);
 
         // Date Pickers Listeners \\
         DatePickerDialog.OnDateSetListener dateHeure = new DatePickerDialog.OnDateSetListener() {
@@ -261,23 +256,6 @@ public class CarteFrag extends Fragment {
             }
         };
 
-        final DatePickerDialog.OnDateSetListener dateAnnee = new DatePickerDialog.OnDateSetListener() {
-
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear,
-                                  int dayOfMonth) {
-                //On definit le calendrier aux valeurs choisies par l'utilisateur
-                calendrier.set(Calendar.YEAR, year);
-                calendrier.set(Calendar.MONTH, 0);
-                calendrier.set(Calendar.DAY_OF_MONTH, 1);
-                calendrier.set(Calendar.HOUR_OF_DAY, 0);
-
-                // On met a jour le graph et son titre
-                setTitreYear();
-                reperesYear();
-            }
-        };
-
         final DatePickerDialog pickerHeure = new DatePickerDialog(getContext(), R.style.MyDatePicker, dateHeure, calendrier.get(Calendar.YEAR), calendrier.get(Calendar.MONTH), calendrier.get(Calendar.DAY_OF_MONTH));
         final DatePickerDialog pickerJour = new DatePickerDialog(getContext(), R.style.MyDatePicker, dateJour, calendrier.get(Calendar.YEAR), calendrier.get(Calendar.MONTH), calendrier.get(Calendar.DAY_OF_MONTH));
 
@@ -302,10 +280,6 @@ public class CarteFrag extends Fragment {
                     pickerHeure.show();
                 } else if (v.getId() == btnDay.getId()) {
                     pickerJour.show();
-                } else if (v.getId() == btnYear.getId()) {
-                    YearPickerDialog y = new YearPickerDialog();
-                    y.setListener(dateAnnee);
-                    y.show(getFragmentManager(), "picker");
                 }
             }
         };
@@ -335,9 +309,6 @@ public class CarteFrag extends Fragment {
             } else if (btnDay.isSelected()) {
                 setTitreDay();
                 reperesDay();
-            } else if (btnYear.isSelected()) {
-                setTitreYear();
-                reperesYear();
             }
         } else {
             btnHour.setSelected(true);
@@ -434,10 +405,6 @@ public class CarteFrag extends Fragment {
         titre.setText(sdfHours.format(calendrier.getTime()));
     }
 
-    public void setTitreYear() {
-        SimpleDateFormat sdfHours = new SimpleDateFormat("yyyy");
-        titre.setText(sdfHours.format(calendrier.getTime()));
-    }
 
     //TODO changer ces fonctions
     public void reperesHour() {
@@ -475,28 +442,6 @@ public class CarteFrag extends Fragment {
 
     }
 
-    public void reperesYear() {
-
-        final boolean bissextile;
-        if (calendrier.getActualMaximum(Calendar.DAY_OF_YEAR) > 365) {
-            bissextile = true;
-        } else {
-            bissextile = false;
-        }
-        executor.execute(new Runnable() {
-            @Override
-            public void run() {
-                // On recupere les donnees associees a l'heure choisie dans la BD
-                Date d1 = calendrier.getTime();
-                Date d2 = new Date(d1.getTime() + Graph.ONE_YEAR + (bissextile ? Graph.ONE_DAY : 0));
-                List<? extends PollutionMesure> mesures = yearDao.getAllByDate(d1, d2);
-
-                // On construit les reperes
-
-            }
-        });
-
-    }
 
     private void addMarkers(final List<? extends PollutionMesure> mesures) {
         // On supprime tous les marqueurs de la carte
@@ -509,10 +454,8 @@ public class CarteFrag extends Fragment {
 
         if (!mesures.isEmpty() && mesures.get(0) instanceof MesurePollution) {
             formatter = new SimpleDateFormat("HH:mm:ss");
-        } else if (!mesures.isEmpty() && mesures.get(0) instanceof MoyenneDayMesuresPollution) {
-            formatter = new SimpleDateFormat("HH:mm");
         } else {
-            formatter = new SimpleDateFormat("EEEE dd MMMM");
+            formatter = new SimpleDateFormat("HH:mm");
         }
 
         // Marqueurs
@@ -535,8 +478,9 @@ public class CarteFrag extends Fragment {
                     public void run() {
                         // On recupere les donnees meteo correspondantes a chaque mesures (a 10 secondes pres)
                         mesureMeteo = meteoDao.getClosestByDate(m.getDate());
-                        if (mesureMeteo != null) {
 
+                        if (mesureMeteo != null) {
+                            // On cree la sous-description avec la mesure meteo trouvee
                             String subDesc = "";
                             subDesc += getString(R.string.temperature) + " : " + getColoredData(
                                     mesureMeteo.getTemperature(),
