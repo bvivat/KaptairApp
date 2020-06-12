@@ -47,6 +47,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
@@ -446,6 +447,7 @@ public class CarteFrag extends Fragment {
     private void addMarkers(final List<? extends PollutionMesure> mesures) {
         // On supprime tous les marqueurs de la carte
         map.getOverlays().clear();
+        InfoWindow.closeAllInfoWindowsOn(map);
 
         // On remet celui de la position
         map.getOverlays().add(mLocationOverlay);
@@ -465,6 +467,16 @@ public class CarteFrag extends Fragment {
 
                 levelDanger = LEVEL_SAFE;
                 final Marker m0 = new Marker(map);
+                m0.setOnMarkerClickListener(new Marker.OnMarkerClickListener() {
+                    @Override
+                    public boolean onMarkerClick(Marker marker, MapView mapView) {
+                        InfoWindow.closeAllInfoWindowsOn(map);
+                        marker.showInfoWindow();
+                        mapView.getController().animateTo(marker.getPosition());
+
+                        return true;
+                    }
+                });
                 m0.setPosition(new GeoPoint(m.getLatitude(), m.getLongitude()));
                 m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
                 m0.setTitle(formatter.format(m.getDate()));
