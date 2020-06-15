@@ -106,8 +106,11 @@ public class MainActivity extends AppCompatActivity {
                 bluetooth.setAct(new WeakReference<AppCompatActivity>(this));
                 bluetooth.registerBTReciever();
 
-                tracker.setAct(new WeakReference<AppCompatActivity>(this));
-                tracker.startLocationUpdates();
+                if (tracker != null){
+                    tracker.setAct(new WeakReference<AppCompatActivity>(this));
+                    tracker.startLocationUpdates();
+                }
+
             }
 
         }

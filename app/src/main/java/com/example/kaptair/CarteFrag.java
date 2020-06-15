@@ -115,6 +115,7 @@ public class CarteFrag extends Fragment {
 
         Context ctx = getContext();
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
+        Configuration.getInstance().setUserAgentValue(BuildConfig.APPLICATION_ID);
         //setting this before the layout is inflated is a good idea
         //it 'should' ensure that the map has a writable location for the map cache, even without permissions
         //if no tiles are displayed, you can try overriding the cache path using Configuration.getInstance().setCachePath
