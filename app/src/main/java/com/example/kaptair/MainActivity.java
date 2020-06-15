@@ -316,7 +316,10 @@ public class MainActivity extends AppCompatActivity {
                 // Cas localisation precise
                 if (resultCode == RESULT_OK) {
                     // Si les autorisations necessaires a la localisation sont acceptees
-                    tracker.initTracking();
+                    if (tracker != null){
+                        tracker.initTracking();
+                    }
+
                 } else {
                     Toast.makeText(this, R.string.locNoRights, Toast.LENGTH_LONG).show();
                 }

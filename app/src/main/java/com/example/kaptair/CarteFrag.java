@@ -7,6 +7,9 @@ import android.app.TimePickerDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
@@ -43,8 +46,12 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory;
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
 import org.osmdroid.views.overlay.Marker;
+import org.osmdroid.views.overlay.Polyline;
 import org.osmdroid.views.overlay.infowindow.InfoWindow;
 import org.osmdroid.views.overlay.infowindow.MarkerInfoWindow;
+import org.osmdroid.views.overlay.milestones.MilestoneManager;
+import org.osmdroid.views.overlay.milestones.MilestonePathDisplayer;
+import org.osmdroid.views.overlay.milestones.MilestonePixelDistanceLister;
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
@@ -150,24 +157,6 @@ public class CarteFrag extends Fragment {
                 // WRITE_EXTERNAL_STORAGE is required in order to show the map
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
-
-        // Marqueurs
-        ArrayList<Marker> marqueurs = new ArrayList<Marker>();
-
-        Marker m0 = new Marker(map);
-        m0.setPosition(new GeoPoint(48.599944d, 2.178222d));
-        m0.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM);
-        m0.setTitle("Jeudi 11 juin ");
-        m0.setSnippet("PM1 : <font color=-8924333>31.0</font>  |  PM2.5 : <font color=-8924333>8.6</font>  |  PM10 : <font color=-8924333>16.2</font>");
-        m0.setIcon(getResources().getDrawable(R.drawable.ic_marker_safe));
-        m0.setInfoWindow(new MarkerInfoWindow(R.layout.marker_info, map));
-        marqueurs.add(m0);
-
-
-        // On affiche les marqueurs
-        for (Marker m : marqueurs) {
-            map.getOverlays().add(m);
-        }
 
 
         return v;
@@ -448,8 +437,31 @@ public class CarteFrag extends Fragment {
         map.getOverlays().add(mLocationOverlay);
 
         SimpleDateFormat formatter;
-
         formatter = new SimpleDateFormat("HH:mm:ss");
+
+        // Lien entre les reperes \\
+
+        // On cree le pinceau
+        Paint paint = new Paint();
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeWidth(4);
+        paint.setColor(ContextCompat.getColor(getContext(), R.color.colorPolylineMap));
+
+        // On trace le modele de la fleche
+        Path path = new Path();
+        path.lineTo(-30,-20);
+        path.moveTo(0, 0);
+        path.lineTo(-30,20);
+
+        // On cree un milestoneManager qui va combiner les deux
+        MilestoneManager milestoneManager = new MilestoneManager(new MilestonePixelDistanceLister(100,100),new MilestonePathDisplayer(0,true,path,paint));
+
+        // On l'ajoute a une liste de milestoneManagers
+        List<MilestoneManager> milestoneManagerList = new ArrayList<>();
+        milestoneManagerList.add(milestoneManager);
+
+        // Liste contenant les points a relier
+        List<GeoPoint> linkedGeoPoints = new ArrayList<>();
 
         // Marqueurs
         ArrayList<Marker> marqueurs = new ArrayList<Marker>();
@@ -527,6 +539,9 @@ public class CarteFrag extends Fragment {
 
                 // On ajoute le marqueur
                 marqueurs.add(m0);
+
+                // On ajoute le lien vers ce marqueur
+                linkedGeoPoints.add(new GeoPoint(m.getLatitude(),m.getLongitude()));
             }
 
         }
@@ -537,6 +552,22 @@ public class CarteFrag extends Fragment {
             Log.d(TAG, "marqueur ajouté");
             map.getOverlays().add(m);
         }
+
+
+        // On cree le lien entre les marqueurs
+        Polyline line = new Polyline();
+        line.setPoints(linkedGeoPoints);
+
+        // On y ajoute les fleches
+        line.setMilestoneManagers(milestoneManagerList);
+
+        // On definit son style
+        line.getOutlinePaint().setStrokeWidth(5);
+        line.getOutlinePaint().setColor(ContextCompat.getColor(getContext(), R.color.colorPolylineMap));
+
+        // On l'ajoute sur la carte
+        map.getOverlayManager().add(line);
+
     }
 
     private String getColoredData(double data, double warningLevel, double dangerLevel) {
