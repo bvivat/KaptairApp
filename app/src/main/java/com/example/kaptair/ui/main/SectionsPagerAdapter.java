@@ -1,6 +1,7 @@
 package com.example.kaptair.ui.main;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
@@ -11,6 +12,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.kaptair.R;
 
 /**
+ * Created by Benjamin Vivat on 06/23/2020.
+ *
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
@@ -29,6 +32,7 @@ public class SectionsPagerAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
+        Log.d("Adapter","GetItem called");
         switch (position){
             case 0: return TempsReelFrag.newInstance();
             case 1: return HistoriqueFrag.newInstance();

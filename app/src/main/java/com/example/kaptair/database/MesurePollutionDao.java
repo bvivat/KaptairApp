@@ -2,11 +2,16 @@ package com.example.kaptair.database;
 
 import androidx.room.*;
 
+import com.example.kaptair.database.interfacesMesures.MesureDao;
+
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 @Dao
-public interface MesurePollutionDao {
+public interface MesurePollutionDao extends MesureDao {
 
     @Query("SELECT * FROM MesurePollution")
     List<MesurePollution> getAll();

@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    >
+    <com.example.kaptair.customWidgets.MyPreferenceCategory
+        android:title="@string/preferencesCatDonnees"
+        >
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_synchro"
+            android:key="synchro"
+            android:persistent="false"
+            android:summary="@string/preferencesSynchroSum"
+            android:title="@string/synchroCapteur"
+
+            />
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_export"
+            android:key="export"
+            android:persistent="false"
+            android:summary="@string/preferencesExportSum"
+            android:title="@string/preferencesExportTitle"
+
+            />
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_delete"
+            android:key="delete"
+            android:persistent="false"
+            android:summary="@string/preferencesDeleteSum"
+            android:title="@string/preferencesDeleteTitle"
+
+            />
+    </com.example.kaptair.customWidgets.MyPreferenceCategory>
+    <com.example.kaptair.customWidgets.MyPreferenceCategory
+        android:title="@string/preferencesCatCapteur"
+        >
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_edit"
+            android:key="modifNom"
+            android:persistent="false"
+            android:summary="@string/preferencesModifNomCapteurSum"
+            android:title="@string/preferencesModifNomCapteurTitle"
+
+            />
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_connect"
+            android:key="changerCapteur"
+            android:persistent="false"
+            android:summary="@string/preferencesChangerCapteurSum"
+            android:title="@string/preferencesChangerCapteurTitle"
+
+            />
+    </com.example.kaptair.customWidgets.MyPreferenceCategory>
+    <com.example.kaptair.customWidgets.MyPreferenceCategory
+        android:title="@string/preferencesCatAutre"
+        >
+        <androidx.preference.ListPreference
+            android:icon="@drawable/ic_gps"
+            android:key="freqGps"
+            android:persistent="true"
+            android:summary=""
+            android:title="@string/preferencesFreqGpsTitle"
+            android:defaultValue="20"
+            style="@style/ConfirmDialog"
+            />
+    </com.example.kaptair.customWidgets.MyPreferenceCategory>
+    <com.example.kaptair.customWidgets.MyPreferenceCategory
+        android:title="@string/preferencesCatAbout"
+        >
+        <androidx.preference.Preference
+            android:icon="@drawable/ic_info"
+            android:key="version"
+            android:persistent="false"
+            android:summary="@string/preferencesVersionSum"
+            android:title="@string/preferencesVersionTitle"
+
+            />
+    </com.example.kaptair.customWidgets.MyPreferenceCategory>
+</androidx.preference.PreferenceScreen>

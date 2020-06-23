@@ -4,6 +4,11 @@ import androidx.room.TypeConverter;
 
 import java.util.Date;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ *
+ * Classe requise pour convertir une date en Long stockable dans la BD
+ */
 public class Converter {
 
         @TypeConverter

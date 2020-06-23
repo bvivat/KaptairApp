@@ -2,10 +2,13 @@ package com.example.kaptair.database;
 
 import androidx.room.*;
 
-import com.example.kaptair.ui.main.graphiques.PollutionMesure;
+import com.example.kaptair.database.interfacesMesures.PollutionMesure;
 
 import java.util.Date;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 @Entity
 public class MoyenneDayMesuresPollution implements PollutionMesure {
 
@@ -19,43 +22,43 @@ public class MoyenneDayMesuresPollution implements PollutionMesure {
     public int nbMesures;
 
     public MoyenneDayMesuresPollution(Date date, double pm1, double pm25, double pm10, double co2) {
-        int minutes=date.getMinutes()-(date.getMinutes()%5); //On garde aux 5 minutes près
-        this.date = new Date(date.getYear(),date.getMonth(),date.getDate(),date.getHours(),minutes);
+        int minutes = date.getMinutes() - (date.getMinutes() % 5); //On garde aux 5 minutes près
+        this.date = new Date(date.getYear(), date.getMonth(), date.getDate(), date.getHours(), minutes);
         this.pm1 = pm1;
         this.pm25 = pm25;
-        this.pm10=pm10;
-        this.co2=co2;
-        this.nbMesures=1;
+        this.pm10 = pm10;
+        this.co2 = co2;
+        this.nbMesures = 1;
     }
 
     @Ignore
     public MoyenneDayMesuresPollution(MesurePollution m) {
-        
-        int minutes=m.date.getMinutes()-(m.date.getMinutes()%5); //On garde aux 5 minutes près
-        this.date = new Date(m.date.getYear(),m.date.getMonth(),m.date.getDate(),m.date.getHours(),minutes);
+
+        int minutes = m.date.getMinutes() - (m.date.getMinutes() % 5); //On garde aux 5 minutes près
+        this.date = new Date(m.date.getYear(), m.date.getMonth(), m.date.getDate(), m.date.getHours(), minutes);
         this.pm1 = m.pm1;
         this.pm25 = m.pm25;
-        this.pm10= m.pm10;
-        this.co2=m.co2;
-        this.nbMesures=1;
+        this.pm10 = m.pm10;
+        this.co2 = m.co2;
+        this.nbMesures = 1;
     }
 
     @Ignore
     public MoyenneDayMesuresPollution(MoyenneDayMesuresPollution mOld, MoyenneDayMesuresPollution mNew) {
 
         this.date = mOld.date;
-        this.nbMesures=mOld.nbMesures+1;
-        this.pm1 = (mOld.pm1*mOld.nbMesures + mNew.pm1)/this.nbMesures;
-        this.pm25 = (mOld.pm25*mOld.nbMesures + mNew.pm25)/this.nbMesures;
-        this.pm10= (mOld.pm10*mOld.nbMesures + mNew.pm10)/this.nbMesures;
-        this.co2= (mOld.co2*mOld.nbMesures + mNew.co2)/this.nbMesures;
+        this.nbMesures = mOld.nbMesures + 1;
+        this.pm1 = (mOld.pm1 * mOld.nbMesures + mNew.pm1) / this.nbMesures;
+        this.pm25 = (mOld.pm25 * mOld.nbMesures + mNew.pm25) / this.nbMesures;
+        this.pm10 = (mOld.pm10 * mOld.nbMesures + mNew.pm10) / this.nbMesures;
+        this.co2 = (mOld.co2 * mOld.nbMesures + mNew.co2) / this.nbMesures;
     }
 
     @Ignore
     @Override
     public float getFloatDate() {
-        Date day = new Date(date.getYear(),date.getMonth(),date.getDate());
-        return (date.getTime()-day.getTime())/1000;
+        Date day = new Date(date.getYear(), date.getMonth(), date.getDate());
+        return (date.getTime() - day.getTime()) / 1000; // On ne garde que le nombre d'heure de la mesure (independament du jour)
     }
 
     @Override
@@ -105,6 +108,17 @@ public class MoyenneDayMesuresPollution implements PollutionMesure {
 
     public int getNbMesures() {
         return nbMesures;
+    }
+
+
+    @Override
+    public double getLatitude() {
+        return 0.0;
+    }
+
+    @Override
+    public double getLongitude() {
+        return 0.0;
     }
 
 }

@@ -2,10 +2,13 @@ package com.example.kaptair.database;
 
 import androidx.room.*;
 
-import com.example.kaptair.ui.main.graphiques.PollutionMesure;
+import com.example.kaptair.database.interfacesMesures.PollutionMesure;
 
 import java.util.Date;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 @Entity
 public class MesurePollution implements PollutionMesure {
 
@@ -17,19 +20,24 @@ public class MesurePollution implements PollutionMesure {
     public double pm10;
     public double co2;
 
-    public MesurePollution(Date date, double pm1, double pm25, double pm10, double co2) {
+    public double latitude;
+    public double longitude;
+
+    public MesurePollution(Date date, double pm1, double pm25, double pm10, double co2, double latitude, double longitude) {
         this.date = date;
         this.pm1 = pm1;
         this.pm25 = pm25;
         this.pm10 = pm10;
         this.co2 = co2;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     @Ignore
     @Override
     public float getFloatDate() {
-        Date day = new Date(date.getYear(),date.getMonth(),date.getDate(),date.getHours(),0);
-        return (date.getTime()-day.getTime())/1000;
+        Date day = new Date(date.getYear(), date.getMonth(), date.getDate(), date.getHours(), 0);
+        return (date.getTime() - day.getTime()) / 1000; // On ne garde que le nombre de minutes de la mesure (independament du jour et de l'heure)
     }
 
     @Override
@@ -77,5 +85,13 @@ public class MesurePollution implements PollutionMesure {
         this.co2 = co2;
     }
 
+    @Override
+    public double getLatitude() {
+        return latitude;
+    }
 
+    @Override
+    public double getLongitude() {
+        return longitude;
+    }
 }

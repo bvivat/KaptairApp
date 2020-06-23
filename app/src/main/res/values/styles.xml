@@ -1,12 +1,14 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="MaterialDrawerTheme.Light.DarkToolbar.ActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/colorBackground</item>
+        <item name="actionOverflowMenuStyle">@style/OverflowMenu</item>
+        <item name="alertDialogTheme">@style/ConfirmDialog</item>
 
     </style>
 
@@ -15,9 +17,35 @@
         <item name="windowNoTitle">true</item>
     </style>
 
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="MyDatePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
 
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="MyYearDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/colorPrimary</item>
+        <!-- Used for the title and text -->
+        <item name="android:textColorPrimary">#FFFFFF</item>
+    </style>
+
+    <style name="ConfirmDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <!-- Used for the buttons -->
+        <item name="colorAccent">@color/colorPrimary</item>
+    </style>
+    <style name="InputDialog" parent="Theme.AppCompat.Light.Dialog.Alert">
+        <item name="colorControlNormal">@color/colorNom</item>
+        <item name="colorControlActivated">@color/colorUnit</item>
+    </style>
+
+    <style name="OverflowMenu" parent="Widget.AppCompat.PopupMenu.Overflow">
+        <!-- Required for pre-Lollipop.-->
+        <item name="overlapAnchor">false</item>
+        <!-- Required for Lollipop. -->
+        <item name="android:overlapAnchor" tools:targetApi="lollipop">false</item>
+    </style>
+
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
 
     <style name="cardTitle" parent="TextAppearance.AppCompat">
@@ -47,6 +75,7 @@
         <item name="android:textSize">25dp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:freezesText">true</item>
     </style>
     <style name="txtUnit" parent="TextAppearance.AppCompat" >
         <item name="android:textColor">@color/colorUnit</item>
@@ -76,6 +105,13 @@
         <item name="android:fontFamily">sans-serif-regular</item>
     </style>
 
+    <style name="txtTitreGraph" parent="TextAppearance.AppCompat" >
+        <item name="android:textColor">@color/colorUnit</item>
+        <item name="android:textSize">11dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+    </style>
+
     <style name="txtButtonChoixGraph" parent="@style/Widget.AppCompat.Button.Borderless" >
         <item name="android:textColor">@color/colorNom</item>
         <item name="android:textSize">12dp</item>
@@ -88,10 +124,77 @@
         <item name="android:layout_height">30dp</item>
     </style>
 
+    <style name="txtButtonChoixMap" parent="@style/Widget.AppCompat.Button.Borderless" >
+        <item name="android:textColor">@color/colorNom</item>
+        <item name="android:textSize">12dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="android:layout_height">30dp</item>
+    </style>
+
     <style name="lytChoixGraph" >
         <item name="android:layout_marginTop">6dp</item>
+        <item name="layout_constraintWidth_max">400dp</item>
         <item name="android:background">@drawable/choix_graph_background</item>
     </style>
+    <style name="lytChoixMap" >
+        <item name="android:background">@drawable/map_titre_background_bas</item>
+    </style>
+
+    <style name="txtLegend" parent="TextAppearance.AppCompat" >
+        <item name="android:textColor">@color/colorGraphLegend</item>
+        <item name="android:scaleX">0.7</item>
+        <item name="android:scaleY">0.7</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+        <item name="android:checked">true</item>
+    </style>
+
+    <style name="cardItem" >
+        <item name="android:background">@drawable/item</item>
+    </style>
+
+    <style name="FullScreenBtn" >
+        <item name="android:background">@drawable/btn_full_screen</item>
+        <item name="android:layout_height">24dp</item>
+        <item name="android:layout_width">24dp</item>
+        <item name="android:layout_marginTop">5dp</item>
+        <item name="layout_constraintEnd_toEndOf">parent</item>
+        <item name="layout_constraintTop_toTopOf">parent</item>
+    </style>
+
+    <style name="txtTitreToolbar" parent="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" >
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="txtDescMarker" parent="TextAppearance.AppCompat" >
+        <item name="android:textColor">@color/colorNom</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">15dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+    </style>
+
+    <style name="txtSubDescMarker" parent="TextAppearance.AppCompat" >
+        <item name="android:textColor">@color/colorUnit</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">13dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+    </style>
+
+    <style name="txtTitreMarker" parent="TextAppearance.AppCompat" >
+        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">17dp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:fontFamily">sans-serif-regular</item>
+
+    </style>
+
+
 
 
 </resources>

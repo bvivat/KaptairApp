@@ -9,10 +9,18 @@
 
     <string name="temperature">Température</string>
     <string name="humidite">Humidité</string>
-    <string name="µgmCube">µg/m<sup><small>3</small></sup></string>
+    <string name="µgmCube" translatable="false">µg/m<sup><small>3</small></sup></string>
+
+    <string name="temperatureSansAccent">Temperature</string>
+    <string name="humiditeSansAccent">Humidite</string>
 
     <string name="btListeTitre">Choisissez votre appareil</string>
-    <string name="btNoBluetooth">Votre appareil ne supporte pas le bluetooth.</string>
+    <string name="btNoBluetooth">Votre appareil ne supporte pas le Bluetooth.</string>
+    <string name="btBluetoothDisabled">Vous devez activer le Bluetooth pour vous connecter à votre capteur</string>
+
+    <string name="gglNoServices">Les services Google Play sont requis pour accéder à votre localisation</string>
+
+    <string name="locNoRights">L\'accès à la localisation est requis pour localiser les mesures</string>
 
 
     <string name="heure">Heure</string>
@@ -21,5 +29,69 @@
 
     <string name="temperatureEtUnit">Température (°C)</string>
     <string name="humiditeEtUnit">Humidité (%)</string>
-    <string name="pmEtUnit">PM µg/m<sup><small>3</small></sup></string>
+    <string name="pmEtUnit" translatable="false">PM (µg/m<sup><small>3</small></sup>)</string>
+
+    <string name="mesures">Mesures</string>
+    <string name="param">Paramètres</string>
+    <string name="carte">Carte</string>
+
+    <string name="dateOk">Confirmer</string>
+    <string name="dateAnnuler">Annuler</string>
+
+
+    <string name="preferencesCatDonnees">Données</string>
+
+    <string name="preferencesExportTitle">Exporter les données</string>
+    <string name="preferencesExportSum">Exporter les données sous forme de fichier CSV</string>
+
+    <string name="preferencesDeleteTitle">Supprimer les données</string>
+    <string name="preferencesDeleteSum">Supprimer toutes les mesures enregistrées</string>
+
+    <string name="preferencesDeleteDialogTitle">Tout supprimer ?</string>
+    <string name="preferencesDeleteDialogBody">Cette opération va supprimer toutes les mesures enregistrées de manière définitive</string>
+
+    <string name="preferencesCatCapteur">Capteur</string>
+
+    <string name="preferencesModifNomCapteurTitle">Renommer le capteur</string>
+    <string name="preferencesModifNomCapteurSum">Renommer %1$s</string>
+    <string name="preferencesNotConnected">Vous n\'êtes pas connecté à un capteur</string>
+
+    <string name="preferencesChangerCapteurTitle">Se connecter à un capteur</string>
+    <string name="preferencesChangerCapteurSum">Vous êtes actuellement connecté à %1$s</string>
+
+    <string name="preferencesCatAbout">À propos</string>
+
+    <string name="preferencesVersionTitle">Version de l\'application</string>
+    <string name="preferencesVersionSum" translatable="false">1.12</string>
+
+    <string name="preferencesCatAutre">Autres</string>
+
+    <string name="preferencesFreqGpsTitle">Fréquence d\'acquisition du GPS</string>
+
+
+    <string name="synchroCapteur">Synchroniser les données</string>
+    <string name="preferencesSynchroSum">Synchroniser les dernières données enregistrées par le capteur avec le téléphone</string>
+
+    <string name="locationDialogTitle">Accès à la localisation refusé</string>
+    <string name="locationDialogBody">L\'accès à la localisation est requis pour chercher les capteurs Bluetooth à proximité</string>
+
+    <string name="ToastBTConnection">Connexion à %1$s …</string>
+    <string name="ToastBTConnecte">Connecté à %1$s</string>
+    <string name="ToastBTConnectError">Impossible de se connecter à %1$s</string>
+
+
+    <string name="RenameFragTitre">Renommer le capteur</string>
+    <string name="RenameFragBody">Veuillez entrer le nouveau nom du capteur</string>
+
+
+    <plurals name="secondes">
+        <item quantity="one">%d seconde</item>
+        <item quantity="other">%d secondes</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+    <string name="jamais">Jamais</string>
+
 </resources>

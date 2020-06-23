@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kaptair</string>
+    <string name="RenameFragTitre">Rename the sensor</string>
+    <string name="ToastBTConnectError">Unable to connect to %1$s</string>
+    <string name="ToastBTConnecte">Connected to %1$s</string>
+    <string name="ToastBTConnection">Connection to %1$s …</string>
+    <string name="annee">Year</string>
+    <string name="btBluetoothDisabled">You must activate Bluetooth in order to connect to your sensor</string>
+    <string name="btListeTitre">Choose a sensor</string>
+    <string name="btNoBluetooth">Your device doesn\'t support Bluetooth</string>
+    <string name="carte">Map</string>
+    <string name="dateAnnuler">Cancel</string>
+    <string name="dateOk">Confirm</string>
+    <string name="gglNoServices">Google Play Services are required to access your location</string>
+    <string name="card1">Air pollution</string>
+    <string name="heure">Hour</string>
+    <string name="humidite">Humidity</string>
+    <string name="humiditeEtUnit">Humidity (%)</string>
+    <string name="humiditeSansAccent">Humidity</string>
+    <string name="jour">Day</string>
+    <string name="locNoRights">Access to your location is required to locate the measures</string>
+    <string name="locationDialogBody">Access to your location is required to find nearby Bluetooth devices</string>
+    <string name="locationDialogTitle">Access to location denied</string>
+    <string name="mesures">Measures</string>
+    <string name="Accueil">Measures</string>
+    <string name="RenameFragBody">Please enter the new device\'s name</string>
+    <string name="card2">Weather data</string>
+    <string name="param">Settings</string>
+    <string name="preferencesCatAbout">About</string>
+    <string name="preferencesCatCapteur">Sensor</string>
+    <string name="preferencesCatDonnees">Data</string>
+    <string name="preferencesChangerCapteurSum">You\'re currently connected to %1$s</string>
+    <string name="preferencesChangerCapteurTitle">Connect to sensor</string>
+    <string name="preferencesDeleteDialogBody">This operation will definitely delete all stored measures</string>
+    <string name="preferencesDeleteDialogTitle">Delete all data ?</string>
+    <string name="preferencesDeleteSum">Delete all stored measures</string>
+    <string name="preferencesDeleteTitle">Delete data</string>
+    <string name="preferencesExportSum">Export data in a CSV file</string>
+    <string name="preferencesExportTitle">Export data</string>
+    <string name="preferencesModifNomCapteurSum">Rename %1$s</string>
+    <string name="preferencesModifNomCapteurTitle">Rename the sensor</string>
+    <string name="preferencesNotConnected">You\'re not connected to a sensor</string>
+    <string name="preferencesSynchroSum">Synchronize last recorded data with the phone</string>
+    <string name="preferencesVersionTitle">App version</string>
+    <string name="synchroCapteur">Synchronize data</string>
+    <string name="tab_text_1">Real time</string>
+    <string name="tab_text_2">History</string>
+    <string name="temperature">Temperature</string>
+    <string name="temperatureEtUnit">Temperature (°C)</string>
+    <string name="temperatureSansAccent">Temperature</string>
+    <string name="preferencesFreqGpsTitle">GPS refresh rate</string>
+    <string name="preferencesCatAutre">Others</string>
+    <string name="jamais">Never</string>
+
+    <plurals name="secondes">
+        <item quantity="one">%d second</item>
+        <item quantity="other">%d seconds</item>
+    </plurals>
+    <plurals name="minutes">
+        <item quantity="one">%d minute</item>
+        <item quantity="other">%d minutes</item>
+    </plurals>
+</resources>

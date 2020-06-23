@@ -6,7 +6,11 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Set;
-
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ *
+ * Classe device contenant seulement un nom et une adresse Mac. Implemente parcelable pour pouvoir le stocker dans des bundles
+ */
 public class Device implements Parcelable {
     String nom;
     String adrMac;
@@ -46,10 +50,10 @@ public class Device implements Parcelable {
         return adrMac;
     }
 
-    public static ArrayList<Device> fromSet(Set<BluetoothDevice> set){
-        ArrayList<Device> devices= new ArrayList<>();
+    public static ArrayList<Device> fromSet(Set<BluetoothDevice> set) {
+        ArrayList<Device> devices = new ArrayList<>();
         for (BluetoothDevice b : set) {
-            Device d = new Device(b.getName(),b.getAddress());
+            Device d = new Device(b.getName(), b.getAddress());
             devices.add(d);
         }
         return devices;
@@ -59,14 +63,19 @@ public class Device implements Parcelable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+
         Device device = (Device) o;
-        return nom.equals(device.nom) &&
-                adrMac.equals(device.adrMac);
+        try {
+            return nom.equals(device.nom) && adrMac.equals(device.adrMac);
+        } catch (NullPointerException exception) {
+            return false;
+        }
+
     }
 
     @Override
     public int hashCode() {
-        return nom.length()*2+adrMac.length()*3;
+        return nom.length() * 2 + adrMac.length() * 3;
     }
 
     @Override
