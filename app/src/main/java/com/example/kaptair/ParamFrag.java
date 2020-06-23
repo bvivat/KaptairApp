@@ -18,6 +18,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.kaptair.bluetooth.OnConnectionChangeListener;
 import com.example.kaptair.database.AppDatabase;
@@ -297,7 +298,12 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
 
     public static void syncronize() {
         byte[] msg = "SYNCHRONIZE".getBytes();
-        MainActivity.getBluetooth().getConnect().getTransfert().write(msg);
+        try {
+            MainActivity.getBluetooth().getConnect().getTransfert().write(msg);
+        }catch (NullPointerException e){
+
+        }
+
     }
 
     @Override
@@ -318,7 +324,11 @@ public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogC
         input = "RENAME," + input;
         byte[] msg = input.getBytes();
 
-        MainActivity.getBluetooth().getConnect().getTransfert().write(msg);
+        try {
+            MainActivity.getBluetooth().getConnect().getTransfert().write(msg);
+        }catch (NullPointerException e){
+
+        }
     }
 
     @Override
