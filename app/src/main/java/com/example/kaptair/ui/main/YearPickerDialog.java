@@ -23,7 +23,7 @@ import com.example.kaptair.R;
 import java.util.Calendar;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Benjamin Vivat on 06/23/2020.
  */
 public class YearPickerDialog extends DialogFragment {
 

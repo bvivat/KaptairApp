@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class DatetimeHourFormatter extends ValueFormatter {
 
     private static final int GRAN_1 = 900;

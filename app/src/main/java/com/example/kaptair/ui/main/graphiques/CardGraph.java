@@ -28,7 +28,9 @@ import java.util.List;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class CardGraph {
 
     private final WeakReference<HistoriqueFrag> frag;

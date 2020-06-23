@@ -28,7 +28,12 @@ import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
-//Classe s'occupant d'exploiter les retours du thread de transfert bluetooth
+
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ *
+ * Classe s'occupant d'exploiter les retours du thread de transfert bluetooth
+ */
 public class HandlerUITransfert extends Handler {
 
     private static final String TAG = "HandlerUI";

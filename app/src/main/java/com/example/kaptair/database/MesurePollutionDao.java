@@ -7,6 +7,9 @@ import com.example.kaptair.database.interfacesMesures.MesureDao;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 @Dao
 public interface MesurePollutionDao extends MesureDao {
 

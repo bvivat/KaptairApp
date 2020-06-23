@@ -18,7 +18,9 @@ import java.util.UUID;
 
 import static com.example.kaptair.MainActivity.PREF_ADDRMAC;
 
-
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class ConnectThread extends Thread {
 
     final static String TAG = "ConnectThread";

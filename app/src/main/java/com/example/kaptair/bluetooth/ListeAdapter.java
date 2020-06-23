@@ -12,6 +12,9 @@ import com.example.kaptair.R;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class ListeAdapter extends RecyclerView.Adapter<ListeAdapter.ViewHolder> {
 
     private ArrayList<Device> devices; // Les devices a afficher dans la liste

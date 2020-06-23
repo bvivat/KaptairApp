@@ -3,7 +3,11 @@ package com.example.kaptair.database.interfacesMesures;
 import java.util.Date;
 import java.util.List;
 
-// Interface utilisee pour lier les differents DAO
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ *
+ * Interface utilisee pour lier les differents DAO
+ */
 public interface MesureDao {
 
     List<? extends Mesure> getAll();

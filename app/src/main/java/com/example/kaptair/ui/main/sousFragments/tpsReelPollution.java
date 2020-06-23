@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import com.example.kaptair.R;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Benjamin Vivat on 06/23/2020.
  */
 public class tpsReelPollution extends Fragment {
 

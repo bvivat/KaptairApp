@@ -6,6 +6,9 @@ import com.example.kaptair.database.interfacesMesures.PollutionMesure;
 
 import java.util.Date;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 @Entity
 public class MoyenneDayMesuresPollution implements PollutionMesure {
 

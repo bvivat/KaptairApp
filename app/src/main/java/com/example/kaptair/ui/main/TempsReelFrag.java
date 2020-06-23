@@ -21,7 +21,7 @@ import java.util.HashMap;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Benjamin Vivat on 06/23/2020.
  */
 public class TempsReelFrag extends Fragment {
 

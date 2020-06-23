@@ -12,6 +12,8 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import com.example.kaptair.R;
 
 /**
+ * Created by Benjamin Vivat on 06/23/2020.
+ *
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */

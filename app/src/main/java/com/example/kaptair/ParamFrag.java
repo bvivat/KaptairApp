@@ -36,7 +36,7 @@ import java.util.concurrent.Executors;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Benjamin Vivat on 06/23/2020.
  */
 public class ParamFrag extends PreferenceFragmentCompat implements SimpleDialogCallback, SimpleDialogInputCallback {
 

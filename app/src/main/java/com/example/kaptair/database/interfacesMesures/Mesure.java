@@ -2,7 +2,11 @@ package com.example.kaptair.database.interfacesMesures;
 
 import java.util.Date;
 
-// Interface utilisee pour lier les differentes mesures
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ *
+ * Interface utilisee pour lier les differentes mesures
+ */
 public interface Mesure {
 
     Date getDate();

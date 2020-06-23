@@ -18,6 +18,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 interface TypeMessage {
     int PARTICULES = 0;
     int ATMOSPHERE = 1;
@@ -31,6 +34,9 @@ interface TypeMessage {
 
 }
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class TransfertThread extends Thread {
 
     private static final String SYNC_START_ID = "SYN";

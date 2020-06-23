@@ -1,5 +1,8 @@
 package com.example.kaptair.bluetooth;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public interface TypeDangerDonnees {
     // Definir ici les seuils pour les differentes donnees
     Double PM1_WARNING = 1000.0;

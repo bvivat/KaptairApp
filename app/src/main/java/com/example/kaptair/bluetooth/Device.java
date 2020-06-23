@@ -6,8 +6,11 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.Set;
-
-//Classe device contenant seulement un nom et une adresse Mac. Implemente parcelable pour pouvoir le stocker dans des bundles
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ *
+ * Classe device contenant seulement un nom et une adresse Mac. Implemente parcelable pour pouvoir le stocker dans des bundles
+ */
 public class Device implements Parcelable {
     String nom;
     String adrMac;

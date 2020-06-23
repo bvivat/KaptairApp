@@ -20,7 +20,9 @@ import java.util.UUID;
 
 import static com.example.kaptair.MainActivity.PREF_ADDRMAC;
 import static com.example.kaptair.MainActivity.REQUEST_ENABLE_BT;
-
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class BluetoothApp {
     private static final String TAG = "Bluetooth class";
 

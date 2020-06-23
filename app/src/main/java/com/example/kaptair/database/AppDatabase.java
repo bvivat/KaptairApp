@@ -7,6 +7,9 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 @Database(entities = {MesurePollution.class,MoyenneDayMesuresPollution.class,MoyenneYearMesuresPollution.class, MesureMeteo.class, MoyenneDayMesuresMeteo.class,MoyenneYearMesuresMeteo.class}, version=1)
 @TypeConverters({Converter.class})
 public abstract class AppDatabase extends RoomDatabase {

@@ -42,6 +42,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 
 import java.lang.ref.WeakReference;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_COARSE_LOCATION = 0;

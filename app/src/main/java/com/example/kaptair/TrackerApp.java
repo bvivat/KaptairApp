@@ -22,6 +22,9 @@ import java.lang.ref.WeakReference;
 
 import static com.example.kaptair.MainActivity.REQUEST_FINE_LOCATION;
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class TrackerApp {
     private static final String TAG = "TrackerApp";
     LocationRequest locationRequest;

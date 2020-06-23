@@ -3,7 +3,9 @@ package com.example.kaptair.bluetooth;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.LinkedList;
-
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class Decoder {
 
     public Decoder() {

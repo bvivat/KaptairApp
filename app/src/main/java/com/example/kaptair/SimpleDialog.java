@@ -10,7 +10,9 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.fragment.app.DialogFragment;
 
-
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 interface SimpleDialogCallback {
     //Callback a implementer par le fragment creant ce dialog si Type = YES_NO
     void positiveBtnClicked();
@@ -18,6 +20,9 @@ interface SimpleDialogCallback {
     void negativeBtnClicked();
 }
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 interface SimpleDialogInputCallback {
     //Callback a implementer par le fragment creant ce dialog si Type = YES_NO
     void inputPositiveBtnClicked(String input);
@@ -25,6 +30,9 @@ interface SimpleDialogInputCallback {
     void inputNegativeBtnClicked();
 }
 
+/**
+ * Created by Benjamin Vivat on 06/23/2020.
+ */
 public class SimpleDialog extends DialogFragment {
     public static final String ARG_TITLE = "Title";
     public static final String ARG_MESSAGE = "Message";

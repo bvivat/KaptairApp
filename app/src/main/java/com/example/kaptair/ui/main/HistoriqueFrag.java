@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Benjamin Vivat on 06/23/2020.
  */
 public class HistoriqueFrag extends Fragment {
 
